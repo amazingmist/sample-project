@@ -37,15 +37,16 @@ public class ChuyenDeDaoImplNGTest {
 //    @Test
     public void testDelete(){
         ChuyenDeDao chuyenDeDao = new ChuyenDeDaoImpl();
-        chuyenDeDao.delete("TAI01");
+        ChuyenDe chuyenDe = new ChuyenDe("TAI01", "Học lập trình java", 3000, 10, "tai.png", "Học java");
+        chuyenDeDao.delete(chuyenDe);
     }
     
 //    @Test
     public void testMultipleDelete(){
         ChuyenDeDao chuyenDeDao = new ChuyenDeDaoImpl();
-        List<String> list = new ArrayList<>();
-        list.add("TAI01");
-        list.add("TAI02");
+        List<ChuyenDe> list = new ArrayList<>();
+        list.add(new ChuyenDe("TAI01", "Học lập trình java", 3000, 10, "tai.png", "Học java"));
+        list.add(new ChuyenDe("TAI02", "Học lập trình java", 3000, 10, "tai.png", "Học java"));
         chuyenDeDao.multipleDelete(list);
     }
     
@@ -59,7 +60,7 @@ public class ChuyenDeDaoImplNGTest {
         }
     }
     
-    @Test
+//    @Test
     public void testGetById() {
         ChuyenDeDao chuyenDeDao = new ChuyenDeDaoImpl();
         ChuyenDe chuyenDe = chuyenDeDao.getById("JAV01");

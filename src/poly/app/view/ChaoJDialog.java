@@ -5,41 +5,21 @@
  */
 package poly.app.view;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Timer;
+import java.awt.Color;
+import javax.swing.UIManager;
 
 /**
  *
  * @author vothanhtai
  */
-public class ChaoJDialog extends javax.swing.JFrame {
+public class ChaoJDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form ChaoJDialog
+     * Creates new form ChaoDialog
      */
-    public ChaoJDialog() {
+    public ChaoJDialog(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
-        setLocationRelativeTo(null);
-        loadProcessBar();
-    }
-    
-    
-    
-    
-    public void loadProcessBar(){
-        new Timer(20, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int newValue = prbLoad.getValue() + 1;
-                if(newValue <= 100){
-                    prbLoad.setValue(newValue);
-                    prbLoad.setString(newValue  + " %");
-                }else{
-                    ChaoJDialog.this.dispose();
-                }
-            }
-        }).start();
     }
 
     /**
@@ -56,13 +36,23 @@ public class ChaoJDialog extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         prbLoad = new javax.swing.JProgressBar();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setUndecorated(true);
+
         jPanel1.setBackground(new java.awt.Color(254, 203, 101));
 
+        jPanel2.setBackground(new java.awt.Color(65, 76, 89));
         jPanel2.setOpaque(false);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/logo.png"))); // NOI18N
+        jLabel2.setBackground(new java.awt.Color(183, 198, 181));
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/logo.png"))); // NOI18N
         jPanel2.add(jLabel2);
 
+        prbLoad.setBackground(new java.awt.Color(254, 203, 101));
+        prbLoad.setFont(new java.awt.Font("Open Sans", 1, 14)); // NOI18N
+        prbLoad.setForeground(new java.awt.Color(51, 51, 51));
+        prbLoad.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        prbLoad.setOpaque(true);
         prbLoad.setString("0 %");
         prbLoad.setStringPainted(true);
 
@@ -72,16 +62,16 @@ public class ChaoJDialog extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 757, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(prbLoad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(prbLoad, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(prbLoad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addComponent(prbLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -126,10 +116,17 @@ public class ChaoJDialog extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ChaoJDialog();
+                ChaoJDialog dialog = new ChaoJDialog(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }
@@ -140,4 +137,6 @@ public class ChaoJDialog extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JProgressBar prbLoad;
     // End of variables declaration//GEN-END:variables
+
+    
 }
