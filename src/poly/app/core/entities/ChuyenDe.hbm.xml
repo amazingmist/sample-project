@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Sep 20, 2018 2:53:45 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="poly.app.core.entities.ChuyenDe" table="ChuyenDe" catalog="Polypro" optimistic-lock="version">
+        <id name="maCd" type="string">
+            <column name="MaCD" length="5" />
+            <generator class="assigned" />
+        </id>
+        <property name="tenCd" type="string">
+            <column name="TenCD" length="50" not-null="true" />
+        </property>
+        <property name="hocPhi" type="int">
+            <column name="HocPhi" not-null="true" />
+        </property>
+        <property name="thoiLuong" type="int">
+            <column name="ThoiLuong" not-null="true" />
+        </property>
+        <property name="hinh" type="string">
+            <column name="Hinh" length="50" not-null="true" />
+        </property>
+        <property name="moTa" type="string">
+            <column name="MoTa" not-null="true" />
+        </property>
+        <set name="khoaHocs" table="KhoaHoc" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="MaCD" length="5" not-null="true" />
+            </key>
+            <one-to-many class="poly.app.core.entities.KhoaHoc" />
+        </set>
+    </class>
+</hibernate-mapping>

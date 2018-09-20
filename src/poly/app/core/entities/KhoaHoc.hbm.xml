@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Sep 20, 2018 2:53:45 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="poly.app.core.entities.KhoaHoc" table="KhoaHoc" catalog="Polypro" optimistic-lock="version">
+        <id name="maKh" type="java.lang.Integer">
+            <column name="MaKH" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="chuyenDe" class="poly.app.core.entities.ChuyenDe" fetch="select">
+            <column name="MaCD" length="5" not-null="true" />
+        </many-to-one>
+        <many-to-one name="nhanVien" class="poly.app.core.entities.NhanVien" fetch="select">
+            <column name="MaNV" length="50" not-null="true" />
+        </many-to-one>
+        <property name="hocPhi" type="int">
+            <column name="HocPhi" not-null="true" />
+        </property>
+        <property name="thoiLuong" type="int">
+            <column name="ThoiLuong" not-null="true" />
+        </property>
+        <property name="ngayKg" type="date">
+            <column name="NgayKG" length="10" not-null="true" />
+        </property>
+        <property name="ghiChu" type="string">
+            <column name="GhiChu" length="50" />
+        </property>
+        <property name="ngayTao" type="date">
+            <column name="NgayTao" length="10" not-null="true" />
+        </property>
+        <set name="hocViens" table="HocVien" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="MaKH" not-null="true" />
+            </key>
+            <one-to-many class="poly.app.core.entities.HocVien" />
+        </set>
+    </class>
+</hibernate-mapping>
