@@ -17,6 +17,6 @@ public interface GenericDao <ID extends Serializable, T>{
     T getById(ID id);
     void insert(T entity);
     void update(T entity);
-    boolean delete(ID ids);
-    int multipleDelete(List<ID> ids);
+    boolean delete(T entity);
+    int multipleDelete(List<T> entities);
 }

@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import org.hibernate.HibernateException;
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import poly.app.core.data.dao.GenericDao;
@@ -87,11 +85,10 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
     }
 
     @Override
-    public boolean delete(ID id) {
+    public boolean delete(T entity) {
         Session session = this.getSession();
         Transaction transaction = session.beginTransaction();
         try {
-            T entity = (T) session.get(this.persistenceClass, id);
             session.delete(entity);
             transaction.commit();
             return true;
@@ -104,13 +101,12 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
     }
 
     @Override
-    public int multipleDelete(List<ID> ids) {
+    public int multipleDelete(List<T> entities) {
         Session session = this.getSession();
         Transaction transaction = session.beginTransaction();
         int countDeleted = 0;
         try {
-            for (ID id : ids) {
-                T entity = (T) session.get(this.persistenceClass, id);
+            for (T entity : entities) {
                 session.delete(entity);
                 countDeleted++;
             }

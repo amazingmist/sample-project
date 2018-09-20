@@ -21,9 +21,6 @@ import javax.swing.Timer;
  * @author vothanhtai
  */
 public class MainJFrame extends javax.swing.JFrame {
-    ChaoJDialog chaoJDialog = new ChaoJDialog();
-    DangNhapJDialog dangNhapJDialog = new DangNhapJDialog();
-    AboutJDialog aboutJDialog = new AboutJDialog();
 
     /**
      * Creates new form MainJFrame
@@ -52,44 +49,11 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     private void openChaoDialog() {
-        chaoJDialog.setVisible(true);
-        new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    if (!chaoJDialog.isDisplayable()) {
-                        openLoginDialog();
-                        break;
-                    }
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-
-        }.start();
+        
     }
     
     private void openLoginDialog(){
-        dangNhapJDialog.setVisible(true);
-        new Thread(){
-            @Override
-            public void run() {
-                while (true) {   
-                    if (!dangNhapJDialog.isDisplayable()) {
-                        openMainFrame();
-                        break;
-                    }
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(MainJFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        }.start();
+        
     }
     
     private void openMainFrame(){
@@ -157,23 +121,30 @@ public class MainJFrame extends javax.swing.JFrame {
         setAutoRequestFocus(false);
         setFocusTraversalPolicyProvider(true);
 
-        jPanel1.setBackground(new java.awt.Color(205, 202, 184));
+        jPanel1.setBackground(new java.awt.Color(237, 237, 237));
         jPanel1.setPreferredSize(new java.awt.Dimension(369, 178));
 
+        jToolBar1.setBackground(new java.awt.Color(65, 76, 89));
         jToolBar1.setRollover(true);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Log out.png"))); // NOI18N
+        jButton1.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(252, 252, 252));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Log out.png"))); // NOI18N
         jButton1.setText("Đăng xuất");
-        jButton1.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 10, 4, 10));
+        jButton1.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setMargin(new java.awt.Insets(0, 20, 0, 20));
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(jButton1);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Stop.png"))); // NOI18N
+        jButton2.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(252, 252, 252));
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Stop.png"))); // NOI18N
         jButton2.setText("Kết thúc");
-        jButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 10, 4, 10));
+        jButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setMargin(new java.awt.Insets(0, 20, 0, 20));
@@ -181,27 +152,36 @@ public class MainJFrame extends javax.swing.JFrame {
         jToolBar1.add(jButton2);
         jToolBar1.add(jSeparator9);
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Lists.png"))); // NOI18N
+        jButton3.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(252, 252, 252));
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Lists.png"))); // NOI18N
         jButton3.setText("Chuyên đề");
-        jButton3.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 10, 4, 10));
+        jButton3.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setMargin(new java.awt.Insets(0, 20, 0, 20));
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(jButton3);
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Conference.png"))); // NOI18N
+        jButton4.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jButton4.setForeground(new java.awt.Color(252, 252, 252));
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Conference.png"))); // NOI18N
         jButton4.setText("Người học");
-        jButton4.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 10, 4, 10));
+        jButton4.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton4.setFocusable(false);
         jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton4.setMargin(new java.awt.Insets(0, 20, 0, 20));
         jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(jButton4);
 
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Certificate.png"))); // NOI18N
+        jButton5.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jButton5.setForeground(new java.awt.Color(252, 252, 252));
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Certificate.png"))); // NOI18N
         jButton5.setText("Khoá học");
-        jButton5.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 10, 4, 10));
+        jButton5.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton5.setFocusable(false);
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton5.setMargin(new java.awt.Insets(0, 20, 0, 20));
@@ -210,9 +190,12 @@ public class MainJFrame extends javax.swing.JFrame {
         jToolBar1.add(jSeparator6);
 
         jButton6.setBackground(new java.awt.Color(102, 102, 0));
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Globe.png"))); // NOI18N
+        jButton6.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jButton6.setForeground(new java.awt.Color(252, 252, 252));
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Globe.png"))); // NOI18N
         jButton6.setText("Hướng dẫn");
-        jButton6.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 10, 4, 10));
+        jButton6.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        jButton6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton6.setFocusable(false);
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setMargin(new java.awt.Insets(0, 20, 0, 20));
@@ -220,18 +203,23 @@ public class MainJFrame extends javax.swing.JFrame {
         jToolBar1.add(jButton6);
         jToolBar1.add(jSeparator12);
 
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setOpaque(false);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/logo.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/logo.png"))); // NOI18N
         jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 1, 1, 1));
         jPanel2.add(jLabel1);
 
         jPanel3.setOpaque(false);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Info.png"))); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Info.png"))); // NOI18N
         jLabel2.setText("Hệ thống quản lý đào tạo");
 
-        lblDongHo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Alarm.png"))); // NOI18N
+        jSeparator8.setForeground(new java.awt.Color(65, 76, 89));
+
+        lblDongHo.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        lblDongHo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Alarm.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -251,8 +239,8 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addComponent(jSeparator8, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(lblDongHo))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDongHo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -267,33 +255,40 @@ public class MainJFrame extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 573, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+
+        jMenuBar1.setBackground(new java.awt.Color(159, 108, 102));
+        jMenuBar1.setOpaque(false);
 
         jMenu2.setText("Hệ thống");
 
         jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Key.png"))); // NOI18N
+        jMenuItem1.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Key.png"))); // NOI18N
         jMenuItem1.setText("Đăng nhập");
         jMenu2.add(jMenuItem1);
 
         jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Log out.png"))); // NOI18N
+        jMenuItem2.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Log out.png"))); // NOI18N
         jMenuItem2.setText("Đăng xuất");
         jMenu2.add(jMenuItem2);
         jMenu2.add(jSeparator1);
 
-        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Refresh.png"))); // NOI18N
+        jMenuItem3.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Refresh.png"))); // NOI18N
         jMenuItem3.setText("Đổi mật khẩu");
         jMenu2.add(jMenuItem3);
         jMenu2.add(jSeparator2);
 
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F10, 0));
-        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Stop.png"))); // NOI18N
+        jMenuItem4.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Stop.png"))); // NOI18N
         jMenuItem4.setText("Kết thúc");
         jMenu2.add(jMenuItem4);
 
@@ -301,19 +296,23 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jMenu3.setText("Quản lý");
 
-        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Conference.png"))); // NOI18N
+        jMenuItem5.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Conference.png"))); // NOI18N
         jMenuItem5.setText("Người học");
         jMenu3.add(jMenuItem5);
 
-        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Lists.png"))); // NOI18N
+        jMenuItem7.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Lists.png"))); // NOI18N
         jMenuItem7.setText("Chuyên đề");
         jMenu3.add(jMenuItem7);
 
-        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Certificate.png"))); // NOI18N
+        jMenuItem6.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Certificate.png"))); // NOI18N
         jMenuItem6.setText("Khoá học");
         jMenu3.add(jMenuItem6);
 
-        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/User group.png"))); // NOI18N
+        jMenuItem8.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/User group.png"))); // NOI18N
         jMenuItem8.setText("Nhân viên");
         jMenu3.add(jMenuItem8);
 
@@ -321,21 +320,25 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jMenu4.setText("Thống kê");
 
-        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Clien list.png"))); // NOI18N
+        jMenuItem9.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Clien list.png"))); // NOI18N
         jMenuItem9.setText("Người học từng năm");
         jMenu4.add(jMenuItem9);
         jMenu4.add(jSeparator3);
 
-        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Card file.png"))); // NOI18N
+        jMenuItem10.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Card file.png"))); // NOI18N
         jMenuItem10.setText("Bảng điểm khoá");
         jMenu4.add(jMenuItem10);
 
-        jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Bar chart.png"))); // NOI18N
+        jMenuItem11.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Bar chart.png"))); // NOI18N
         jMenuItem11.setText("Điểm từng khoá học");
         jMenu4.add(jMenuItem11);
         jMenu4.add(jSeparator4);
 
-        jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Dollar.png"))); // NOI18N
+        jMenuItem12.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Dollar.png"))); // NOI18N
         jMenuItem12.setText("Doanh thu từng chuyên đề");
         jMenu4.add(jMenuItem12);
 
@@ -344,12 +347,14 @@ public class MainJFrame extends javax.swing.JFrame {
         jMenu5.setText("Trợ giúp");
 
         jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Globe.png"))); // NOI18N
+        jMenuItem13.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Globe.png"))); // NOI18N
         jMenuItem13.setText("Hướng dẫn sử dụng");
         jMenu5.add(jMenuItem13);
         jMenu5.add(jSeparator5);
 
-        jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/polypro/icon/Brick house.png"))); // NOI18N
+        jMenuItem14.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Brick house.png"))); // NOI18N
         jMenuItem14.setText("Giới thiệu sản phẩm");
         jMenu5.add(jMenuItem14);
 
@@ -402,7 +407,7 @@ public class MainJFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainJFrame();
+                new MainJFrame().setVisible(true);
             }
         });
     }
