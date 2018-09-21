@@ -5,14 +5,11 @@
  */
 package poly.app.view;
 
-import java.io.File;
 import java.net.URL;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import poly.app.core.dao.NhanVienDao;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
-import poly.app.core.utils.EMailUtil;
 
 /**
  *
@@ -27,6 +24,7 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
+        this.getRootPane().setDefaultButton(btnLogin);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -202,7 +200,6 @@ public class DangNhapJDialog extends javax.swing.JDialog {
             this.dispose();
         }else{
             URL url = DangNhapJDialog.class.getResource("./icon/info-user.png");
-//            JOptionPane.showMessageDialog(this, );
             JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không hợp lệ", 
                     "Đăng nhập thất bại", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(url));
             txtMaNv.setText("");

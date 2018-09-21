@@ -29,6 +29,7 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
+        this.getRootPane().setDefaultButton(btnXacNhan);
     }
 
     private boolean luuMaXacNhan(NhanVien nhanVien, String maXacNhan) {
@@ -213,9 +214,16 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
                     String inputMaXacNhan;
                     boolean isCorrectMaXacNhan = false;
                     do {
-                        inputMaXacNhan = JOptionPane.showInputDialog(this, "Nhập mã xác nhận");
-                        isCorrectMaXacNhan = checkMaXacNhan(nhanVien, randdomMaXacNhan);
-                    } while (inputMaXacNhan.equals("") || inputMaXacNhan == null || !isCorrectMaXacNhan);
+                        inputMaXacNhan = (String) JOptionPane.showInputDialog(this, "Nhập mã xác nhận", 
+                                "NHẬP THÔNG TIN", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(urlIcon), null, null);
+                        isCorrectMaXacNhan = checkMaXacNhan(nhanVien, inputMaXacNhan);
+                        if (inputMaXacNhan == null || isCorrectMaXacNhan) {
+                            break;
+                        }else{
+                            JOptionPane.showMessageDialog(this, "Mã xác nhận không đúng!\nVui lòng kiểm tra lại",
+                        "THÔNG BÁO", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(urlIcon));
+                        }
+                    } while (true);
                     
                     if(isCorrectMaXacNhan){
                         this.dispose();

@@ -8,6 +8,7 @@ package poly.app.core.daoimpl;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 import poly.app.core.dao.NhanVienDao;
+import poly.app.core.entities.NhanVien;
 
 /**
  *
@@ -18,10 +19,17 @@ public class NhanVienDaoImplNGTest {
     public NhanVienDaoImplNGTest() {
     }
 
-    @Test
+//    @Test
     public void testLogin() {
         NhanVienDao nhanVienDao = new NhanVienDaoImpl();
         boolean check = nhanVienDao.checkLogin("NoPT", "123456");
+    }
+    
+    @Test
+    public void testUpdate() {
+        NhanVienDao nhanVienDao = new NhanVienDaoImpl();
+        NhanVien nhanVien = new NhanVien("TaiVT", "123", "VTT", "thanhtai17071997@gmail.com", true);
+        boolean check = nhanVienDao.update(nhanVien);
     }
     
 }

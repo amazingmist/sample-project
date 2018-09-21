@@ -8,7 +8,6 @@ package poly.app.view;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import poly.app.core.dao.NhanVienDao;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.entities.NhanVien;
 
@@ -27,6 +26,8 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
         super(parent, modal);
         this.nhanVien = nhanVien;
         initComponents();
+        setLocationRelativeTo(null);
+        this.getRootPane().setDefaultButton(btnThucHien);
     }
 
     private boolean capNhatMatKhau() {
@@ -179,6 +180,7 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
         if (!txtMatKhauMoi.getText().equals(txtReMatKhauMoi.getText())) {
             JOptionPane.showMessageDialog(this, "Mật khẩu không khớp");
         } else {
+            nhanVien.setMatKhau(txtMatKhauMoi.getText());
             URL urlIcon = DangNhapJDialog.class.getResource("./icon/info-user.png");
             boolean isUpdated = capNhatMatKhau();
             if (isUpdated) {
