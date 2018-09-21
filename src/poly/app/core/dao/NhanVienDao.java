@@ -13,5 +13,5 @@ import poly.app.core.entities.NhanVien;
  * @author vothanhtai
  */
 public interface NhanVienDao extends GenericDao<String, NhanVien>{
-    
+    boolean checkLogin(String maNv, String matKhau);
 }

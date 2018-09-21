@@ -18,6 +18,10 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
         this.persistenceClass = (Class<T>) ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[1];
     }
     
+    public Class getPersistenceClass(){
+        return this.persistenceClass;
+    }
+    
     public String getPersistenceClassName(){
         return this.persistenceClass.getSimpleName();
     }
@@ -31,7 +35,7 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
         List<T> list;
         Session session = this.getSession();
         try {
-            list = session.createCriteria(this.persistenceClass).list();
+            list = session.createCriteria(this.getPersistenceClass()).list();
         }catch (HibernateException ex){
             throw ex;
         }finally {
@@ -47,7 +51,7 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
         Session session = this.getSession();
         try {
             // note: the first parameter is class type, so we pass persistenceClass at this situation
-            result = (T) session.get(this.persistenceClass, id);
+            result = (T) session.get(this.getPersistenceClass(), id);
         }catch (HibernateException ex){
             throw ex;
         }

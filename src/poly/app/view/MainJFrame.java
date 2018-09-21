@@ -11,9 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.Timer;
 
 /**
@@ -27,15 +24,14 @@ public class MainJFrame extends javax.swing.JFrame {
      */
     public MainJFrame() {
         initComponents();
-        this.setAutoRequestFocus(true);
-        this.setLocationRelativeTo(null);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize(screenSize);
         init();
     }
     
 
     public void init() {
+        this.setAutoRequestFocus(true);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setSize(screenSize);
         new Timer(1000, new ActionListener() {
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss a");
 
@@ -46,19 +42,18 @@ public class MainJFrame extends javax.swing.JFrame {
         }).start();
 
         openChaoDialog();
+        openDangNhapDialog();
     }
 
     private void openChaoDialog() {
-        
+        new ChaoJDialog(this, true).setVisible(true);
     }
     
-    private void openLoginDialog(){
-        
+    private void openDangNhapDialog(){
+        DangNhapJDialog dangNhapJDialog = new DangNhapJDialog(this, true);
+        dangNhapJDialog.setVisible(true);
     }
     
-    private void openMainFrame(){
-        this.setVisible(true);
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.

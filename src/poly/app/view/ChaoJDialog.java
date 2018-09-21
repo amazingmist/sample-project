@@ -6,6 +6,9 @@
 package poly.app.view;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 
 /**
@@ -20,6 +23,23 @@ public class ChaoJDialog extends javax.swing.JDialog {
     public ChaoJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        init();
+    }
+    
+    public void init(){
+        setLocationRelativeTo(null);
+        new Timer(20, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int value = progressBar.getValue();
+                if (value < 100) {
+                    progressBar.setValue(value + 1);
+                    progressBar.setString((value + 1) + " %");
+                }else{
+                    ChaoJDialog.this.dispose();
+                }
+            }
+        }).start();
     }
 
     /**
@@ -34,7 +54,7 @@ public class ChaoJDialog extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        prbLoad = new javax.swing.JProgressBar();
+        progressBar = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -48,13 +68,13 @@ public class ChaoJDialog extends javax.swing.JDialog {
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/logo.png"))); // NOI18N
         jPanel2.add(jLabel2);
 
-        prbLoad.setBackground(new java.awt.Color(254, 203, 101));
-        prbLoad.setFont(new java.awt.Font("Open Sans", 1, 14)); // NOI18N
-        prbLoad.setForeground(new java.awt.Color(51, 51, 51));
-        prbLoad.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        prbLoad.setOpaque(true);
-        prbLoad.setString("0 %");
-        prbLoad.setStringPainted(true);
+        progressBar.setBackground(new java.awt.Color(254, 203, 101));
+        progressBar.setFont(new java.awt.Font("Open Sans", 1, 14)); // NOI18N
+        progressBar.setForeground(new java.awt.Color(51, 51, 51));
+        progressBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        progressBar.setOpaque(true);
+        progressBar.setString("0 %");
+        progressBar.setStringPainted(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -62,16 +82,16 @@ public class ChaoJDialog extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(prbLoad, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(progressBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                .addComponent(prbLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -135,7 +155,7 @@ public class ChaoJDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JProgressBar prbLoad;
+    private javax.swing.JProgressBar progressBar;
     // End of variables declaration//GEN-END:variables
 
     
