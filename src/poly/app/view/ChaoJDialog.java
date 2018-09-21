@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
 import javax.swing.UIManager;
+import poly.app.core.utils.HibernateUtil;
 
 /**
  *
@@ -25,10 +26,9 @@ public class ChaoJDialog extends javax.swing.JDialog {
         initComponents();
         init();
     }
-    
     public void init(){
         setLocationRelativeTo(null);
-        new Timer(20, new ActionListener() {
+        new Timer(40, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int value = progressBar.getValue();

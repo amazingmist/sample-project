@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.Timer;
+import poly.app.core.utils.HibernateUtil;
 
 /**
  *
@@ -24,7 +25,14 @@ public class MainJFrame extends javax.swing.JFrame {
      */
     public MainJFrame() {
         initComponents();
+        loadSessionFactory();
         init();
+    }
+    
+    private void loadSessionFactory(){
+        new Thread(() -> {
+            HibernateUtil.getSessionFactory();
+        }).start();
     }
     
 
@@ -70,19 +78,19 @@ public class MainJFrame extends javax.swing.JFrame {
         jSeparator11 = new javax.swing.JSeparator();
         jPanel1 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnDangXuat = new javax.swing.JButton();
+        btnKetThuc = new javax.swing.JButton();
         jSeparator9 = new javax.swing.JToolBar.Separator();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btnChuyenDe = new javax.swing.JButton();
+        btnNguoiHoc = new javax.swing.JButton();
+        btnKhoaHoc = new javax.swing.JButton();
         jSeparator6 = new javax.swing.JToolBar.Separator();
-        jButton6 = new javax.swing.JButton();
+        btnHuongDan = new javax.swing.JButton();
         jSeparator12 = new javax.swing.JToolBar.Separator();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        lblThongTin = new javax.swing.JLabel();
         jSeparator8 = new javax.swing.JSeparator();
         lblDongHo = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -122,80 +130,90 @@ public class MainJFrame extends javax.swing.JFrame {
         jToolBar1.setBackground(new java.awt.Color(65, 76, 89));
         jToolBar1.setRollover(true);
 
-        jButton1.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(252, 252, 252));
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Log out.png"))); // NOI18N
-        jButton1.setText("Đăng xuất");
-        jButton1.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setMargin(new java.awt.Insets(0, 20, 0, 20));
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton1);
+        btnDangXuat.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        btnDangXuat.setForeground(new java.awt.Color(252, 252, 252));
+        btnDangXuat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Log out.png"))); // NOI18N
+        btnDangXuat.setText("Đăng xuất");
+        btnDangXuat.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        btnDangXuat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDangXuat.setFocusable(false);
+        btnDangXuat.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnDangXuat.setMargin(new java.awt.Insets(0, 20, 0, 20));
+        btnDangXuat.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDangXuat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDangXuatActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnDangXuat);
 
-        jButton2.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(252, 252, 252));
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Stop.png"))); // NOI18N
-        jButton2.setText("Kết thúc");
-        jButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setMargin(new java.awt.Insets(0, 20, 0, 20));
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton2);
+        btnKetThuc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        btnKetThuc.setForeground(new java.awt.Color(252, 252, 252));
+        btnKetThuc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Stop.png"))); // NOI18N
+        btnKetThuc.setText("Kết thúc");
+        btnKetThuc.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        btnKetThuc.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnKetThuc.setFocusable(false);
+        btnKetThuc.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnKetThuc.setMargin(new java.awt.Insets(0, 20, 0, 20));
+        btnKetThuc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnKetThuc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKetThucActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnKetThuc);
         jToolBar1.add(jSeparator9);
 
-        jButton3.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(252, 252, 252));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Lists.png"))); // NOI18N
-        jButton3.setText("Chuyên đề");
-        jButton3.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
-        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setMargin(new java.awt.Insets(0, 20, 0, 20));
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton3);
+        btnChuyenDe.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        btnChuyenDe.setForeground(new java.awt.Color(252, 252, 252));
+        btnChuyenDe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Lists.png"))); // NOI18N
+        btnChuyenDe.setText("Chuyên đề");
+        btnChuyenDe.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        btnChuyenDe.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnChuyenDe.setFocusable(false);
+        btnChuyenDe.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnChuyenDe.setMargin(new java.awt.Insets(0, 20, 0, 20));
+        btnChuyenDe.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(btnChuyenDe);
 
-        jButton4.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(252, 252, 252));
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Conference.png"))); // NOI18N
-        jButton4.setText("Người học");
-        jButton4.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
-        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setMargin(new java.awt.Insets(0, 20, 0, 20));
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton4);
+        btnNguoiHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        btnNguoiHoc.setForeground(new java.awt.Color(252, 252, 252));
+        btnNguoiHoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Conference.png"))); // NOI18N
+        btnNguoiHoc.setText("Người học");
+        btnNguoiHoc.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        btnNguoiHoc.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNguoiHoc.setFocusable(false);
+        btnNguoiHoc.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnNguoiHoc.setMargin(new java.awt.Insets(0, 20, 0, 20));
+        btnNguoiHoc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(btnNguoiHoc);
 
-        jButton5.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(252, 252, 252));
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Certificate.png"))); // NOI18N
-        jButton5.setText("Khoá học");
-        jButton5.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
-        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton5.setFocusable(false);
-        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton5.setMargin(new java.awt.Insets(0, 20, 0, 20));
-        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton5);
+        btnKhoaHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        btnKhoaHoc.setForeground(new java.awt.Color(252, 252, 252));
+        btnKhoaHoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Certificate.png"))); // NOI18N
+        btnKhoaHoc.setText("Khoá học");
+        btnKhoaHoc.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        btnKhoaHoc.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnKhoaHoc.setFocusable(false);
+        btnKhoaHoc.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnKhoaHoc.setMargin(new java.awt.Insets(0, 20, 0, 20));
+        btnKhoaHoc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(btnKhoaHoc);
         jToolBar1.add(jSeparator6);
 
-        jButton6.setBackground(new java.awt.Color(102, 102, 0));
-        jButton6.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jButton6.setForeground(new java.awt.Color(252, 252, 252));
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Globe.png"))); // NOI18N
-        jButton6.setText("Hướng dẫn");
-        jButton6.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
-        jButton6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton6.setFocusable(false);
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setMargin(new java.awt.Insets(0, 20, 0, 20));
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton6);
+        btnHuongDan.setBackground(new java.awt.Color(102, 102, 0));
+        btnHuongDan.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        btnHuongDan.setForeground(new java.awt.Color(252, 252, 252));
+        btnHuongDan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Globe.png"))); // NOI18N
+        btnHuongDan.setText("Hướng dẫn");
+        btnHuongDan.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        btnHuongDan.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnHuongDan.setFocusable(false);
+        btnHuongDan.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnHuongDan.setMargin(new java.awt.Insets(0, 20, 0, 20));
+        btnHuongDan.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(btnHuongDan);
         jToolBar1.add(jSeparator12);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -207,9 +225,10 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jPanel3.setOpaque(false);
 
-        jLabel2.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Info.png"))); // NOI18N
-        jLabel2.setText("Hệ thống quản lý đào tạo");
+        lblThongTin.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        lblThongTin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Info.png"))); // NOI18N
+        lblThongTin.setText("Hệ thống quản lý đào tạo");
+        lblThongTin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jSeparator8.setForeground(new java.awt.Color(65, 76, 89));
 
@@ -222,7 +241,7 @@ public class MainJFrame extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
+                .addComponent(lblThongTin)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblDongHo, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -234,7 +253,7 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addComponent(jSeparator8, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblThongTin, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblDongHo, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -371,6 +390,16 @@ public class MainJFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnDangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangXuatActionPerformed
+        this.setVisible(false);
+        openDangNhapDialog();
+        this.setVisible(true);
+    }//GEN-LAST:event_btnDangXuatActionPerformed
+
+    private void btnKetThucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKetThucActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnKetThucActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -408,14 +437,13 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton btnChuyenDe;
+    private javax.swing.JButton btnDangXuat;
+    private javax.swing.JButton btnHuongDan;
+    private javax.swing.JButton btnKetThuc;
+    private javax.swing.JButton btnKhoaHoc;
+    private javax.swing.JButton btnNguoiHoc;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -453,5 +481,6 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JToolBar.Separator jSeparator9;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblDongHo;
+    private javax.swing.JLabel lblThongTin;
     // End of variables declaration//GEN-END:variables
 }
