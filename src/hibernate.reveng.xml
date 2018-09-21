@@ -41,9 +41,10 @@ Contributor(s):
 -->
 <hibernate-reverse-engineering>
   <schema-selection match-catalog="Polypro"/>
-  <table-filter match-name="NhanVien"/>
   <table-filter match-name="HocVien"/>
+  <table-filter match-name="NguoiHoc"/>
+  <table-filter match-name="NhanVien"/>
   <table-filter match-name="ChuyenDe"/>
   <table-filter match-name="KhoaHoc"/>
-  <table-filter match-name="NguoiHoc"/>
+  <table-filter match-name="MaXacNhan"/>
 </hibernate-reverse-engineering>

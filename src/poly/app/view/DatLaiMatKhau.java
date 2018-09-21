@@ -5,29 +5,34 @@
  */
 package poly.app.view;
 
-import java.io.File;
 import java.net.URL;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import poly.app.core.dao.NhanVienDao;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
-import poly.app.core.utils.EMailUtil;
+import poly.app.core.entities.NhanVien;
 
 /**
  *
  * @author vothanhtai
  */
-public class DangNhapJDialog extends javax.swing.JDialog {
+public class DatLaiMatKhau extends javax.swing.JDialog {
+
+    NhanVien nhanVien;
 
     /**
-     * Creates new form DangNhapDialog
+     * Creates new form DatLaiMatKhau
      */
-    public DangNhapJDialog(java.awt.Frame parent, boolean modal) {
+    public DatLaiMatKhau(java.awt.Frame parent, boolean modal, NhanVien nhanVien) {
         super(parent, modal);
+        this.nhanVien = nhanVien;
         initComponents();
-        setLocationRelativeTo(null);
     }
+
+    private boolean capNhatMatKhau() {
+        return new NhanVienDaoImpl().update(nhanVien);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -44,19 +49,12 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtMaNv = new javax.swing.JTextField();
-        txtMatKhau = new javax.swing.JPasswordField();
-        btnLogin = new javax.swing.JButton();
+        btnThucHien = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        lblQuenMatKhau = new javax.swing.JLabel();
+        txtMatKhauMoi = new javax.swing.JPasswordField();
+        txtReMatKhauMoi = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
-        });
 
         jPanel1.setBackground(new java.awt.Color(254, 203, 101));
 
@@ -72,31 +70,27 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
         );
 
         jPanel3.setOpaque(false);
 
         jLabel2.setFont(new java.awt.Font("Open Sans", 1, 22)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(9, 90, 11));
-        jLabel2.setText("Đăng nhập");
+        jLabel2.setText("Đặt lại mật khẩu");
 
         jLabel3.setFont(new java.awt.Font("Open Sans", 0, 16)); // NOI18N
-        jLabel3.setText("Tên đăng nhập");
+        jLabel3.setText("Mật khẩu mới");
 
         jLabel4.setFont(new java.awt.Font("Open Sans", 0, 16)); // NOI18N
-        jLabel4.setText("Mật khẩu");
+        jLabel4.setText("Nhập lại mật khẩu mới");
 
-        txtMaNv.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
-
-        txtMatKhau.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
-
-        btnLogin.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
-        btnLogin.setText("Đăng nhập");
-        btnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+        btnThucHien.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
+        btnThucHien.setText("Thực hiện");
+        btnThucHien.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnThucHien.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoginActionPerformed(evt);
+                btnThucHienActionPerformed(evt);
             }
         });
 
@@ -109,15 +103,9 @@ public class DangNhapJDialog extends javax.swing.JDialog {
             }
         });
 
-        lblQuenMatKhau.setFont(new java.awt.Font("Open Sans", 3, 13)); // NOI18N
-        lblQuenMatKhau.setForeground(new java.awt.Color(0, 51, 51));
-        lblQuenMatKhau.setText("Quên mật khẩu?");
-        lblQuenMatKhau.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblQuenMatKhau.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblQuenMatKhauMouseClicked(evt);
-            }
-        });
+        txtMatKhauMoi.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
+
+        txtReMatKhauMoi.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -125,22 +113,18 @@ public class DangNhapJDialog extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtMatKhau)
-                    .addComponent(txtMaNv)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(lblQuenMatKhau, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addGap(15, 15, 15))
             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(txtMatKhauMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txtReMatKhauMoi, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(btnThucHien, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -150,17 +134,15 @@ public class DangNhapJDialog extends javax.swing.JDialog {
                 .addGap(20, 20, 20)
                 .addComponent(jLabel3)
                 .addGap(0, 0, 0)
-                .addComponent(txtMaNv, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtMatKhauMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(jLabel4)
                 .addGap(0, 0, 0)
-                .addComponent(txtMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtReMatKhauMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnThucHien, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblQuenMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -193,37 +175,26 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        String maNv = txtMaNv.getText();
-        String matKhau = String.valueOf(txtMatKhau.getPassword());
-        NhanVienDao nhanVienDao = new NhanVienDaoImpl();
-        boolean checkLogin = nhanVienDao.checkLogin(maNv, matKhau);
-        if (checkLogin) {
+    private void btnThucHienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThucHienActionPerformed
+        if (!txtMatKhauMoi.getText().equals(txtReMatKhauMoi.getText())) {
+            JOptionPane.showMessageDialog(this, "Mật khẩu không khớp");
+        } else {
+            URL urlIcon = DangNhapJDialog.class.getResource("./icon/info-user.png");
+            boolean isUpdated = capNhatMatKhau();
+            if (isUpdated) {
+                JOptionPane.showMessageDialog(rootPane, "Cập nhật mật khẩu thành công!\nSử dụng mật khẩu mới cho lần đăng nhập sau.",
+                        "THÔNG BÁO", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(urlIcon));
+            }else{
+                JOptionPane.showMessageDialog(rootPane, "Cập nhật mật khẩu thất bại!\nVui lòng thử lại sau.",
+                        "THÔNG BÁO", JOptionPane.ERROR_MESSAGE, new ImageIcon(urlIcon));
+            }
             this.dispose();
-        }else{
-            URL url = DangNhapJDialog.class.getResource("./icon/info-user.png");
-//            JOptionPane.showMessageDialog(this, );
-            JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không hợp lệ", 
-                    "Đăng nhập thất bại", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(url));
-            txtMaNv.setText("");
-            txtMatKhau.setText("");
-            txtMaNv.requestFocus();
         }
-        
-    }//GEN-LAST:event_btnLoginActionPerformed
+    }//GEN-LAST:event_btnThucHienActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         System.exit(0);
     }//GEN-LAST:event_btnCancelActionPerformed
-
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        System.exit(0);
-    }//GEN-LAST:event_formWindowClosing
-
-    private void lblQuenMatKhauMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblQuenMatKhauMouseClicked
-        this.dispose();
-        new QuenMatKhauJDialog(null, true).setVisible(true);
-    }//GEN-LAST:event_lblQuenMatKhauMouseClicked
 
     /**
      * @param args the command line arguments
@@ -242,21 +213,20 @@ public class DangNhapJDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DangNhapJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DatLaiMatKhau.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DangNhapJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DatLaiMatKhau.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DangNhapJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DatLaiMatKhau.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DangNhapJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DatLaiMatKhau.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                DangNhapJDialog dialog = new DangNhapJDialog(new javax.swing.JFrame(), true);
+                DatLaiMatKhau dialog = new DatLaiMatKhau(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -270,7 +240,7 @@ public class DangNhapJDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnLogin;
+    private javax.swing.JButton btnThucHien;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -278,8 +248,7 @@ public class DangNhapJDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JLabel lblQuenMatKhau;
-    private javax.swing.JTextField txtMaNv;
-    private javax.swing.JPasswordField txtMatKhau;
+    private javax.swing.JPasswordField txtMatKhauMoi;
+    private javax.swing.JPasswordField txtReMatKhauMoi;
     // End of variables declaration//GEN-END:variables
 }

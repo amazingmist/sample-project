@@ -6,13 +6,13 @@
 package poly.app.core.dao;
 
 import poly.app.core.data.dao.GenericDao;
-import poly.app.core.entities.NhanVien;
+import poly.app.core.entities.MaXacNhan;
+
 
 /**
  *
  * @author vothanhtai
  */
-public interface NhanVienDao extends GenericDao<String, NhanVien>{
-    boolean checkLogin(String maNv, String matKhau);
-    NhanVien getNhanVienByEmail(String email);
+public interface MaXacNhanDao extends GenericDao<String, MaXacNhan>{
+    
 }

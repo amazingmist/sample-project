@@ -10,8 +10,12 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.swing.Timer;
+import poly.app.core.daoimpl.NhanVienDaoImpl;
+import poly.app.core.entities.NhanVien;
 import poly.app.core.utils.HibernateUtil;
 
 /**
@@ -19,7 +23,7 @@ import poly.app.core.utils.HibernateUtil;
  * @author vothanhtai
  */
 public class MainJFrame extends javax.swing.JFrame {
-
+    List<NhanVien> nhanVienList;
     /**
      * Creates new form MainJFrame
      */
@@ -32,6 +36,12 @@ public class MainJFrame extends javax.swing.JFrame {
     private void loadSessionFactory(){
         new Thread(() -> {
             HibernateUtil.getSessionFactory();
+        }).start();
+    }
+    
+    private void loadNhanVienList(){
+        new Thread(() -> {
+            nhanVienList = new NhanVienDaoImpl().getAll();
         }).start();
     }
     
@@ -60,6 +70,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private void openDangNhapDialog(){
         DangNhapJDialog dangNhapJDialog = new DangNhapJDialog(this, true);
         dangNhapJDialog.setVisible(true);
+        loadNhanVienList();
     }
     
 
@@ -95,28 +106,28 @@ public class MainJFrame extends javax.swing.JFrame {
         lblDongHo = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        mniDangNhap = new javax.swing.JMenuItem();
+        mniLDangXuat = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        mniDoiMatKhau = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        mniKetThuc = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
-        jMenuItem9 = new javax.swing.JMenuItem();
+        mniQLNguoiHoc = new javax.swing.JMenuItem();
+        mniQLChuyenDe = new javax.swing.JMenuItem();
+        mniQLKhoaHoc = new javax.swing.JMenuItem();
+        mniQLNhanVien = new javax.swing.JMenuItem();
+        mniNguoiHocTungNam = new javax.swing.JMenu();
+        mniTKNguoiHoc = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem10 = new javax.swing.JMenuItem();
-        jMenuItem11 = new javax.swing.JMenuItem();
+        mniTKBangDiemKhoa = new javax.swing.JMenuItem();
+        mniTKDiemTungKhoaHoc = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem12 = new javax.swing.JMenuItem();
+        mniTKDoanhThu = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
-        jMenuItem13 = new javax.swing.JMenuItem();
+        mniHuongDanSuDung = new javax.swing.JMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem14 = new javax.swing.JMenuItem();
+        mniGioiThieuSanPham = new javax.swing.JMenuItem();
 
         jMenu1.setText("jMenu1");
 
@@ -281,96 +292,96 @@ public class MainJFrame extends javax.swing.JFrame {
 
         jMenu2.setText("Hệ thống");
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem1.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Key.png"))); // NOI18N
-        jMenuItem1.setText("Đăng nhập");
-        jMenu2.add(jMenuItem1);
+        mniDangNhap.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
+        mniDangNhap.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniDangNhap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Key.png"))); // NOI18N
+        mniDangNhap.setText("Đăng nhập");
+        jMenu2.add(mniDangNhap);
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem2.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Log out.png"))); // NOI18N
-        jMenuItem2.setText("Đăng xuất");
-        jMenu2.add(jMenuItem2);
+        mniLDangXuat.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        mniLDangXuat.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniLDangXuat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Log out.png"))); // NOI18N
+        mniLDangXuat.setText("Đăng xuất");
+        jMenu2.add(mniLDangXuat);
         jMenu2.add(jSeparator1);
 
-        jMenuItem3.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Refresh.png"))); // NOI18N
-        jMenuItem3.setText("Đổi mật khẩu");
-        jMenu2.add(jMenuItem3);
+        mniDoiMatKhau.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniDoiMatKhau.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Refresh.png"))); // NOI18N
+        mniDoiMatKhau.setText("Đổi mật khẩu");
+        jMenu2.add(mniDoiMatKhau);
         jMenu2.add(jSeparator2);
 
-        jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F10, 0));
-        jMenuItem4.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Stop.png"))); // NOI18N
-        jMenuItem4.setText("Kết thúc");
-        jMenu2.add(jMenuItem4);
+        mniKetThuc.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F10, 0));
+        mniKetThuc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniKetThuc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Stop.png"))); // NOI18N
+        mniKetThuc.setText("Kết thúc");
+        jMenu2.add(mniKetThuc);
 
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Quản lý");
 
-        jMenuItem5.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Conference.png"))); // NOI18N
-        jMenuItem5.setText("Người học");
-        jMenu3.add(jMenuItem5);
+        mniQLNguoiHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniQLNguoiHoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Conference.png"))); // NOI18N
+        mniQLNguoiHoc.setText("Người học");
+        jMenu3.add(mniQLNguoiHoc);
 
-        jMenuItem7.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Lists.png"))); // NOI18N
-        jMenuItem7.setText("Chuyên đề");
-        jMenu3.add(jMenuItem7);
+        mniQLChuyenDe.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniQLChuyenDe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Lists.png"))); // NOI18N
+        mniQLChuyenDe.setText("Chuyên đề");
+        jMenu3.add(mniQLChuyenDe);
 
-        jMenuItem6.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Certificate.png"))); // NOI18N
-        jMenuItem6.setText("Khoá học");
-        jMenu3.add(jMenuItem6);
+        mniQLKhoaHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniQLKhoaHoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Certificate.png"))); // NOI18N
+        mniQLKhoaHoc.setText("Khoá học");
+        jMenu3.add(mniQLKhoaHoc);
 
-        jMenuItem8.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/User group.png"))); // NOI18N
-        jMenuItem8.setText("Nhân viên");
-        jMenu3.add(jMenuItem8);
+        mniQLNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniQLNhanVien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/User group.png"))); // NOI18N
+        mniQLNhanVien.setText("Nhân viên");
+        jMenu3.add(mniQLNhanVien);
 
         jMenuBar1.add(jMenu3);
 
-        jMenu4.setText("Thống kê");
+        mniNguoiHocTungNam.setText("Thống kê");
 
-        jMenuItem9.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Clien list.png"))); // NOI18N
-        jMenuItem9.setText("Người học từng năm");
-        jMenu4.add(jMenuItem9);
-        jMenu4.add(jSeparator3);
+        mniTKNguoiHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniTKNguoiHoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Clien list.png"))); // NOI18N
+        mniTKNguoiHoc.setText("Người học từng năm");
+        mniNguoiHocTungNam.add(mniTKNguoiHoc);
+        mniNguoiHocTungNam.add(jSeparator3);
 
-        jMenuItem10.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Card file.png"))); // NOI18N
-        jMenuItem10.setText("Bảng điểm khoá");
-        jMenu4.add(jMenuItem10);
+        mniTKBangDiemKhoa.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniTKBangDiemKhoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Card file.png"))); // NOI18N
+        mniTKBangDiemKhoa.setText("Bảng điểm khoá");
+        mniNguoiHocTungNam.add(mniTKBangDiemKhoa);
 
-        jMenuItem11.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Bar chart.png"))); // NOI18N
-        jMenuItem11.setText("Điểm từng khoá học");
-        jMenu4.add(jMenuItem11);
-        jMenu4.add(jSeparator4);
+        mniTKDiemTungKhoaHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniTKDiemTungKhoaHoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Bar chart.png"))); // NOI18N
+        mniTKDiemTungKhoaHoc.setText("Điểm từng khoá học");
+        mniNguoiHocTungNam.add(mniTKDiemTungKhoaHoc);
+        mniNguoiHocTungNam.add(jSeparator4);
 
-        jMenuItem12.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Dollar.png"))); // NOI18N
-        jMenuItem12.setText("Doanh thu từng chuyên đề");
-        jMenu4.add(jMenuItem12);
+        mniTKDoanhThu.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniTKDoanhThu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Dollar.png"))); // NOI18N
+        mniTKDoanhThu.setText("Doanh thu từng chuyên đề");
+        mniNguoiHocTungNam.add(mniTKDoanhThu);
 
-        jMenuBar1.add(jMenu4);
+        jMenuBar1.add(mniNguoiHocTungNam);
 
         jMenu5.setText("Trợ giúp");
 
-        jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        jMenuItem13.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Globe.png"))); // NOI18N
-        jMenuItem13.setText("Hướng dẫn sử dụng");
-        jMenu5.add(jMenuItem13);
+        mniHuongDanSuDung.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        mniHuongDanSuDung.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniHuongDanSuDung.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Globe.png"))); // NOI18N
+        mniHuongDanSuDung.setText("Hướng dẫn sử dụng");
+        jMenu5.add(mniHuongDanSuDung);
         jMenu5.add(jSeparator5);
 
-        jMenuItem14.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Brick house.png"))); // NOI18N
-        jMenuItem14.setText("Giới thiệu sản phẩm");
-        jMenu5.add(jMenuItem14);
+        mniGioiThieuSanPham.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        mniGioiThieuSanPham.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Brick house.png"))); // NOI18N
+        mniGioiThieuSanPham.setText("Giới thiệu sản phẩm");
+        jMenu5.add(mniGioiThieuSanPham);
 
         jMenuBar1.add(jMenu5);
 
@@ -447,23 +458,8 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem11;
-    private javax.swing.JMenuItem jMenuItem12;
-    private javax.swing.JMenuItem jMenuItem13;
-    private javax.swing.JMenuItem jMenuItem14;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -482,5 +478,20 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblDongHo;
     private javax.swing.JLabel lblThongTin;
+    private javax.swing.JMenuItem mniDangNhap;
+    private javax.swing.JMenuItem mniDoiMatKhau;
+    private javax.swing.JMenuItem mniGioiThieuSanPham;
+    private javax.swing.JMenuItem mniHuongDanSuDung;
+    private javax.swing.JMenuItem mniKetThuc;
+    private javax.swing.JMenuItem mniLDangXuat;
+    private javax.swing.JMenu mniNguoiHocTungNam;
+    private javax.swing.JMenuItem mniQLChuyenDe;
+    private javax.swing.JMenuItem mniQLKhoaHoc;
+    private javax.swing.JMenuItem mniQLNguoiHoc;
+    private javax.swing.JMenuItem mniQLNhanVien;
+    private javax.swing.JMenuItem mniTKBangDiemKhoa;
+    private javax.swing.JMenuItem mniTKDiemTungKhoaHoc;
+    private javax.swing.JMenuItem mniTKDoanhThu;
+    private javax.swing.JMenuItem mniTKNguoiHoc;
     // End of variables declaration//GEN-END:variables
 }

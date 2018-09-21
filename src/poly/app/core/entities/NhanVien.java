@@ -1,5 +1,5 @@
 package poly.app.core.entities;
-// Generated Sep 20, 2018 2:53:45 PM by Hibernate Tools 4.3.1
+// Generated Sep 21, 2018 5:51:44 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -14,26 +14,31 @@ public class NhanVien  implements java.io.Serializable {
      private String maNv;
      private String matKhau;
      private String hoTen;
+     private String email;
      private boolean vaiTro;
      private Set<KhoaHoc> khoaHocs = new HashSet<KhoaHoc>(0);
+     private MaXacNhan maXacNhan;
      private Set<NguoiHoc> nguoiHocs = new HashSet<NguoiHoc>(0);
 
     public NhanVien() {
     }
 
 	
-    public NhanVien(String maNv, String matKhau, String hoTen, boolean vaiTro) {
+    public NhanVien(String maNv, String matKhau, String hoTen, String email, boolean vaiTro) {
         this.maNv = maNv;
         this.matKhau = matKhau;
         this.hoTen = hoTen;
+        this.email = email;
         this.vaiTro = vaiTro;
     }
-    public NhanVien(String maNv, String matKhau, String hoTen, boolean vaiTro, Set<KhoaHoc> khoaHocs, Set<NguoiHoc> nguoiHocs) {
+    public NhanVien(String maNv, String matKhau, String hoTen, String email, boolean vaiTro, Set<KhoaHoc> khoaHocs, MaXacNhan maXacNhan, Set<NguoiHoc> nguoiHocs) {
        this.maNv = maNv;
        this.matKhau = matKhau;
        this.hoTen = hoTen;
+       this.email = email;
        this.vaiTro = vaiTro;
        this.khoaHocs = khoaHocs;
+       this.maXacNhan = maXacNhan;
        this.nguoiHocs = nguoiHocs;
     }
    
@@ -58,6 +63,13 @@ public class NhanVien  implements java.io.Serializable {
     public void setHoTen(String hoTen) {
         this.hoTen = hoTen;
     }
+    public String getEmail() {
+        return this.email;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
+    }
     public boolean isVaiTro() {
         return this.vaiTro;
     }
@@ -71,6 +83,13 @@ public class NhanVien  implements java.io.Serializable {
     
     public void setKhoaHocs(Set<KhoaHoc> khoaHocs) {
         this.khoaHocs = khoaHocs;
+    }
+    public MaXacNhan getMaXacNhan() {
+        return this.maXacNhan;
+    }
+    
+    public void setMaXacNhan(MaXacNhan maXacNhan) {
+        this.maXacNhan = maXacNhan;
     }
     public Set<NguoiHoc> getNguoiHocs() {
         return this.nguoiHocs;

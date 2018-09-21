@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Sep 20, 2018 2:53:45 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated Sep 21, 2018 5:51:44 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="poly.app.core.entities.NhanVien" table="NhanVien" catalog="Polypro" optimistic-lock="version">
         <id name="maNv" type="string">
@@ -14,6 +14,9 @@
         <property name="hoTen" type="string">
             <column name="HoTen" length="50" not-null="true" />
         </property>
+        <property name="email" type="string">
+            <column name="Email" length="50" not-null="true" />
+        </property>
         <property name="vaiTro" type="boolean">
             <column name="VaiTro" not-null="true" />
         </property>
@@ -23,6 +26,7 @@
             </key>
             <one-to-many class="poly.app.core.entities.KhoaHoc" />
         </set>
+        <one-to-one name="maXacNhan" class="poly.app.core.entities.MaXacNhan"></one-to-one>
         <set name="nguoiHocs" table="NguoiHoc" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="MaNV" length="50" not-null="true" />

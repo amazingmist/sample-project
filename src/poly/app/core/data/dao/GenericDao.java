@@ -15,8 +15,10 @@ import java.util.List;
 public interface GenericDao <ID extends Serializable, T>{
     List<T> getAll();
     T getById(ID id);
-    void insert(T entity);
-    void update(T entity);
+    boolean insert(T entity);
+    boolean update(T entity);
     boolean delete(T entity);
+    boolean deleteById(ID id);
     int multipleDelete(List<T> entities);
+    boolean saveOrUpdate(T entity);
 }

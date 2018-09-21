@@ -1,5 +1,5 @@
 package poly.app.core.entities;
-// Generated Sep 20, 2018 2:53:45 PM by Hibernate Tools 4.3.1
+// Generated Sep 21, 2018 5:51:44 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -90,6 +90,10 @@ public class ChuyenDe  implements java.io.Serializable {
     public void setKhoaHocs(Set<KhoaHoc> khoaHocs) {
         this.khoaHocs = khoaHocs;
     }
+
+
+
+
 }
 
 

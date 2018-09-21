@@ -32,12 +32,12 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
     
     @Override
     public List<T> getAll() {
-        List<T> list;
+        List<T> list = null;
         Session session = this.getSession();
         try {
             list = session.createCriteria(this.getPersistenceClass()).list();
         }catch (HibernateException ex){
-            throw ex;
+            ex.printStackTrace();
         }finally {
             session.close();
         }
@@ -47,45 +47,49 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
     
     @Override
     public T getById(ID id) {
-        T result;
+        T result = null;
         Session session = this.getSession();
         try {
             // note: the first parameter is class type, so we pass persistenceClass at this situation
             result = (T) session.get(this.getPersistenceClass(), id);
         }catch (HibernateException ex){
-            throw ex;
+            ex.printStackTrace();
         }
         return result;
     }
 
     @Override
-    public void insert(T entity) {
+    public boolean insert(T entity) {
         Session session = this.getSession();
         Transaction transaction = session.beginTransaction();
         try {
             session.persist(entity);
             transaction.commit();
+            return true;
         }catch (HibernateException ex){
             transaction.rollback();
-            throw ex;
+            ex.printStackTrace();
         }finally {
             session.close();
         }
+        return false;
     }
 
     @Override
-    public void update(T entity) {
+    public boolean update(T entity) {
         Session session = this.getSession();
         Transaction transaction = session.beginTransaction();
         try {
             session.update(entity);
             transaction.commit();
+            return true;
         }catch (HibernateException ex){
             transaction.rollback();
-            throw ex;
+            ex.printStackTrace();
         }finally {
             session.close();
         }
+        return false;
     }
 
     @Override
@@ -98,10 +102,29 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
             return true;
         }catch (HibernateException ex){
             transaction.rollback();
-            throw ex;
+            ex.printStackTrace();
         }finally {
             session.close();
         }
+        return false;
+    }
+    
+    @Override
+    public boolean deleteById(ID id) {
+        Session session = this.getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            T entity = (T) session.get(this.getPersistenceClass(), id);
+            session.delete(entity);
+            transaction.commit();
+            return true;
+        }catch (HibernateException ex){
+            transaction.rollback();
+            ex.printStackTrace();
+        }finally {
+            session.close();
+        }
+        return false;
     }
 
     @Override
@@ -117,10 +140,27 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
             transaction.commit();
         }catch (HibernateException ex){
             transaction.rollback();
-            throw ex;
+            ex.printStackTrace();
         }finally {
             session.close();
         }
         return countDeleted;
+    }
+
+    @Override
+    public boolean saveOrUpdate(T entity) {
+        Session session = this.getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            session.saveOrUpdate(entity);
+            transaction.commit();
+            return true;
+        }catch (HibernateException ex){
+            transaction.rollback();
+            ex.printStackTrace();
+        }finally {
+            session.close();
+        }
+        return false;
     }
 }

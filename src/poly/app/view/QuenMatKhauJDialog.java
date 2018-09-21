@@ -5,29 +5,55 @@
  */
 package poly.app.view;
 
-import java.io.File;
 import java.net.URL;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import poly.app.core.dao.NhanVienDao;
+import poly.app.core.dao.MaXacNhanDao;
+import poly.app.core.daoimpl.MaXacNhanImpl;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
+import poly.app.core.entities.MaXacNhan;
+import poly.app.core.entities.NhanVien;
 import poly.app.core.utils.EMailUtil;
+import poly.app.core.utils.StringUtil;
 
 /**
  *
  * @author vothanhtai
  */
-public class DangNhapJDialog extends javax.swing.JDialog {
+public class QuenMatKhauJDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form DangNhapDialog
+     * Creates new form QuenMatKhau
      */
-    public DangNhapJDialog(java.awt.Frame parent, boolean modal) {
+    public QuenMatKhauJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
     }
+
+    private boolean luuMaXacNhan(NhanVien nhanVien, String maXacNhan) {
+        MaXacNhanDao maXacNhanDao = new MaXacNhanImpl();
+        MaXacNhan entity = new MaXacNhan(nhanVien, maXacNhan);
+        return maXacNhanDao.insert(entity);
+    }
+
+    private boolean guiMaXacNhan(NhanVien nhanVien, String maXacNhan) {
+        String email = nhanVien.getEmail();
+        String msgSubject = "Khôi phục mật khẩu";
+        String msgBody = "<h2>Xin chào!<br>Hãy dùng mã xác nhận dưới đây để khôi phục lại mật khẩu.</h2>"
+                + "<br>Tài khoản: " + email + "<br>Mã xác nhận: <b>" + maXacNhan
+                + "</b><br>Hãy sử dụng mã xác nhận trên để tiến hình khôi phục mật khẩu.";
+        return new EMailUtil(email, msgBody, msgSubject).sendMail();
+    }
+    
+    private boolean checkMaXacNhan(NhanVien nhanVien, String maXacNhan){
+        return new MaXacNhanImpl().getById(nhanVien.getMaNv()).getMaXacNhan().equals(maXacNhan);
+    }
+    
+    private boolean xoaMaXacNhan(NhanVien nhanVien){
+        return new MaXacNhanImpl().deleteById(nhanVien.getMaNv());
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -43,15 +69,12 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        txtMaNv = new javax.swing.JTextField();
-        txtMatKhau = new javax.swing.JPasswordField();
-        btnLogin = new javax.swing.JButton();
+        txtEmail = new javax.swing.JTextField();
+        btnXacNhan = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        lblQuenMatKhau = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -72,31 +95,26 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
         );
 
         jPanel3.setOpaque(false);
 
         jLabel2.setFont(new java.awt.Font("Open Sans", 1, 22)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(9, 90, 11));
-        jLabel2.setText("Đăng nhập");
+        jLabel2.setText("Quên mật khẩu");
 
         jLabel3.setFont(new java.awt.Font("Open Sans", 0, 16)); // NOI18N
-        jLabel3.setText("Tên đăng nhập");
+        jLabel3.setText("Email liên hệ");
 
-        jLabel4.setFont(new java.awt.Font("Open Sans", 0, 16)); // NOI18N
-        jLabel4.setText("Mật khẩu");
+        txtEmail.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
 
-        txtMaNv.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
-
-        txtMatKhau.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
-
-        btnLogin.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
-        btnLogin.setText("Đăng nhập");
-        btnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+        btnXacNhan.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
+        btnXacNhan.setText("Xác nhận");
+        btnXacNhan.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnXacNhan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoginActionPerformed(evt);
+                btnXacNhanActionPerformed(evt);
             }
         });
 
@@ -109,15 +127,9 @@ public class DangNhapJDialog extends javax.swing.JDialog {
             }
         });
 
-        lblQuenMatKhau.setFont(new java.awt.Font("Open Sans", 3, 13)); // NOI18N
-        lblQuenMatKhau.setForeground(new java.awt.Color(0, 51, 51));
-        lblQuenMatKhau.setText("Quên mật khẩu?");
-        lblQuenMatKhau.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblQuenMatKhau.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblQuenMatKhauMouseClicked(evt);
-            }
-        });
+        jLabel4.setFont(new java.awt.Font("Open Sans", 1, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(239, 41, 47));
+        jLabel4.setText("<html>Mã xác nhận sẽ được gửi đến<br>email của bạn");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -127,40 +139,30 @@ public class DangNhapJDialog extends javax.swing.JDialog {
             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtMatKhau)
-                    .addComponent(txtMaNv)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnXacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(lblQuenMatKhau, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(txtEmail))
                 .addGap(15, 15, 15))
-            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addGap(20, 20, 20)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22)
                 .addComponent(jLabel3)
                 .addGap(0, 0, 0)
-                .addComponent(txtMaNv, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(jLabel4)
-                .addGap(0, 0, 0)
-                .addComponent(txtMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
+                .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnXacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblQuenMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -193,24 +195,48 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        String maNv = txtMaNv.getText();
-        String matKhau = String.valueOf(txtMatKhau.getPassword());
-        NhanVienDao nhanVienDao = new NhanVienDaoImpl();
-        boolean checkLogin = nhanVienDao.checkLogin(maNv, matKhau);
-        if (checkLogin) {
-            this.dispose();
-        }else{
-            URL url = DangNhapJDialog.class.getResource("./icon/info-user.png");
-//            JOptionPane.showMessageDialog(this, );
-            JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không hợp lệ", 
-                    "Đăng nhập thất bại", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(url));
-            txtMaNv.setText("");
-            txtMatKhau.setText("");
-            txtMaNv.requestFocus();
+    private void btnXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXacNhanActionPerformed
+        String email = txtEmail.getText();
+        NhanVien nhanVien = new NhanVienDaoImpl().getNhanVienByEmail(email);
+        URL urlIcon = DangNhapJDialog.class.getResource("./icon/info-user.png");
+        if (nhanVien == null) {
+            JOptionPane.showMessageDialog(this, "Không tồn tại nhân viên có email: " + email);
+        } else {
+            String randdomMaXacNhan = StringUtil.randomMaXacNhan();
+            boolean isSent = this.guiMaXacNhan(nhanVien, randdomMaXacNhan);
+            if (isSent) {
+                JOptionPane.showMessageDialog(this, "Đã gửi mã xác nhận\nVui lòng nhập mã xác nhận và tiến hành đổi mật khẩu",
+                        "THÔNG BÁO", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(urlIcon));
+
+                boolean isSaved = this.luuMaXacNhan(nhanVien, randdomMaXacNhan);
+                if (isSaved) {
+                    String inputMaXacNhan;
+                    boolean isCorrectMaXacNhan = false;
+                    do {
+                        inputMaXacNhan = JOptionPane.showInputDialog(this, "Nhập mã xác nhận");
+                        isCorrectMaXacNhan = checkMaXacNhan(nhanVien, randdomMaXacNhan);
+                    } while (inputMaXacNhan.equals("") || inputMaXacNhan == null || !isCorrectMaXacNhan);
+                    
+                    if(isCorrectMaXacNhan){
+                        this.dispose();
+                        new DatLaiMatKhau(null, true, nhanVien).setVisible(true);
+                    }else{
+                        JOptionPane.showMessageDialog(this, "Mã xác nhận đã hết hạn!\nVui lòng nhận lại mã mới",
+                        "THÔNG BÁO", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(urlIcon));
+                    }
+                    
+                    this.xoaMaXacNhan(nhanVien);
+                }else{
+                    JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi!\nVui lòng thử lại sau.",
+                        "THÔNG BÁO", JOptionPane.ERROR_MESSAGE, new ImageIcon(urlIcon));
+                }
+                
+            } else {
+                JOptionPane.showMessageDialog(this, "Gửi mã xác nhận thất bại\nVui lòng kiểm tra lại email.",
+                        "THÔNG BÁO", JOptionPane.ERROR_MESSAGE, new ImageIcon(urlIcon));
+            }
         }
-        
-    }//GEN-LAST:event_btnLoginActionPerformed
+    }//GEN-LAST:event_btnXacNhanActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         System.exit(0);
@@ -219,11 +245,6 @@ public class DangNhapJDialog extends javax.swing.JDialog {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         System.exit(0);
     }//GEN-LAST:event_formWindowClosing
-
-    private void lblQuenMatKhauMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblQuenMatKhauMouseClicked
-        this.dispose();
-        new QuenMatKhauJDialog(null, true).setVisible(true);
-    }//GEN-LAST:event_lblQuenMatKhauMouseClicked
 
     /**
      * @param args the command line arguments
@@ -242,13 +263,13 @@ public class DangNhapJDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DangNhapJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(QuenMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DangNhapJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(QuenMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DangNhapJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(QuenMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DangNhapJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(QuenMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -256,7 +277,7 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                DangNhapJDialog dialog = new DangNhapJDialog(new javax.swing.JFrame(), true);
+                QuenMatKhauJDialog dialog = new QuenMatKhauJDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -270,7 +291,7 @@ public class DangNhapJDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnLogin;
+    private javax.swing.JButton btnXacNhan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -278,8 +299,6 @@ public class DangNhapJDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JLabel lblQuenMatKhau;
-    private javax.swing.JTextField txtMaNv;
-    private javax.swing.JPasswordField txtMatKhau;
+    private javax.swing.JTextField txtEmail;
     // End of variables declaration//GEN-END:variables
 }
