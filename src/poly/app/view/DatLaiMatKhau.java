@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.entities.NhanVien;
+import poly.app.core.utils.DialogUtil;
 
 /**
  *
@@ -181,14 +182,11 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Mật khẩu không khớp");
         } else {
             nhanVien.setMatKhau(txtMatKhauMoi.getText());
-            URL urlIcon = DangNhapJDialog.class.getResource("./icon/info-user.png");
             boolean isUpdated = capNhatMatKhau();
             if (isUpdated) {
-                JOptionPane.showMessageDialog(rootPane, "Cập nhật mật khẩu thành công!\nSử dụng mật khẩu mới cho lần đăng nhập sau.",
-                        "THÔNG BÁO", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(urlIcon));
+                DialogUtil.alert(this, "Cập nhật mật khẩu thành công!\nSử dụng mật khẩu mới cho lần đăng nhập sau");
             }else{
-                JOptionPane.showMessageDialog(rootPane, "Cập nhật mật khẩu thất bại!\nVui lòng thử lại sau.",
-                        "THÔNG BÁO", JOptionPane.ERROR_MESSAGE, new ImageIcon(urlIcon));
+                DialogUtil.alert(this, "Cập nhật mật khẩu thất bại!\nVui lòng thử lại sau");
             }
             this.dispose();
         }
@@ -209,7 +207,7 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }

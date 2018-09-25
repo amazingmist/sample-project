@@ -5,55 +5,22 @@
  */
 package poly.app.view;
 
-import java.net.URL;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import poly.app.core.dao.MaXacNhanDao;
-import poly.app.core.daoimpl.MaXacNhanImpl;
-import poly.app.core.daoimpl.NhanVienDaoImpl;
-import poly.app.core.entities.MaXacNhan;
-import poly.app.core.entities.NhanVien;
-import poly.app.core.utils.DialogUtil;
-import poly.app.core.utils.EMailUtil;
-import poly.app.core.utils.StringUtil;
-
 /**
  *
  * @author vothanhtai
  */
-public class QuenMatKhauJDialog extends javax.swing.JDialog {
+public class DoiMatKhauJDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form QuenMatKhau
+     * Creates new form DoiMatKhauJDialog
      */
-    public QuenMatKhauJDialog(java.awt.Frame parent, boolean modal) {
+    public DoiMatKhauJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setLocationRelativeTo(null);
-        this.getRootPane().setDefaultButton(btnXacNhan);
-    }
-
-    private boolean luuMaXacNhan(NhanVien nhanVien, String maXacNhan) {
-        MaXacNhanDao maXacNhanDao = new MaXacNhanImpl();
-        MaXacNhan entity = new MaXacNhan(nhanVien, maXacNhan);
-        return maXacNhanDao.insert(entity);
-    }
-
-    private boolean guiMaXacNhan(NhanVien nhanVien, String maXacNhan) {
-        String email = nhanVien.getEmail();
-        String msgSubject = "Khôi phục mật khẩu";
-        String msgBody = "<h2>Xin chào!<br>Hãy dùng mã xác nhận dưới đây để khôi phục lại mật khẩu.</h2>"
-                + "<br>Tài khoản: " + email + "<br>Mã xác nhận: <b>" + maXacNhan
-                + "</b><br>Hãy sử dụng mã xác nhận trên để tiến hình khôi phục mật khẩu.";
-        return new EMailUtil(email, msgBody, msgSubject).sendMail();
     }
     
-    private boolean checkMaXacNhan(NhanVien nhanVien, String maXacNhan){
-        return new MaXacNhanImpl().getById(nhanVien.getMaNv()).getMaXacNhan().equals(maXacNhan);
-    }
-    
-    private boolean xoaMaXacNhan(NhanVien nhanVien){
-        return new MaXacNhanImpl().deleteById(nhanVien.getMaNv());
+    private boolean checkMatKhauCu(){
+        return false;
     }
 
     /**
@@ -71,17 +38,15 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtEmail = new javax.swing.JTextField();
-        btnXacNhan = new javax.swing.JButton();
-        btnCancel = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
+        txtMatKhauMoi = new javax.swing.JPasswordField();
+        btnThucHien = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        txtReMatKhauMoi = new javax.swing.JPasswordField();
+        txtMatKhauCu = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
-        });
 
         jPanel1.setBackground(new java.awt.Color(254, 203, 101));
 
@@ -104,19 +69,22 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
 
         jLabel2.setFont(new java.awt.Font("Open Sans", 1, 22)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(9, 90, 11));
-        jLabel2.setText("Quên mật khẩu");
+        jLabel2.setText("Đổi mật khẩu");
 
         jLabel3.setFont(new java.awt.Font("Open Sans", 0, 16)); // NOI18N
-        jLabel3.setText("Email liên hệ");
+        jLabel3.setText("Mật khẩu cũ");
 
-        txtEmail.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Open Sans", 0, 16)); // NOI18N
+        jLabel4.setText("Mật khẩu mới");
 
-        btnXacNhan.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
-        btnXacNhan.setText("Xác nhận");
-        btnXacNhan.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnXacNhan.addActionListener(new java.awt.event.ActionListener() {
+        txtMatKhauMoi.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
+
+        btnThucHien.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
+        btnThucHien.setText("Thực hiện");
+        btnThucHien.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnThucHien.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnXacNhanActionPerformed(evt);
+                btnThucHienActionPerformed(evt);
             }
         });
 
@@ -129,9 +97,17 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Open Sans", 1, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(239, 41, 47));
-        jLabel4.setText("<html>Mã xác nhận sẽ được gửi đến<br>email của bạn");
+        jLabel5.setFont(new java.awt.Font("Open Sans", 0, 16)); // NOI18N
+        jLabel5.setText("Nhập lại mật khẩu mới");
+
+        txtReMatKhauMoi.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
+        txtReMatKhauMoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtReMatKhauMoiActionPerformed(evt);
+            }
+        });
+
+        txtMatKhauCu.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -139,31 +115,42 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtMatKhauMoi)
+                    .addComponent(txtReMatKhauMoi)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnXacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnThucHien, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(txtEmail))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(15, 15, 15))
-            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(txtMatKhauCu, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22)
+                .addGap(3, 3, 3)
                 .addComponent(jLabel3)
                 .addGap(0, 0, 0)
-                .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
+                .addComponent(txtMatKhauCu, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(3, 3, 3)
+                .addComponent(jLabel4)
+                .addGap(0, 0, 0)
+                .addComponent(txtMatKhauMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(3, 3, 3)
+                .addComponent(jLabel5)
+                .addGap(0, 0, 0)
+                .addComponent(txtReMatKhauMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnXacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnThucHien, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -197,56 +184,18 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXacNhanActionPerformed
-        String email = txtEmail.getText();
-        NhanVien nhanVien = new NhanVienDaoImpl().getNhanVienByEmail(email);
-        if (nhanVien == null) {
-            DialogUtil.alert(this, "Không tồn tại nhân viên có email: " + email);
-        } else {
-            String randdomMaXacNhan = StringUtil.randomMaXacNhan();
-            boolean isSent = this.guiMaXacNhan(nhanVien, randdomMaXacNhan);
-            if (isSent) {
-                DialogUtil.alert(this, "Đã gửi mã xác nhận\nVui lòng nhập mã xác nhận và tiến hành đổi mật khẩu");
+    private void btnThucHienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThucHienActionPerformed
+        
 
-                boolean isSaved = this.luuMaXacNhan(nhanVien, randdomMaXacNhan);
-                if (isSaved) {
-                    String inputMaXacNhan;
-                    boolean isCorrectMaXacNhan = false;
-                    do {
-                        inputMaXacNhan = DialogUtil.prompt(this, "Nhập mã xác nhận");
-                        isCorrectMaXacNhan = checkMaXacNhan(nhanVien, inputMaXacNhan);
-                        if (inputMaXacNhan == null || isCorrectMaXacNhan) {
-                            break;
-                        }else{
-                            DialogUtil.alert(this, "Mã xác nhận không đúng!\nVui lòng kiểm tra lại");
-                        }
-                    } while (true);
-                    
-                    if(isCorrectMaXacNhan){
-                        this.dispose();
-                        new DatLaiMatKhau(null, true, nhanVien).setVisible(true);
-                    }else{
-                        DialogUtil.alert(this, "Mã xác nhận đã hết hạn!\nVui lòng nhận lại mã mới");
-                    }
-                    
-                    this.xoaMaXacNhan(nhanVien);
-                }else{
-                    DialogUtil.alert(this, "Đã xảy ra lỗi!\nVui lòng thử lại sau");
-                }
-                
-            } else {
-                DialogUtil.alert(this, "Gửi mã xác nhận thất bại\nVui lòng kiểm tra lại email");
-            }
-        }
-    }//GEN-LAST:event_btnXacNhanActionPerformed
+    }//GEN-LAST:event_btnThucHienActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         System.exit(0);
     }//GEN-LAST:event_btnCancelActionPerformed
 
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        System.exit(0);
-    }//GEN-LAST:event_formWindowClosing
+    private void txtReMatKhauMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtReMatKhauMoiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtReMatKhauMoiActionPerformed
 
     /**
      * @param args the command line arguments
@@ -265,21 +214,20 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(QuenMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DoiMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(QuenMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DoiMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(QuenMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DoiMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(QuenMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DoiMatKhauJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                QuenMatKhauJDialog dialog = new QuenMatKhauJDialog(new javax.swing.JFrame(), true);
+                DoiMatKhauJDialog dialog = new DoiMatKhauJDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -293,14 +241,17 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnXacNhan;
+    private javax.swing.JButton btnThucHien;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField txtEmail;
+    private javax.swing.JPasswordField txtMatKhauCu;
+    private javax.swing.JPasswordField txtMatKhauMoi;
+    private javax.swing.JPasswordField txtReMatKhauMoi;
     // End of variables declaration//GEN-END:variables
 }
