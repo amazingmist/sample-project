@@ -13,7 +13,8 @@ import poly.app.core.daoimpl.MaXacNhanImpl;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.entities.MaXacNhan;
 import poly.app.core.entities.NhanVien;
-import poly.app.core.utils.DialogUtil;
+import poly.app.core.helper.DialogHelper;
+import poly.app.core.helper.ShareHelper;
 import poly.app.core.utils.EMailUtil;
 import poly.app.core.utils.StringUtil;
 
@@ -33,14 +34,14 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
         this.getRootPane().setDefaultButton(btnXacNhan);
     }
 
-    private boolean luuMaXacNhan(NhanVien nhanVien, String maXacNhan) {
+    private boolean luuMaXacNhan(String maXacNhan) {
         MaXacNhanDao maXacNhanDao = new MaXacNhanImpl();
-        MaXacNhan entity = new MaXacNhan(nhanVien, maXacNhan);
+        MaXacNhan entity = new MaXacNhan(ShareHelper.USER, maXacNhan);
         return maXacNhanDao.insert(entity);
     }
 
-    private boolean guiMaXacNhan(NhanVien nhanVien, String maXacNhan) {
-        String email = nhanVien.getEmail();
+    private boolean guiMaXacNhan(String maXacNhan) {
+        String email = ShareHelper.USER.getEmail();
         String msgSubject = "Khôi phục mật khẩu";
         String msgBody = "<h2>Xin chào!<br>Hãy dùng mã xác nhận dưới đây để khôi phục lại mật khẩu.</h2>"
                 + "<br>Tài khoản: " + email + "<br>Mã xác nhận: <b>" + maXacNhan
@@ -48,12 +49,12 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
         return new EMailUtil(email, msgBody, msgSubject).sendMail();
     }
     
-    private boolean checkMaXacNhan(NhanVien nhanVien, String maXacNhan){
-        return new MaXacNhanImpl().getById(nhanVien.getMaNv()).getMaXacNhan().equals(maXacNhan);
+    private boolean checkMaXacNhan(String maXacNhan){
+        return new MaXacNhanImpl().getById(ShareHelper.USER.getMaNv()).getMaXacNhan().equals(maXacNhan);
     }
     
-    private boolean xoaMaXacNhan(NhanVien nhanVien){
-        return new MaXacNhanImpl().deleteById(nhanVien.getMaNv());
+    private boolean xoaMaXacNhan(){
+        return new MaXacNhanImpl().deleteById(ShareHelper.USER.getMaNv());
     }
 
     /**
@@ -199,43 +200,43 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
 
     private void btnXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXacNhanActionPerformed
         String email = txtEmail.getText();
-        NhanVien nhanVien = new NhanVienDaoImpl().getNhanVienByEmail(email);
-        if (nhanVien == null) {
-            DialogUtil.alert(this, "Không tồn tại nhân viên có email: " + email);
+        ShareHelper.USER = new NhanVienDaoImpl().getNhanVienByEmail(email);
+        if (ShareHelper.USER == null) {
+            DialogHelper.message(this, "Không tồn tại nhân viên có email: " + email, DialogHelper.ERROR_MESSAGE);
         } else {
             String randdomMaXacNhan = StringUtil.randomMaXacNhan();
-            boolean isSent = this.guiMaXacNhan(nhanVien, randdomMaXacNhan);
+            boolean isSent = this.guiMaXacNhan(randdomMaXacNhan);
             if (isSent) {
-                DialogUtil.alert(this, "Đã gửi mã xác nhận\nVui lòng nhập mã xác nhận và tiến hành đổi mật khẩu");
+                DialogHelper.message(this, "Đã gửi mã xác nhận\nVui lòng nhập mã xác nhận và tiến hành đổi mật khẩu", DialogHelper.INFORMATION_MESSAGE);
 
-                boolean isSaved = this.luuMaXacNhan(nhanVien, randdomMaXacNhan);
+                boolean isSaved = this.luuMaXacNhan(randdomMaXacNhan);
                 if (isSaved) {
                     String inputMaXacNhan;
                     boolean isCorrectMaXacNhan = false;
                     do {
-                        inputMaXacNhan = DialogUtil.prompt(this, "Nhập mã xác nhận");
-                        isCorrectMaXacNhan = checkMaXacNhan(nhanVien, inputMaXacNhan);
+                        inputMaXacNhan = DialogHelper.prompt(this, "Nhập mã xác nhận");
+                        isCorrectMaXacNhan = checkMaXacNhan(inputMaXacNhan);
                         if (inputMaXacNhan == null || isCorrectMaXacNhan) {
                             break;
                         }else{
-                            DialogUtil.alert(this, "Mã xác nhận không đúng!\nVui lòng kiểm tra lại");
+                            DialogHelper.message(this, "Mã xác nhận không đúng!\nVui lòng kiểm tra lại", DialogHelper.ERROR_MESSAGE);
                         }
                     } while (true);
                     
                     if(isCorrectMaXacNhan){
                         this.dispose();
-                        new DatLaiMatKhau(null, true, nhanVien).setVisible(true);
+                        new DatLaiMatKhau(null, true).setVisible(true);
                     }else{
-                        DialogUtil.alert(this, "Mã xác nhận đã hết hạn!\nVui lòng nhận lại mã mới");
+                        DialogHelper.message(this, "Mã xác nhận đã hết hạn!\nVui lòng nhận lại mã mới", DialogHelper.ERROR_MESSAGE);
                     }
                     
-                    this.xoaMaXacNhan(nhanVien);
+                    this.xoaMaXacNhan();
                 }else{
-                    DialogUtil.alert(this, "Đã xảy ra lỗi!\nVui lòng thử lại sau");
+                    DialogHelper.message(this, "Đã xảy ra lỗi!\nVui lòng thử lại sau", DialogHelper.ERROR_MESSAGE);
                 }
                 
             } else {
-                DialogUtil.alert(this, "Gửi mã xác nhận thất bại\nVui lòng kiểm tra lại email");
+                DialogHelper.message(this, "Gửi mã xác nhận thất bại\nVui lòng kiểm tra lại email", DialogHelper.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnXacNhanActionPerformed

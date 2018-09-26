@@ -5,17 +5,19 @@
  */
 package poly.app.view;
 
+import com.apple.eawt.Application;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Toolkit;
+import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.swing.Timer;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.entities.NhanVien;
+import poly.app.core.helper.ShareHelper;
 import poly.app.core.utils.HibernateUtil;
 
 /**
@@ -23,28 +25,36 @@ import poly.app.core.utils.HibernateUtil;
  * @author vothanhtai
  */
 public class MainJFrame extends javax.swing.JFrame {
+
     List<NhanVien> nhanVienList;
+
     /**
      * Creates new form MainJFrame
      */
     public MainJFrame() {
+        changeAppIcon();
         initComponents();
         loadSessionFactory();
         init();
     }
-    
-    private void loadSessionFactory(){
+
+    private void changeAppIcon() {
+        URL urlIcon = getClass().getResource("./icon/icon-app.png");
+        setIconImage(ShareHelper.APP_ICON);
+        Application.getApplication().setDockIconImage(ShareHelper.APP_ICON);
+    }
+
+    private void loadSessionFactory() {
         new Thread(() -> {
             HibernateUtil.getSessionFactory();
         }).start();
     }
-    
-    private void loadNhanVienList(){
+
+    private void loadNhanVienList() {
         new Thread(() -> {
             nhanVienList = new NhanVienDaoImpl().getAll();
         }).start();
     }
-    
 
     public void init() {
         this.setAutoRequestFocus(true);
@@ -61,18 +71,22 @@ public class MainJFrame extends javax.swing.JFrame {
 
         openChaoDialog();
         openDangNhapDialog();
+        loadNhanVienList();
     }
 
     private void openChaoDialog() {
         new ChaoJDialog(this, true).setVisible(true);
     }
-    
-    private void openDangNhapDialog(){
+
+    private void openDangNhapDialog() {
         DangNhapJDialog dangNhapJDialog = new DangNhapJDialog(this, true);
         dangNhapJDialog.setVisible(true);
-        loadNhanVienList();
     }
     
+    private void openDoiMatKhauDialog() {
+        DoiMatKhauJDialog doiMatKhauJDialog = new DoiMatKhauJDialog(this, true);
+        doiMatKhauJDialog.setVisible(true);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -92,9 +106,10 @@ public class MainJFrame extends javax.swing.JFrame {
         btnDangXuat = new javax.swing.JButton();
         btnKetThuc = new javax.swing.JButton();
         jSeparator9 = new javax.swing.JToolBar.Separator();
-        btnChuyenDe = new javax.swing.JButton();
         btnNguoiHoc = new javax.swing.JButton();
+        btnChuyenDe = new javax.swing.JButton();
         btnKhoaHoc = new javax.swing.JButton();
+        btnNhanVien = new javax.swing.JButton();
         jSeparator6 = new javax.swing.JToolBar.Separator();
         btnHuongDan = new javax.swing.JButton();
         jSeparator12 = new javax.swing.JToolBar.Separator();
@@ -135,7 +150,7 @@ public class MainJFrame extends javax.swing.JFrame {
         setAutoRequestFocus(false);
         setFocusTraversalPolicyProvider(true);
 
-        jPanel1.setBackground(new java.awt.Color(237, 237, 237));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(369, 178));
 
         jToolBar1.setBackground(new java.awt.Color(65, 76, 89));
@@ -176,18 +191,6 @@ public class MainJFrame extends javax.swing.JFrame {
         jToolBar1.add(btnKetThuc);
         jToolBar1.add(jSeparator9);
 
-        btnChuyenDe.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        btnChuyenDe.setForeground(new java.awt.Color(252, 252, 252));
-        btnChuyenDe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Lists.png"))); // NOI18N
-        btnChuyenDe.setText("Chuyên đề");
-        btnChuyenDe.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
-        btnChuyenDe.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnChuyenDe.setFocusable(false);
-        btnChuyenDe.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnChuyenDe.setMargin(new java.awt.Insets(0, 20, 0, 20));
-        btnChuyenDe.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(btnChuyenDe);
-
         btnNguoiHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         btnNguoiHoc.setForeground(new java.awt.Color(252, 252, 252));
         btnNguoiHoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Conference.png"))); // NOI18N
@@ -200,6 +203,18 @@ public class MainJFrame extends javax.swing.JFrame {
         btnNguoiHoc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(btnNguoiHoc);
 
+        btnChuyenDe.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        btnChuyenDe.setForeground(new java.awt.Color(252, 252, 252));
+        btnChuyenDe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Lists.png"))); // NOI18N
+        btnChuyenDe.setText("Chuyên đề");
+        btnChuyenDe.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        btnChuyenDe.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnChuyenDe.setFocusable(false);
+        btnChuyenDe.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnChuyenDe.setMargin(new java.awt.Insets(0, 20, 0, 20));
+        btnChuyenDe.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(btnChuyenDe);
+
         btnKhoaHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         btnKhoaHoc.setForeground(new java.awt.Color(252, 252, 252));
         btnKhoaHoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Certificate.png"))); // NOI18N
@@ -211,6 +226,23 @@ public class MainJFrame extends javax.swing.JFrame {
         btnKhoaHoc.setMargin(new java.awt.Insets(0, 20, 0, 20));
         btnKhoaHoc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(btnKhoaHoc);
+
+        btnNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        btnNhanVien.setForeground(new java.awt.Color(252, 252, 252));
+        btnNhanVien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/User group.png"))); // NOI18N
+        btnNhanVien.setText("Nhân viên");
+        btnNhanVien.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        btnNhanVien.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNhanVien.setFocusable(false);
+        btnNhanVien.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnNhanVien.setMargin(new java.awt.Insets(0, 20, 0, 20));
+        btnNhanVien.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNhanVien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNhanVienActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnNhanVien);
         jToolBar1.add(jSeparator6);
 
         btnHuongDan.setBackground(new java.awt.Color(102, 102, 0));
@@ -282,13 +314,12 @@ public class MainJFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jMenuBar1.setBackground(new java.awt.Color(159, 108, 102));
-        jMenuBar1.setOpaque(false);
+        jMenuBar1.setBorder(null);
 
         jMenu2.setText("Hệ thống");
 
@@ -308,6 +339,11 @@ public class MainJFrame extends javax.swing.JFrame {
         mniDoiMatKhau.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         mniDoiMatKhau.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Refresh.png"))); // NOI18N
         mniDoiMatKhau.setText("Đổi mật khẩu");
+        mniDoiMatKhau.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniDoiMatKhauActionPerformed(evt);
+            }
+        });
         jMenu2.add(mniDoiMatKhau);
         jMenu2.add(jSeparator2);
 
@@ -395,7 +431,7 @@ public class MainJFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
         );
 
         pack();
@@ -403,6 +439,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void btnDangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangXuatActionPerformed
         this.setVisible(false);
+        ShareHelper.logOut();
         openDangNhapDialog();
         this.setVisible(true);
     }//GEN-LAST:event_btnDangXuatActionPerformed
@@ -410,6 +447,16 @@ public class MainJFrame extends javax.swing.JFrame {
     private void btnKetThucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKetThucActionPerformed
         System.exit(0);
     }//GEN-LAST:event_btnKetThucActionPerformed
+
+    private void mniDoiMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniDoiMatKhauActionPerformed
+        this.setVisible(false);
+        openDoiMatKhauDialog();
+        this.setVisible(true);
+    }//GEN-LAST:event_mniDoiMatKhauActionPerformed
+
+    private void btnNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhanVienActionPerformed
+        
+    }//GEN-LAST:event_btnNhanVienActionPerformed
 
     /**
      * @param args the command line arguments
@@ -454,6 +501,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnKetThuc;
     private javax.swing.JButton btnKhoaHoc;
     private javax.swing.JButton btnNguoiHoc;
+    private javax.swing.JButton btnNhanVien;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;

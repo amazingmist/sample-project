@@ -34,7 +34,7 @@ public class ChuyenDeDaoImplNGTest {
         chuyenDeDao.update(chuyenDe);
     }
     
-//    @Test
+    @Test
     public void testDelete(){
         ChuyenDeDao chuyenDeDao = new ChuyenDeDaoImpl();
         ChuyenDe chuyenDe = new ChuyenDe("TAI01", "Học lập trình java", 3000, 10, "tai.png", "Học java");

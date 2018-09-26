@@ -5,36 +5,35 @@
  */
 package poly.app.view;
 
-import java.net.URL;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
-import poly.app.core.entities.NhanVien;
-import poly.app.core.utils.DialogUtil;
+import poly.app.core.helper.DialogHelper;
+import poly.app.core.helper.ShareHelper;
 
 /**
  *
  * @author vothanhtai
  */
 public class DatLaiMatKhau extends javax.swing.JDialog {
-
-    NhanVien nhanVien;
-
     /**
      * Creates new form DatLaiMatKhau
      */
-    public DatLaiMatKhau(java.awt.Frame parent, boolean modal, NhanVien nhanVien) {
+    public DatLaiMatKhau(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        this.nhanVien = nhanVien;
         initComponents();
         setLocationRelativeTo(null);
         this.getRootPane().setDefaultButton(btnThucHien);
     }
-
-    private boolean capNhatMatKhau() {
-        return new NhanVienDaoImpl().update(nhanVien);
+    
+    private boolean checkMatKhauMoi(){
+        return txtMatKhauMoi.getText().equals(txtReMatKhauMoi.getText());
     }
-
+    
+    private boolean updateMatKhau(){
+        ShareHelper.USER.setMatKhau(txtMatKhauMoi.getText());
+        return new NhanVienDaoImpl().update(ShareHelper.USER);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -178,15 +177,14 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnThucHienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThucHienActionPerformed
-        if (!txtMatKhauMoi.getText().equals(txtReMatKhauMoi.getText())) {
-            JOptionPane.showMessageDialog(this, "Mật khẩu không khớp");
+        if (!checkMatKhauMoi()) {
+            JOptionPane.showMessageDialog(this, "Mật khẩu mới không trùng khớp");
         } else {
-            nhanVien.setMatKhau(txtMatKhauMoi.getText());
-            boolean isUpdated = capNhatMatKhau();
+            boolean isUpdated = updateMatKhau();
             if (isUpdated) {
-                DialogUtil.alert(this, "Cập nhật mật khẩu thành công!\nSử dụng mật khẩu mới cho lần đăng nhập sau");
+                DialogHelper.message(this, "Cập nhật mật khẩu thành công!\nSử dụng mật khẩu mới cho lần đăng nhập sau", DialogHelper.INFORMATION_MESSAGE);
             }else{
-                DialogUtil.alert(this, "Cập nhật mật khẩu thất bại!\nVui lòng thử lại sau");
+                DialogHelper.message(this, "Cập nhật mật khẩu thất bại!\nVui lòng thử lại", DialogHelper.ERROR_MESSAGE);
             }
             this.dispose();
         }
@@ -226,7 +224,7 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                DatLaiMatKhau dialog = new DatLaiMatKhau(new javax.swing.JFrame(), true, null);
+                DatLaiMatKhau dialog = new DatLaiMatKhau(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

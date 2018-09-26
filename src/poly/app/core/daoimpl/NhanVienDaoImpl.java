@@ -12,13 +12,13 @@ import poly.app.core.entities.NhanVien;
 public class NhanVienDaoImpl extends AbstractDao<String, NhanVien> implements NhanVienDao{
 
     @Override
-    public boolean checkLogin(String maNv, String matKhau) {
+    public NhanVien checkLogin(String maNv, String matKhau) {
         Session session = this.getSession();
         try {
             Criteria cr = session.createCriteria(this.getPersistenceClass());
             cr.add(Restrictions.eq("maNv", maNv));
             cr.add(Restrictions.eq("matKhau", matKhau));
-            return cr.list().size() > 0;
+            return (NhanVien) cr.uniqueResult();
         } catch (Exception ex) {
             throw ex;
         }finally{
@@ -34,7 +34,7 @@ public class NhanVienDaoImpl extends AbstractDao<String, NhanVien> implements Nh
             Criteria cr = session.createCriteria(this.getPersistenceClass());
             cr.add(Restrictions.eq("email", email));
             List<NhanVien> list = cr.list();
-            nhanVien = list.size() > 0 ? list.get(0) : null;
+            nhanVien = (NhanVien) cr.uniqueResult();
         } catch (Exception ex) {
             throw ex;
         }finally{

@@ -5,6 +5,10 @@
  */
 package poly.app.view;
 
+import poly.app.core.daoimpl.NhanVienDaoImpl;
+import poly.app.core.helper.DialogHelper;
+import poly.app.core.helper.ShareHelper;
+
 /**
  *
  * @author vothanhtai
@@ -17,10 +21,28 @@ public class DoiMatKhauJDialog extends javax.swing.JDialog {
     public DoiMatKhauJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
+        this.getRootPane().setDefaultButton(btnThucHien);
     }
     
     private boolean checkMatKhauCu(){
+        if (ShareHelper.USER != null) {
+            return txtMatKhauCu.getText().equals(ShareHelper.USER.getMatKhau());
+        }
         return false;
+    }
+    
+    private boolean checkMatKhauMoi(){
+        if (txtMatKhauMoi.getText().equals("")) {
+            DialogHelper.message(this, "Mật khẩu mới không được để trống", DialogHelper.ERROR_MESSAGE);
+            return false;
+        }
+        return txtMatKhauMoi.getText().equals(txtReMatKhauMoi.getText());
+    }
+    
+    private boolean updateMatKhau(){
+        ShareHelper.USER.setMatKhau(txtMatKhauMoi.getText());
+        return new NhanVienDaoImpl().update(ShareHelper.USER);
     }
 
     /**
@@ -185,12 +207,22 @@ public class DoiMatKhauJDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnThucHienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThucHienActionPerformed
-        
-
+        if (!checkMatKhauCu()) {
+            DialogHelper.message(this, "Mật khẩu cũ không đúng", DialogHelper.ERROR_MESSAGE);
+        }else if(!checkMatKhauMoi()){
+            DialogHelper.message(this, "Mật khẩu mới không trùng khớp", DialogHelper.ERROR_MESSAGE);
+        }else{
+            if(updateMatKhau()){
+                DialogHelper.message(this, "Cập nhật mật khẩu thành công!\nSử dụng mật khẩu mới cho lần đăng nhập sau", DialogHelper.INFORMATION_MESSAGE);
+            }else{
+                DialogHelper.message(this, "Cập nhật mật khẩu thất bại!\nVui lòng thử lại", DialogHelper.ERROR_MESSAGE);
+            }
+            this.dispose();
+        }
     }//GEN-LAST:event_btnThucHienActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        System.exit(0);
+        this.dispose();
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void txtReMatKhauMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtReMatKhauMoiActionPerformed

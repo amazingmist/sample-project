@@ -22,7 +22,7 @@ public class NhanVienDaoImplNGTest {
 //    @Test
     public void testLogin() {
         NhanVienDao nhanVienDao = new NhanVienDaoImpl();
-        boolean check = nhanVienDao.checkLogin("NoPT", "123456");
+        nhanVienDao.checkLogin("NoPT", "123456");
     }
     
     @Test

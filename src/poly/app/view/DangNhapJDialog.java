@@ -5,11 +5,10 @@
  */
 package poly.app.view;
 
-import java.net.URL;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import poly.app.core.dao.NhanVienDao;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
+import poly.app.core.helper.DialogHelper;
+import poly.app.core.helper.ShareHelper;
 
 /**
  *
@@ -195,15 +194,11 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         String maNv = txtMaNv.getText();
         String matKhau = String.valueOf(txtMatKhau.getPassword());
         NhanVienDao nhanVienDao = new NhanVienDaoImpl();
-        boolean checkLogin = nhanVienDao.checkLogin(maNv, matKhau);
-        if (checkLogin) {
+        ShareHelper.USER = nhanVienDao.checkLogin(maNv, matKhau);
+        if (ShareHelper.USER != null) {
             this.dispose();
         }else{
-            URL url = DangNhapJDialog.class.getResource("./icon/info-user.png");
-            JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không hợp lệ", 
-                    "Đăng nhập thất bại", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(url));
-            txtMaNv.setText("");
-            txtMatKhau.setText("");
+            DialogHelper.message(this, "Tài khoản hoặc mật khẩu không hợp lệ", DialogHelper.ERROR_MESSAGE);
             txtMaNv.requestFocus();
         }
         
@@ -218,8 +213,8 @@ public class DangNhapJDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowClosing
 
     private void lblQuenMatKhauMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblQuenMatKhauMouseClicked
-        this.dispose();
-        new QuenMatKhauJDialog(null, true).setVisible(true);
+         new QuenMatKhauJDialog(null, true).setVisible(true);
+         this.dispose();
     }//GEN-LAST:event_lblQuenMatKhauMouseClicked
 
     /**

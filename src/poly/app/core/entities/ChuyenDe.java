@@ -1,5 +1,5 @@
 package poly.app.core.entities;
-// Generated Sep 21, 2018 5:51:44 PM by Hibernate Tools 4.3.1
+// Generated Sep 26, 2018 4:18:31 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -17,7 +17,7 @@ public class ChuyenDe  implements java.io.Serializable {
      private int thoiLuong;
      private String hinh;
      private String moTa;
-     private Set<KhoaHoc> khoaHocs = new HashSet<KhoaHoc>(0);
+     private Set khoaHocs = new HashSet(0);
 
     public ChuyenDe() {
     }
@@ -31,7 +31,7 @@ public class ChuyenDe  implements java.io.Serializable {
         this.hinh = hinh;
         this.moTa = moTa;
     }
-    public ChuyenDe(String maCd, String tenCd, int hocPhi, int thoiLuong, String hinh, String moTa, Set<KhoaHoc> khoaHocs) {
+    public ChuyenDe(String maCd, String tenCd, int hocPhi, int thoiLuong, String hinh, String moTa, Set khoaHocs) {
        this.maCd = maCd;
        this.tenCd = tenCd;
        this.hocPhi = hocPhi;
@@ -83,11 +83,11 @@ public class ChuyenDe  implements java.io.Serializable {
     public void setMoTa(String moTa) {
         this.moTa = moTa;
     }
-    public Set<KhoaHoc> getKhoaHocs() {
+    public Set getKhoaHocs() {
         return this.khoaHocs;
     }
     
-    public void setKhoaHocs(Set<KhoaHoc> khoaHocs) {
+    public void setKhoaHocs(Set khoaHocs) {
         this.khoaHocs = khoaHocs;
     }
 

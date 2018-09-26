@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Sep 21, 2018 5:51:44 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated Sep 26, 2018 4:18:31 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="poly.app.core.entities.NhanVien" table="NhanVien" catalog="Polypro" optimistic-lock="version">
         <id name="maNv" type="string">
@@ -14,8 +14,20 @@
         <property name="hoTen" type="string">
             <column name="HoTen" length="50" not-null="true" />
         </property>
+        <property name="ngaySinh" type="date">
+            <column name="NgaySinh" length="10" not-null="true" />
+        </property>
+        <property name="gioiTinh" type="boolean">
+            <column name="GioiTinh" not-null="true" />
+        </property>
+        <property name="dienThoai" type="string">
+            <column name="DienThoai" length="15" not-null="true" />
+        </property>
         <property name="email" type="string">
             <column name="Email" length="50" not-null="true" />
+        </property>
+        <property name="diaChi" type="string">
+            <column name="DiaChi" not-null="true" />
         </property>
         <property name="vaiTro" type="boolean">
             <column name="VaiTro" not-null="true" />

@@ -1,7 +1,8 @@
 package poly.app.core.entities;
-// Generated Sep 21, 2018 5:51:44 PM by Hibernate Tools 4.3.1
+// Generated Sep 26, 2018 4:18:31 PM by Hibernate Tools 4.3.1
 
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,28 +15,40 @@ public class NhanVien  implements java.io.Serializable {
      private String maNv;
      private String matKhau;
      private String hoTen;
+     private Date ngaySinh;
+     private boolean gioiTinh;
+     private String dienThoai;
      private String email;
+     private String diaChi;
      private boolean vaiTro;
-     private Set<KhoaHoc> khoaHocs = new HashSet<KhoaHoc>(0);
+     private Set khoaHocs = new HashSet(0);
      private MaXacNhan maXacNhan;
-     private Set<NguoiHoc> nguoiHocs = new HashSet<NguoiHoc>(0);
+     private Set nguoiHocs = new HashSet(0);
 
     public NhanVien() {
     }
 
 	
-    public NhanVien(String maNv, String matKhau, String hoTen, String email, boolean vaiTro) {
+    public NhanVien(String maNv, String matKhau, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String diaChi, boolean vaiTro) {
         this.maNv = maNv;
         this.matKhau = matKhau;
         this.hoTen = hoTen;
+        this.ngaySinh = ngaySinh;
+        this.gioiTinh = gioiTinh;
+        this.dienThoai = dienThoai;
         this.email = email;
+        this.diaChi = diaChi;
         this.vaiTro = vaiTro;
     }
-    public NhanVien(String maNv, String matKhau, String hoTen, String email, boolean vaiTro, Set<KhoaHoc> khoaHocs, MaXacNhan maXacNhan, Set<NguoiHoc> nguoiHocs) {
+    public NhanVien(String maNv, String matKhau, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String diaChi, boolean vaiTro, Set khoaHocs, MaXacNhan maXacNhan, Set nguoiHocs) {
        this.maNv = maNv;
        this.matKhau = matKhau;
        this.hoTen = hoTen;
+       this.ngaySinh = ngaySinh;
+       this.gioiTinh = gioiTinh;
+       this.dienThoai = dienThoai;
        this.email = email;
+       this.diaChi = diaChi;
        this.vaiTro = vaiTro;
        this.khoaHocs = khoaHocs;
        this.maXacNhan = maXacNhan;
@@ -63,6 +76,27 @@ public class NhanVien  implements java.io.Serializable {
     public void setHoTen(String hoTen) {
         this.hoTen = hoTen;
     }
+    public Date getNgaySinh() {
+        return this.ngaySinh;
+    }
+    
+    public void setNgaySinh(Date ngaySinh) {
+        this.ngaySinh = ngaySinh;
+    }
+    public boolean getGioiTinh() {
+        return this.gioiTinh;
+    }
+    
+    public void setGioiTinh(boolean gioiTinh) {
+        this.gioiTinh = gioiTinh;
+    }
+    public String getDienThoai() {
+        return this.dienThoai;
+    }
+    
+    public void setDienThoai(String dienThoai) {
+        this.dienThoai = dienThoai;
+    }
     public String getEmail() {
         return this.email;
     }
@@ -70,18 +104,25 @@ public class NhanVien  implements java.io.Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-    public boolean isVaiTro() {
+    public String getDiaChi() {
+        return this.diaChi;
+    }
+    
+    public void setDiaChi(String diaChi) {
+        this.diaChi = diaChi;
+    }
+    public boolean getVaiTro() {
         return this.vaiTro;
     }
     
     public void setVaiTro(boolean vaiTro) {
         this.vaiTro = vaiTro;
     }
-    public Set<KhoaHoc> getKhoaHocs() {
+    public Set getKhoaHocs() {
         return this.khoaHocs;
     }
     
-    public void setKhoaHocs(Set<KhoaHoc> khoaHocs) {
+    public void setKhoaHocs(Set khoaHocs) {
         this.khoaHocs = khoaHocs;
     }
     public MaXacNhan getMaXacNhan() {
@@ -91,17 +132,13 @@ public class NhanVien  implements java.io.Serializable {
     public void setMaXacNhan(MaXacNhan maXacNhan) {
         this.maXacNhan = maXacNhan;
     }
-    public Set<NguoiHoc> getNguoiHocs() {
+    public Set getNguoiHocs() {
         return this.nguoiHocs;
     }
     
-    public void setNguoiHocs(Set<NguoiHoc> nguoiHocs) {
+    public void setNguoiHocs(Set nguoiHocs) {
         this.nguoiHocs = nguoiHocs;
     }
-
-
-
-
 }
 
 
