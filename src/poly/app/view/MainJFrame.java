@@ -25,9 +25,6 @@ import poly.app.core.utils.HibernateUtil;
  * @author vothanhtai
  */
 public class MainJFrame extends javax.swing.JFrame {
-
-    List<NhanVien> nhanVienList;
-
     /**
      * Creates new form MainJFrame
      */
@@ -50,12 +47,6 @@ public class MainJFrame extends javax.swing.JFrame {
         }).start();
     }
 
-    private void loadNhanVienList() {
-        new Thread(() -> {
-            nhanVienList = new NhanVienDaoImpl().getAll();
-        }).start();
-    }
-
     public void init() {
         this.setAutoRequestFocus(true);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -71,7 +62,6 @@ public class MainJFrame extends javax.swing.JFrame {
 
         openChaoDialog();
         openDangNhapDialog();
-        loadNhanVienList();
     }
 
     private void openChaoDialog() {

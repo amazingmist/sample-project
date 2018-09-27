@@ -111,8 +111,8 @@ public class NhanVien  implements java.io.Serializable {
     public void setDiaChi(String diaChi) {
         this.diaChi = diaChi;
     }
-    public boolean getVaiTro() {
-        return this.vaiTro;
+    public String getVaiTro() {
+        return this.vaiTro ? "Trưởng phòng" : "Nhân viên";
     }
     
     public void setVaiTro(boolean vaiTro) {

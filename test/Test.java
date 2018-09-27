@@ -1,10 +1,9 @@
 
-import java.lang.reflect.Field;
-import java.math.BigInteger;
+import java.util.Vector;
+import poly.app.core.entities.ChuyenDe;
+
 
 public class Test {
-
-  public static void main(String... args) throws Exception {
+  public static void main(String args[]) {
   }
-
 }

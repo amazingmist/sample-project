@@ -12,51 +12,51 @@ import org.hibernate.Session;
 import poly.app.core.data.dao.ProcedureDao;
 import poly.app.core.utils.HibernateUtil;
 
-public class ProcedureDaoImpl<T, POJO> implements ProcedureDao<T, POJO> {
+public class ProcedureDaoImpl<T, R> implements ProcedureDao<T, R> {
 
-    private Class<T> spClass;
-    private Class<POJO> pojoClass;
+    private Class<T> procedureClass;
+    private Class<R> recordClass;
 
     public ProcedureDaoImpl() {
-        this.spClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        this.pojoClass = (Class<POJO>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
+        this.procedureClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        this.recordClass = (Class<R>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
     }
 
     public Class getProcedureClass() {
-        return this.spClass;
+        return this.procedureClass;
     }
 
     public String getProcedureClassName() {
-        return this.spClass.getSimpleName();
+        return this.procedureClass.getSimpleName();
     }
 
     protected Session getSession() {
         return HibernateUtil.getSessionFactory().openSession();
     }
 
-    private POJO mappingPojo(Object[] objects) {
+    private R mappingPojo(Object[] objects) {
         try {
 //            Create new instance from pojo class
-            POJO pojoObject = this.pojoClass.newInstance();
+            R recordObject = this.recordClass.newInstance();
 
 //            Get field array form pojo class
-            Field[] fields = pojoClass.getDeclaredFields();
+            Field[] fields = recordClass.getDeclaredFields();
 
             for (int i = 0; i < fields.length; i++) {
 //                Get current field
-                Field curField = this.pojoClass.getDeclaredField(fields[i].getName());
+                Field curField = this.recordClass.getDeclaredField(fields[i].getName());
 
 //                Set can accesible this field
                 curField.setAccessible(true);
 
 //                Set value for this field
-                curField.set(pojoObject, objects[i]);
+                curField.set(recordObject, objects[i]);
 
 //                Set can not accesible this field
                 curField.setAccessible(false);
             }
 
-            return pojoObject;
+            return recordObject;
         } catch (Exception ex) {
             Logger.getLogger(ProcedureDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -65,9 +65,9 @@ public class ProcedureDaoImpl<T, POJO> implements ProcedureDao<T, POJO> {
     }
 
     @Override
-    public List<POJO> execute(Object... parameters) {
+    public List<R> execute(Object... parameters) {
         List<Object[]> list = null;
-        List<POJO> pojoList = null;
+        List<R> recordList = null;
         Session session = this.getSession();
         try {
 //            Build call query
@@ -90,16 +90,16 @@ public class ProcedureDaoImpl<T, POJO> implements ProcedureDao<T, POJO> {
 //            get result list
             list = query.list();
 
-            pojoList = new ArrayList<POJO>();
+            recordList = new ArrayList<R>();
             for (Object[] objects : list) {
-//              convert object[] to POJO
-                pojoList.add(this.mappingPojo(objects));
+//              convert object[] to R
+                recordList.add(this.mappingPojo(objects));
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
-        return pojoList;
+        return recordList;
     }
 }
