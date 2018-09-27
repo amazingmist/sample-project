@@ -17,20 +17,13 @@ public class DataTypeConverterUtil {
         Field[] fields = clazz.getDeclaredFields();
         Method[] methods = clazz.getMethods();
         try {
-            for (int i = 0; i < fields.length; i++) {
-//                Get current field
-                Field curField = clazz.getDeclaredField(fields[i].getName());
-
-//                Set can accesible this field
-                curField.setAccessible(true);
-
-//                Get and add value to vector
-                result.add(curField.get(object));
-
-//                Set can not accesible this field
-                curField.setAccessible(false);
+            for (Field field : fields) {
+                String fieldName = field.getName();
+                String getMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+                Method method = clazz.getDeclaredMethod(getMethodName);
+                result.add(method.invoke(object));
             }
-        } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException ex) {
+        } catch (IllegalAccessException | IllegalArgumentException | SecurityException ex) {
             throw ex;
         }
 
@@ -66,13 +59,13 @@ public class DataTypeConverterUtil {
         return result;
     }
     
-    public static void main(String[] args) {
-        ChuyenDe chuyenDe = new ChuyenDe("TAI01", "Học lập trình C#", 3000, 10, "tai.png", "Học C#");
-        try {
-            Vector v = DataTypeConverterUtil.objectToVectorByFields(chuyenDe, new String[]{"maCd"});
-            System.out.println(v);
-        } catch (Exception ex) {
-            Logger.getLogger(DataTypeConverterUtil.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+//    public static void main(String[] args) {
+//        ChuyenDe chuyenDe = new ChuyenDe("TAI01", "Học lập trình C#", 3000, 10, "tai.png", "Học C#");
+//        try {
+//            Vector v = DataTypeConverterUtil.objectToVector(chuyenDe);
+//            System.out.println(v);
+//        } catch (Exception ex) {
+//            Logger.getLogger(DataTypeConverterUtil.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 }
