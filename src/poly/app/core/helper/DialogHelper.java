@@ -18,18 +18,18 @@ public class DialogHelper {
     public static void message(Component parent, String message, int messageType) {
         URL urlIcon = messageType == INFORMATION_MESSAGE ? urlIconInfo : urlIconError;
         JOptionPane.showMessageDialog(parent, message,
-                "Hệ thống quản lý đào tạo", messageType, new ImageIcon(urlIcon));
+                "Thông báo", messageType, new ImageIcon(urlIcon));
     }
 
     public static boolean confirm(Component parent, String message) {
         int result = JOptionPane.showConfirmDialog(parent, message,
-                "Hệ thống quản lý đào tạo",
+                "Thông báo",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new ImageIcon(urlIconInfo));
         return result == JOptionPane.YES_OPTION;
     }
 
     public static String prompt(Component parent, String message) {
         return (String) JOptionPane.showInputDialog(parent, message,
-                "Hệ thống quản lý đào tạo", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(urlIconInfo), null, null);
+                "Thông báo", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(urlIconInfo), null, null);
     }
 }

@@ -197,6 +197,10 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         ShareHelper.USER = nhanVienDao.checkLogin(maNv, matKhau);
         if (ShareHelper.USER != null) {
             this.dispose();
+            if (ShareHelper.USER.getMatKhau().startsWith("$$")) {
+                new DatLaiMatKhau(null, true).setVisible(true);
+            }
+//            TODO: dat lai mat khau
         }else{
             DialogHelper.message(this, "Tài khoản hoặc mật khẩu không hợp lệ", DialogHelper.ERROR_MESSAGE);
             txtMaNv.requestFocus();
@@ -213,8 +217,8 @@ public class DangNhapJDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowClosing
 
     private void lblQuenMatKhauMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblQuenMatKhauMouseClicked
-         new QuenMatKhauJDialog(null, true).setVisible(true);
-         this.dispose();
+        this.dispose(); 
+        new QuenMatKhauJDialog(null, true).setVisible(true); 
     }//GEN-LAST:event_lblQuenMatKhauMouseClicked
 
     /**

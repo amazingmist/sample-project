@@ -5,9 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import poly.app.core.entities.ChuyenDe;
 
 public class DataTypeConverterUtil {
 
@@ -15,18 +12,21 @@ public class DataTypeConverterUtil {
         Vector result = new Vector();
         Class<?> clazz = object.getClass();
         Field[] fields = clazz.getDeclaredFields();
-        Method[] methods = clazz.getMethods();
+        
         try {
             for (Field field : fields) {
-                String fieldName = field.getName();
-                String getMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-                Method method = clazz.getDeclaredMethod(getMethodName);
-                result.add(method.invoke(object));
+//                Get current field
+                Field curField = clazz.getDeclaredField(field.getName());
+ //                Set can accesible this field
+                curField.setAccessible(true);
+ //                Get and add value to vector
+                result.add(curField.get(object));
+ //                Set can not accesible this field
+                curField.setAccessible(false);
             }
-        } catch (IllegalAccessException | IllegalArgumentException | SecurityException ex) {
+        } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException ex) {
             throw ex;
         }
-
         return result;
     }
 
@@ -36,11 +36,12 @@ public class DataTypeConverterUtil {
         
         try {
             for (String fieldName : objectFeilds) {
-                String getMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-                Method method = clazz.getDeclaredMethod(getMethodName);
-                result.add(method.invoke(object));
+                Field curField = clazz.getDeclaredField(fieldName);
+                curField.setAccessible(true);
+                result.add(curField.get(object));
+                curField.setAccessible(false);
             }
-        } catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
+        } catch (IllegalAccessException | IllegalArgumentException | SecurityException ex) {
             throw ex;
         }
 
@@ -57,6 +58,29 @@ public class DataTypeConverterUtil {
             }
         }
         return result;
+    }
+    
+    public static <T> T mergeTwoObject(T objectReusult, T objectInfo) throws Exception{
+        Class<?> clazz = objectReusult.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        
+        try {
+            for (Field field : fields) {
+//                Get current field
+                Field curField = clazz.getDeclaredField(field.getName());
+ //                Set can accesible this field
+                curField.setAccessible(true);
+ //                Get and add value to vector
+                if (curField.get(objectInfo) != null) {
+                    curField.set(objectReusult, curField.get(objectInfo));
+                }
+ //                Set can not accesible this field
+                curField.setAccessible(false);
+            }
+        } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException ex) {
+            throw ex;
+        }
+        return objectReusult;
     }
     
 //    public static void main(String[] args) {

@@ -5,14 +5,10 @@
  */
 package poly.app.view;
 
-import java.net.URL;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import poly.app.core.dao.MaXacNhanDao;
 import poly.app.core.daoimpl.MaXacNhanImpl;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.entities.MaXacNhan;
-import poly.app.core.entities.NhanVien;
 import poly.app.core.helper.DialogHelper;
 import poly.app.core.helper.ShareHelper;
 import poly.app.core.utils.EMailUtil;
@@ -23,7 +19,6 @@ import poly.app.core.utils.StringUtil;
  * @author vothanhtai
  */
 public class QuenMatKhauJDialog extends javax.swing.JDialog {
-
     /**
      * Creates new form QuenMatKhau
      */
@@ -43,8 +38,9 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
     private boolean guiMaXacNhan(String maXacNhan) {
         String email = ShareHelper.USER.getEmail();
         String msgSubject = "Khôi phục mật khẩu";
-        String msgBody = "<h2>Xin chào!<br>Hãy dùng mã xác nhận dưới đây để khôi phục lại mật khẩu.</h2>"
-                + "<br>Tài khoản: " + email + "<br>Mã xác nhận: <b>" + maXacNhan
+        String msgBody = "<h2 style='color: #B93B2D'>Xin chào!<br>Hãy dùng mã xác nhận dưới đây để khôi phục lại mật khẩu.</h2>"
+                + "<br>Mã nhân viên: " + ShareHelper.USER.getMaNv()
+                + "<br>Mã xác nhận: <b>" + maXacNhan
                 + "</b><br>Hãy sử dụng mã xác nhận trên để tiến hình khôi phục mật khẩu.";
         return new EMailUtil(email, msgBody, msgSubject).sendMail();
     }
@@ -204,7 +200,7 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
         if (ShareHelper.USER == null) {
             DialogHelper.message(this, "Không tồn tại nhân viên có email: " + email, DialogHelper.ERROR_MESSAGE);
         } else {
-            String randdomMaXacNhan = StringUtil.randomMaXacNhan();
+            String randdomMaXacNhan = StringUtil.randomString();
             boolean isSent = this.guiMaXacNhan(randdomMaXacNhan);
             if (isSent) {
                 DialogHelper.message(this, "Đã gửi mã xác nhận\nVui lòng nhập mã xác nhận và tiến hành đổi mật khẩu", DialogHelper.INFORMATION_MESSAGE);

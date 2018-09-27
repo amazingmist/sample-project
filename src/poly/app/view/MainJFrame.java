@@ -17,6 +17,7 @@ import java.util.List;
 import javax.swing.Timer;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.entities.NhanVien;
+import poly.app.core.helper.DialogHelper;
 import poly.app.core.helper.ShareHelper;
 import poly.app.core.utils.HibernateUtil;
 
@@ -25,6 +26,11 @@ import poly.app.core.utils.HibernateUtil;
  * @author vothanhtai
  */
 public class MainJFrame extends javax.swing.JFrame {
+
+    List<NhanVien> nhanVienList;
+
+    NhanVienJFrame nhanVienJFrame;
+
     /**
      * Creates new form MainJFrame
      */
@@ -36,7 +42,6 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     private void changeAppIcon() {
-        URL urlIcon = getClass().getResource("./icon/icon-app.png");
         setIconImage(ShareHelper.APP_ICON);
         Application.getApplication().setDockIconImage(ShareHelper.APP_ICON);
     }
@@ -44,6 +49,14 @@ public class MainJFrame extends javax.swing.JFrame {
     private void loadSessionFactory() {
         new Thread(() -> {
             HibernateUtil.getSessionFactory();
+            loadNhanVienList();
+        }).start();
+    }
+
+    private void loadNhanVienList() {
+        new Thread(() -> {
+            nhanVienList = new NhanVienDaoImpl().getAll();
+            nhanVienJFrame = new NhanVienJFrame(nhanVienList);
         }).start();
     }
 
@@ -69,13 +82,11 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     private void openDangNhapDialog() {
-        DangNhapJDialog dangNhapJDialog = new DangNhapJDialog(this, true);
-        dangNhapJDialog.setVisible(true);
+        new DangNhapJDialog(this, true).setVisible(true);
     }
-    
+
     private void openDoiMatKhauDialog() {
-        DoiMatKhauJDialog doiMatKhauJDialog = new DoiMatKhauJDialog(this, true);
-        doiMatKhauJDialog.setVisible(true);
+        new DoiMatKhauJDialog(this, true).setVisible(true);
     }
 
     /**
@@ -139,6 +150,14 @@ public class MainJFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAutoRequestFocus(false);
         setFocusTraversalPolicyProvider(true);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+            public void windowDeactivated(java.awt.event.WindowEvent evt) {
+                formWindowDeactivated(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(369, 178));
@@ -435,7 +454,10 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDangXuatActionPerformed
 
     private void btnKetThucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKetThucActionPerformed
-        System.exit(0);
+        boolean isConfirm = DialogHelper.confirm(this, "Bạn có muốn đóng chương trình?");
+        if (isConfirm) {
+            System.exit(0);
+        }
     }//GEN-LAST:event_btnKetThucActionPerformed
 
     private void mniDoiMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniDoiMatKhauActionPerformed
@@ -445,8 +467,20 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_mniDoiMatKhauActionPerformed
 
     private void btnNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhanVienActionPerformed
-        
+        if (nhanVienList != null) {
+            nhanVienJFrame.requestFocus();
+            nhanVienJFrame.setVisible(true);
+        }
     }//GEN-LAST:event_btnNhanVienActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        nhanVienJFrame.setAlwaysOnTop(true);
+        nhanVienJFrame.requestFocus();
+    }//GEN-LAST:event_formWindowActivated
+
+    private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
+        nhanVienJFrame.setAlwaysOnTop(false);
+    }//GEN-LAST:event_formWindowDeactivated
 
     /**
      * @param args the command line arguments
