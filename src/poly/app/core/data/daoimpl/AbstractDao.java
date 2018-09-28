@@ -3,9 +3,13 @@ package poly.app.core.data.daoimpl;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import poly.app.core.constant.CoreConstant;
 import poly.app.core.data.dao.GenericDao;
 import poly.app.core.utils.HibernateUtil;
 
@@ -56,6 +60,38 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
             ex.printStackTrace();
         }
         return result;
+    }
+    
+    @Override
+    public List<T> getByProperty(String property, Object value, String sortExpression, String sortDirection, Integer offset, Integer limit) {
+        List<T> list;
+        Session session = this.getSession();
+        try {
+            Criteria cr = session.createCriteria(this.getPersistenceClass());
+            if (property != null && value != null) {
+                cr.add(Restrictions.eq(property, value));
+            }
+            if (sortExpression != null && sortDirection != null){
+                Order order = sortDirection.equalsIgnoreCase(CoreConstant.SORT_ASC) ?
+                        Order.asc(sortExpression) : Order.desc(sortExpression);
+                cr.addOrder(order);
+            }
+
+//            set start position offset
+            if (offset != null && offset >= 0){
+                cr.setFirstResult(offset);
+            }
+//            set limit row
+            if (limit != null && limit > 0){
+                cr.setMaxResults(limit);
+            }
+
+            list = cr.list();
+        }catch (HibernateException ex){
+            ex.printStackTrace();
+            return null;
+        }
+        return list;
     }
 
     @Override

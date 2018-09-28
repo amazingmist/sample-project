@@ -200,7 +200,6 @@ public class DangNhapJDialog extends javax.swing.JDialog {
             if (ShareHelper.USER.getMatKhau().startsWith("$$")) {
                 new DatLaiMatKhau(null, true).setVisible(true);
             }
-//            TODO: dat lai mat khau
         }else{
             DialogHelper.message(this, "Tài khoản hoặc mật khẩu không hợp lệ", DialogHelper.ERROR_MESSAGE);
             txtMaNv.requestFocus();

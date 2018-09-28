@@ -8,7 +8,7 @@ public class DateHelper {
     
     static final SimpleDateFormat DATE_FORMATER = new SimpleDateFormat("dd-MM-yyyy");
 
-    public static Date toDate(String date, String...pattern) {
+    public static Date toDate(String date, String...pattern){
         try {
             if(pattern.length > 0){
                 DATE_FORMATER.applyPattern(pattern[0]);
@@ -19,7 +19,7 @@ public class DateHelper {
             return DATE_FORMATER.parse(date);
         } 
         catch (ParseException ex) {
-            throw new RuntimeException(ex);
+            throw new RuntimeException();
         }
     }
 
