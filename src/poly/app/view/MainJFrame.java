@@ -27,8 +27,6 @@ import poly.app.core.utils.HibernateUtil;
  */
 public class MainJFrame extends javax.swing.JFrame {
 
-    List<NhanVien> nhanVienList;
-
     NhanVienJFrame nhanVienJFrame;
 
     /**
@@ -49,14 +47,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private void loadSessionFactory() {
         new Thread(() -> {
             HibernateUtil.getSessionFactory();
-            loadNhanVienList();
-        }).start();
-    }
-
-    private void loadNhanVienList() {
-        new Thread(() -> {
-            nhanVienList = new NhanVienDaoImpl().getAll();
-            nhanVienJFrame = new NhanVienJFrame(nhanVienList);
+            nhanVienJFrame = new NhanVienJFrame();
         }).start();
     }
 
@@ -467,10 +458,8 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_mniDoiMatKhauActionPerformed
 
     private void btnNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhanVienActionPerformed
-        if (nhanVienList != null) {
-            nhanVienJFrame.requestFocus();
-            nhanVienJFrame.setVisible(true);
-        }
+        nhanVienJFrame.requestFocus();
+        nhanVienJFrame.setVisible(true);
     }//GEN-LAST:event_btnNhanVienActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated

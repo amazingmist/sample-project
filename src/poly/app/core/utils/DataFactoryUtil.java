@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Vector;
 
-public class DataTypeConverterUtil {
+public class DataFactoryUtil {
 
     public static <T> Vector objectToVector(T object) throws Exception{
         Vector result = new Vector();
@@ -52,7 +52,7 @@ public class DataTypeConverterUtil {
         Vector result = new Vector();
         for (T t : list) {
             try {
-                result.add(DataTypeConverterUtil.objectToVectorByFields(t, objectFeilds));
+                result.add(DataFactoryUtil.objectToVectorByFields(t, objectFeilds));
             } catch (Exception ex) {
                 throw ex;
             }
@@ -86,10 +86,10 @@ public class DataTypeConverterUtil {
 //    public static void main(String[] args) {
 //        ChuyenDe chuyenDe = new ChuyenDe("TAI01", "Học lập trình C#", 3000, 10, "tai.png", "Học C#");
 //        try {
-//            Vector v = DataTypeConverterUtil.objectToVector(chuyenDe);
+//            Vector v = DataFactoryUtil.objectToVector(chuyenDe);
 //            System.out.println(v);
 //        } catch (Exception ex) {
-//            Logger.getLogger(DataTypeConverterUtil.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(DataFactoryUtil.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //    }
 }

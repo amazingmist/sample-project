@@ -9,8 +9,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
+import javax.swing.UIDefaults;
 import javax.swing.UIManager;
-import poly.app.core.utils.HibernateUtil;
 
 /**
  *
@@ -26,7 +26,8 @@ public class ChaoJDialog extends javax.swing.JDialog {
         initComponents();
         init();
     }
-    public void init(){
+
+    public void init() {
         setLocationRelativeTo(null);
         new Timer(40, new ActionListener() {
             @Override
@@ -35,7 +36,7 @@ public class ChaoJDialog extends javax.swing.JDialog {
                 if (value < 100) {
                     progressBar.setValue(value + 1);
                     progressBar.setString((value + 1) + " %");
-                }else{
+                } else {
                     ChaoJDialog.this.dispose();
                 }
             }
@@ -70,8 +71,8 @@ public class ChaoJDialog extends javax.swing.JDialog {
 
         progressBar.setBackground(new java.awt.Color(254, 203, 101));
         progressBar.setFont(new java.awt.Font("Open Sans", 1, 14)); // NOI18N
-        progressBar.setForeground(new java.awt.Color(51, 51, 51));
-        progressBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        progressBar.setForeground(new java.awt.Color(255, 255, 255));
+        progressBar.setBorder(null);
         progressBar.setOpaque(true);
         progressBar.setString("0 %");
         progressBar.setStringPainted(true);
@@ -158,5 +159,4 @@ public class ChaoJDialog extends javax.swing.JDialog {
     private javax.swing.JProgressBar progressBar;
     // End of variables declaration//GEN-END:variables
 
-    
 }

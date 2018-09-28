@@ -22,7 +22,7 @@ import poly.app.core.entities.NhanVien;
 import poly.app.core.helper.DateHelper;
 import poly.app.core.helper.TableStructureHelper;
 import poly.app.core.helper.DialogHelper;
-import poly.app.core.utils.DataTypeConverterUtil;
+import poly.app.core.utils.DataFactoryUtil;
 import poly.app.core.utils.EMailUtil;
 import poly.app.core.utils.StringUtil;
 
@@ -38,11 +38,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         reRenderTable();
         addRadioToGroup();
-    }
-
-    public NhanVienJFrame(List<NhanVien> nhanVienList) {
-        this();
-        this.nhanVienList = nhanVienList;
         loadDataToTable();
     }
 
@@ -105,10 +100,10 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }
 
     private void loadDataToTable() {
-//        nhanVienList = new NhanVienDaoImpl().getAll();
+        nhanVienList = new NhanVienDaoImpl().getAll();
         Vector<Vector> convertedVector;
         try {
-            convertedVector = DataTypeConverterUtil.objectListToVectorByFields(nhanVienList, TableStructureHelper.NHANVIEN_TABLE_FEILDS);
+            convertedVector = DataFactoryUtil.objectListToVectorByFields(nhanVienList, TableStructureHelper.NHANVIEN_TABLE_FEILDS);
             for (Vector object : convertedVector) {
                 int fieldVaiTro = object.size() - 1;
                 boolean isTruongPhong = (boolean) object.get(fieldVaiTro);
@@ -304,6 +299,11 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(850, 550));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowDeactivated(java.awt.event.WindowEvent evt) {
+                formWindowDeactivated(evt);
+            }
+        });
 
         jPanel3.setBackground(new java.awt.Color(65, 76, 89));
 
@@ -375,6 +375,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel7.setText("Ngày sinh");
 
+        txtHoTen.setEditable(false);
         txtHoTen.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
@@ -719,7 +720,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             NhanVien nhanVienInList = nhanVienList.get(selectedIndex);
             NhanVien nhanVienInView = getNhanVienFromInput();
             try {
-                nhanVienInList = DataTypeConverterUtil.mergeTwoObject(nhanVienInList, nhanVienInView);
+                nhanVienInList = DataFactoryUtil.mergeTwoObject(nhanVienInList, nhanVienInView);
                 isUpdated = new NhanVienDaoImpl().update(nhanVienInList);
             } catch (Exception ex) {
                 Logger.getLogger(NhanVienJFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -729,7 +730,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                 DialogHelper.message(this, "Cập nhật tài khoản thành công.", DialogHelper.INFORMATION_MESSAGE);
                 Vector v;
                 try {
-                    v = DataTypeConverterUtil.objectToVectorByFields(nhanVienInList, TableStructureHelper.NHANVIEN_TABLE_FEILDS);
+                    v = DataFactoryUtil.objectToVectorByFields(nhanVienInList, TableStructureHelper.NHANVIEN_TABLE_FEILDS);
                     tableData.set(selectedIndex, v);
                     tblNhanVien.updateUI();
                 } catch (Exception ex) {
@@ -742,6 +743,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCapNhatActionPerformed
 
     private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
+        setViewingState();
         if (tableData.size() > 0) {
             selectedIndex = 0;
             changeSelectedIndex();
@@ -749,6 +751,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnFirstActionPerformed
 
     private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
+        setViewingState();
         if (tableData.size() > 0) {
             selectedIndex = tableData.size() - 1;
             changeSelectedIndex();
@@ -756,6 +759,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLastActionPerformed
 
     private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
+        setViewingState();
         if (selectedIndex > 0) {
             selectedIndex--;
             changeSelectedIndex();
@@ -763,6 +767,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPrevActionPerformed
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        setViewingState();
         if (selectedIndex < tableData.size() - 1) {
             selectedIndex++;
             changeSelectedIndex();
@@ -773,10 +778,16 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         selectedIndex = tblNhanVien.getSelectedRow();
         if (panelTab.getSelectedIndex() == 0 || selectedIndex == -1) {
             setViewingState();
-        }else if (panelTab.getSelectedIndex() >= 0) {
+        }else if (panelTab.getSelectedIndex() >= 0 && selectedIndex != -1) {
             fillDataToInput();
         }
     }//GEN-LAST:event_panelTabStateChanged
+
+    private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
+        tblNhanVien.clearSelection();
+        resetInput();
+        setViewingState();
+    }//GEN-LAST:event_formWindowDeactivated
 
     /**
      * @param args the command line arguments
