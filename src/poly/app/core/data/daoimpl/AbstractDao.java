@@ -35,7 +35,7 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
     }
     
     @Override
-    public List<T> getAll() {
+    public List<T> selectAll() {
         List<T> list = null;
         Session session = this.getSession();
         try {
@@ -50,7 +50,7 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
     }
     
     @Override
-    public T getById(ID id) {
+    public T selectById(ID id) {
         T result = null;
         Session session = this.getSession();
         try {
@@ -63,7 +63,7 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
     }
     
     @Override
-    public List<T> getByProperty(String property, Object value, String sortExpression, String sortDirection, Integer offset, Integer limit) {
+    public List<T> selectByProperties(String property, Object value, String sortExpression, String sortDirection, Integer offset, Integer limit) {
         List<T> list;
         Session session = this.getSession();
         try {

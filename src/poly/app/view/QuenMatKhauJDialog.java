@@ -46,7 +46,7 @@ public class QuenMatKhauJDialog extends javax.swing.JDialog {
     }
     
     private boolean checkMaXacNhan(String maXacNhan){
-        return new MaXacNhanImpl().getById(ShareHelper.USER.getMaNv()).getMaXacNhan().equals(maXacNhan);
+        return new MaXacNhanImpl().selectById(ShareHelper.USER.getMaNv()).getMaXacNhan().equals(maXacNhan);
     }
     
     private boolean xoaMaXacNhan(){

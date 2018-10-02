@@ -13,9 +13,9 @@ import java.util.List;
  * @author vothanhtai
  */
 public interface GenericDao <ID extends Serializable, T>{
-    List<T> getAll();
-    T getById(ID id);
-    public List<T> getByProperty(String property, Object value, String sortExpression, String sortDirection, Integer offset, Integer limit);
+    List<T> selectAll();
+    T selectById(ID id);
+    public List<T> selectByProperties(String property, Object value, String sortExpression, String sortDirection, Integer offset, Integer limit);
     boolean insert(T entity);
     boolean update(T entity);
     boolean delete(T entity);

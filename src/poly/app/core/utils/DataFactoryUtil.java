@@ -5,6 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DataFactoryUtil {
 
@@ -81,6 +83,20 @@ public class DataFactoryUtil {
             throw ex;
         }
         return objectReusult;
+    }
+    
+    public static <T> Object getValueByField(T object, String fieldName){
+        Class<?> clazz = object.getClass();
+        Object result = null;
+        try {
+            Field curField = clazz.getDeclaredField(fieldName);
+            curField.setAccessible(true);
+            result = curField.get(object);
+            curField.setAccessible(false);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            Logger.getLogger(DataFactoryUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return result;
     }
     
 //    public static void main(String[] args) {
