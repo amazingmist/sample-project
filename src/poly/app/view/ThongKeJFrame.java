@@ -31,6 +31,7 @@ import poly.app.core.utils.DataFactoryUtil;
 import poly.app.core.utils.EMailUtil;
 import poly.app.core.utils.ImageUtil;
 import poly.app.core.utils.StringUtil;
+import poly.app.view.utils.TableRenderer;
 
 public class ThongKeJFrame extends javax.swing.JFrame {
     Vector<Vector> tableData = new Vector<>();
@@ -43,46 +44,17 @@ public class ThongKeJFrame extends javax.swing.JFrame {
     }
 
     private void reRenderUI() {
-        DefaultTableModel tableModel = (DefaultTableModel) tblTKNguoiHoc.getModel();
-        tableModel = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tableModel.setDataVector(tableData, new Vector(Arrays.asList(ObjectStructureHelper.NHANVIEN_TABLE_IDENTIFIERS)));
-        tblTKNguoiHoc.setModel(tableModel);
+        TableRenderer tableRenderer = new TableRenderer(tblTKNguoiHoc);
+        tableRenderer.setCellEditable(false);
+        tableRenderer.setDataVector(tableData, ObjectStructureHelper.THONGKENGUOIHOC_TABLE_IDENTIFIERS);
+        tableRenderer.changeHeaderStyle();
 
-        JTableHeader jTableHeader = tblTKNguoiHoc.getTableHeader();
-        jTableHeader.setFont(new Font("open sans", Font.PLAIN, 14)); // font name style size
-        // canh giua man hinh
-        ((DefaultTableCellRenderer) jTableHeader.getDefaultRenderer())
-                .setHorizontalAlignment(JLabel.CENTER);
-        // chieu cao header
-        jTableHeader.setPreferredSize(new Dimension(0, 25));
-        jTableHeader.setForeground(Color.decode("#000")); // change the Foreground
-        tblTKNguoiHoc.setFillsViewportHeight(true);
-        tblTKNguoiHoc.setBackground(Color.WHITE);
+        tableRenderer.setColumnAlignment(0, TableRenderer.CELL_ALIGN_CENTER);
+        tableRenderer.setColumnAlignment(1, TableRenderer.CELL_ALIGN_RIGHT);
+        tableRenderer.setColumnAlignment(2, TableRenderer.CELL_ALIGN_LEFT);
+        tableRenderer.setColumnAlignment(3, TableRenderer.CELL_ALIGN_LEFT);
 
-        DefaultTableCellRenderer cellLeft = new DefaultTableCellRenderer();
-        cellLeft.setHorizontalAlignment(JLabel.LEFT);
-
-        DefaultTableCellRenderer cellCenter = new DefaultTableCellRenderer();
-        cellCenter.setHorizontalAlignment(JLabel.CENTER);
-
-        DefaultTableCellRenderer cellRight = new DefaultTableCellRenderer();
-        cellRight.setHorizontalAlignment(JLabel.RIGHT);
-
-        tblTKNguoiHoc.getColumnModel().getColumn(0).setCellRenderer(cellLeft);
-        tblTKNguoiHoc.getColumnModel().getColumn(1).setCellRenderer(cellLeft);
-        tblTKNguoiHoc.getColumnModel().getColumn(2).setCellRenderer(cellRight);
-        tblTKNguoiHoc.getColumnModel().getColumn(3).setCellRenderer(cellRight);
-        tblTKNguoiHoc.getColumnModel().getColumn(4).setCellRenderer(cellCenter);
-
-        // set width for column
-        double tableWidth = tblTKNguoiHoc.getPreferredSize().getWidth();
-        tblTKNguoiHoc.getColumnModel().getColumn(1).setPreferredWidth((int) (tableWidth * 0.35));
-        tblTKNguoiHoc.getColumnModel().getColumn(3).setPreferredWidth((int) (tableWidth * 0.45));
+//        tableRenderer.setColoumnWidthByPersent(0, 10);
     }
 
     private void loadDataToTable() {
