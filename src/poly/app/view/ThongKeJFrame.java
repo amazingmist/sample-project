@@ -44,35 +44,57 @@ public class ThongKeJFrame extends javax.swing.JFrame {
     }
 
     private void reRenderUI() {
+//        TBL NGUOI HOC
         TableRenderer tblRenderer1 = new TableRenderer(tblTKNguoiHoc);
         tblRenderer1.setCellEditable(false);
         tblRenderer1.setDataVector(tableData, ObjectStructureHelper.THONGKENGUOIHOC_TABLE_IDENTIFIERS);
         tblRenderer1.changeHeaderStyle();
-
         tblRenderer1.setColumnAlignment(0, TableRenderer.CELL_ALIGN_CENTER);
         tblRenderer1.setColumnAlignment(1, TableRenderer.CELL_ALIGN_RIGHT);
         tblRenderer1.setColumnAlignment(2, TableRenderer.CELL_ALIGN_LEFT);
         tblRenderer1.setColumnAlignment(3, TableRenderer.CELL_ALIGN_LEFT);
-        
-        tblRenderer1.setColoumnWidthByPersent(0, 10);
         tblRenderer1.setColoumnWidthByPersent(1, 20);
         tblRenderer1.setColoumnWidthByPersent(2, 35);
         tblRenderer1.setColoumnWidthByPersent(3, 35);
         
+//        TBL BANG DIEM
         TableRenderer tblRenderer2 = new TableRenderer(tblTKBangDiem);
         tblRenderer2.setCellEditable(false);
         tblRenderer2.setDataVector(tableData, ObjectStructureHelper.THONGKEDIEM_TABLE_IDENTIFIERS);
         tblRenderer2.changeHeaderStyle();
-
         tblRenderer2.setColumnAlignment(0, TableRenderer.CELL_ALIGN_LEFT);
         tblRenderer2.setColumnAlignment(1, TableRenderer.CELL_ALIGN_LEFT);
         tblRenderer2.setColumnAlignment(2, TableRenderer.CELL_ALIGN_RIGHT);
         tblRenderer2.setColumnAlignment(3, TableRenderer.CELL_ALIGN_LEFT);
-        
-        tblRenderer2.setColoumnWidthByPersent(0, 10);
         tblRenderer2.setColoumnWidthByPersent(1, 45);
-        tblRenderer2.setColoumnWidthByPersent(2, 10);
         tblRenderer2.setColoumnWidthByPersent(3, 35);
+        
+//        TBL BANG DIEM
+        TableRenderer tblRenderer3 = new TableRenderer(tblTKTongHopDiem);
+        tblRenderer3.setCellEditable(false);
+        tblRenderer3.setDataVector(tableData, ObjectStructureHelper.THONGKETONGHOPDIEM_TABLE_IDENTIFIERS);
+        tblRenderer3.changeHeaderStyle();
+        tblRenderer3.setColumnAlignment(0, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer3.setColumnAlignment(1, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer3.setColumnAlignment(2, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer3.setColumnAlignment(3, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer3.setColumnAlignment(4, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer3.setColoumnWidthByPersent(0, 80);
+        
+//        TBL DOANH THU
+        TableRenderer tblRenderer4 = new TableRenderer(tblTKDoanhThu);
+        tblRenderer4.setCellEditable(false);
+        tblRenderer4.setDataVector(tableData, ObjectStructureHelper.THONGKEDOANHTHU_TABLE_IDENTIFIERS);
+        tblRenderer4.changeHeaderStyle();
+        tblRenderer4.setColumnAlignment(0, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer4.setColumnAlignment(1, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer4.setColumnAlignment(2, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer4.setColumnAlignment(3, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer4.setColumnAlignment(4, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer4.setColumnAlignment(5, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer4.setColumnAlignment(6, TableRenderer.CELL_ALIGN_RIGHT);
+        
+        tblRenderer4.setColoumnWidthByPersent(0, 40);
     }
 
     private void loadDataToTable() {
@@ -341,134 +363,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ThongKeJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
