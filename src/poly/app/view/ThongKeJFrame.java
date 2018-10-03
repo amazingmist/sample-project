@@ -44,20 +44,35 @@ public class ThongKeJFrame extends javax.swing.JFrame {
     }
 
     private void reRenderUI() {
-        TableRenderer tableRenderer = new TableRenderer(tblTKNguoiHoc);
-        tableRenderer.setCellEditable(false);
-        tableRenderer.setDataVector(tableData, ObjectStructureHelper.THONGKENGUOIHOC_TABLE_IDENTIFIERS);
-        tableRenderer.changeHeaderStyle();
+        TableRenderer tblRenderer1 = new TableRenderer(tblTKNguoiHoc);
+        tblRenderer1.setCellEditable(false);
+        tblRenderer1.setDataVector(tableData, ObjectStructureHelper.THONGKENGUOIHOC_TABLE_IDENTIFIERS);
+        tblRenderer1.changeHeaderStyle();
 
-        tableRenderer.setColumnAlignment(0, TableRenderer.CELL_ALIGN_CENTER);
-        tableRenderer.setColumnAlignment(1, TableRenderer.CELL_ALIGN_RIGHT);
-        tableRenderer.setColumnAlignment(2, TableRenderer.CELL_ALIGN_LEFT);
-        tableRenderer.setColumnAlignment(3, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer1.setColumnAlignment(0, TableRenderer.CELL_ALIGN_CENTER);
+        tblRenderer1.setColumnAlignment(1, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer1.setColumnAlignment(2, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer1.setColumnAlignment(3, TableRenderer.CELL_ALIGN_LEFT);
         
-        tableRenderer.setColoumnWidthByPersent(0, 10);
-        tableRenderer.setColoumnWidthByPersent(1, 20);
-        tableRenderer.setColoumnWidthByPersent(2, 35);
-        tableRenderer.setColoumnWidthByPersent(3, 35);
+        tblRenderer1.setColoumnWidthByPersent(0, 10);
+        tblRenderer1.setColoumnWidthByPersent(1, 20);
+        tblRenderer1.setColoumnWidthByPersent(2, 35);
+        tblRenderer1.setColoumnWidthByPersent(3, 35);
+        
+        TableRenderer tblRenderer2 = new TableRenderer(tblTKBangDiem);
+        tblRenderer2.setCellEditable(false);
+        tblRenderer2.setDataVector(tableData, ObjectStructureHelper.THONGKEDIEM_TABLE_IDENTIFIERS);
+        tblRenderer2.changeHeaderStyle();
+
+        tblRenderer2.setColumnAlignment(0, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer2.setColumnAlignment(1, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer2.setColumnAlignment(2, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer2.setColumnAlignment(3, TableRenderer.CELL_ALIGN_LEFT);
+        
+        tblRenderer2.setColoumnWidthByPersent(0, 10);
+        tblRenderer2.setColoumnWidthByPersent(1, 45);
+        tblRenderer2.setColoumnWidthByPersent(2, 10);
+        tblRenderer2.setColoumnWidthByPersent(3, 35);
     }
 
     private void loadDataToTable() {
