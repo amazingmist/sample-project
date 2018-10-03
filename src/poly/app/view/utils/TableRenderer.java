@@ -61,6 +61,6 @@ public class TableRenderer {
     
     public void setColoumnWidthByPersent(int columnIndex, int persent){
         double tableWidth = this.jTable.getPreferredSize().getWidth();
-        this.jTable.getColumnModel().getColumn(columnIndex).setPreferredWidth((int) (tableWidth * persent));
+        this.jTable.getColumnModel().getColumn(columnIndex).setPreferredWidth((int) (tableWidth * persent / 100));
     }
 }

@@ -53,8 +53,11 @@ public class ThongKeJFrame extends javax.swing.JFrame {
         tableRenderer.setColumnAlignment(1, TableRenderer.CELL_ALIGN_RIGHT);
         tableRenderer.setColumnAlignment(2, TableRenderer.CELL_ALIGN_LEFT);
         tableRenderer.setColumnAlignment(3, TableRenderer.CELL_ALIGN_LEFT);
-
-//        tableRenderer.setColoumnWidthByPersent(0, 10);
+        
+        tableRenderer.setColoumnWidthByPersent(0, 10);
+        tableRenderer.setColoumnWidthByPersent(1, 20);
+        tableRenderer.setColoumnWidthByPersent(2, 35);
+        tableRenderer.setColoumnWidthByPersent(3, 35);
     }
 
     private void loadDataToTable() {
