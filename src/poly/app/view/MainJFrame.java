@@ -201,6 +201,11 @@ public class MainJFrame extends javax.swing.JFrame {
         btnNguoiHoc.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnNguoiHoc.setMargin(new java.awt.Insets(0, 20, 0, 20));
         btnNguoiHoc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNguoiHoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNguoiHocActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnNguoiHoc);
 
         btnChuyenDe.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
@@ -213,6 +218,11 @@ public class MainJFrame extends javax.swing.JFrame {
         btnChuyenDe.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnChuyenDe.setMargin(new java.awt.Insets(0, 20, 0, 20));
         btnChuyenDe.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnChuyenDe.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChuyenDeActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnChuyenDe);
 
         btnKhoaHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
@@ -225,6 +235,11 @@ public class MainJFrame extends javax.swing.JFrame {
         btnKhoaHoc.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnKhoaHoc.setMargin(new java.awt.Insets(0, 20, 0, 20));
         btnKhoaHoc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnKhoaHoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKhoaHocActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnKhoaHoc);
 
         btnNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
@@ -327,12 +342,22 @@ public class MainJFrame extends javax.swing.JFrame {
         mniDangNhap.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         mniDangNhap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Key.png"))); // NOI18N
         mniDangNhap.setText("Đăng nhập");
+        mniDangNhap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniDangNhapActionPerformed(evt);
+            }
+        });
         jMenu2.add(mniDangNhap);
 
         mniLDangXuat.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         mniLDangXuat.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         mniLDangXuat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Log out.png"))); // NOI18N
         mniLDangXuat.setText("Đăng xuất");
+        mniLDangXuat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniLDangXuatActionPerformed(evt);
+            }
+        });
         jMenu2.add(mniLDangXuat);
         jMenu2.add(jSeparator1);
 
@@ -351,6 +376,11 @@ public class MainJFrame extends javax.swing.JFrame {
         mniKetThuc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         mniKetThuc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Stop.png"))); // NOI18N
         mniKetThuc.setText("Kết thúc");
+        mniKetThuc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniKetThucActionPerformed(evt);
+            }
+        });
         jMenu2.add(mniKetThuc);
 
         jMenuBar1.add(jMenu2);
@@ -470,6 +500,30 @@ public class MainJFrame extends javax.swing.JFrame {
     private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
         nhanVienJFrame.setAlwaysOnTop(false);
     }//GEN-LAST:event_formWindowDeactivated
+
+    private void btnKhoaHocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhoaHocActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnKhoaHocActionPerformed
+
+    private void btnChuyenDeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChuyenDeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnChuyenDeActionPerformed
+
+    private void btnNguoiHocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNguoiHocActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnNguoiHocActionPerformed
+
+    private void mniDangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniDangNhapActionPerformed
+        this.btnDangXuatActionPerformed(evt);
+    }//GEN-LAST:event_mniDangNhapActionPerformed
+
+    private void mniLDangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniLDangXuatActionPerformed
+        this.btnDangXuatActionPerformed(evt);
+    }//GEN-LAST:event_mniLDangXuatActionPerformed
+
+    private void mniKetThucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniKetThucActionPerformed
+        this.btnKetThucActionPerformed(evt);
+    }//GEN-LAST:event_mniKetThucActionPerformed
 
     /**
      * @param args the command line arguments

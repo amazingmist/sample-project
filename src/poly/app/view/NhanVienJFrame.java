@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -23,7 +24,7 @@ import poly.app.core.dao.NhanVienDao;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.entities.NhanVien;
 import poly.app.core.helper.DateHelper;
-import poly.app.core.helper.TableStructureHelper;
+import poly.app.core.helper.ObjectStructureHelper;
 import poly.app.core.helper.DialogHelper;
 import poly.app.core.utils.DataFactoryUtil;
 import poly.app.core.utils.EMailUtil;
@@ -33,7 +34,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
     NhanVienDao nhanVienDao = new NhanVienDaoImpl();
     Vector<Vector> tableData = new Vector<>();
-    List<NhanVien> nhanVienList;
+    HashMap<String, NhanVien> nhanVienHashMap = new HashMap<>();
     int selectedIndex = -1;
     boolean isDataLoaded = false;
 
@@ -53,7 +54,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                 return false;
             }
         };
-        tableModel.setDataVector(tableData, new Vector(Arrays.asList(TableStructureHelper.NHANVIEN_TABLE_IDENTIFIERS)));
+        tableModel.setDataVector(tableData, new Vector(Arrays.asList(ObjectStructureHelper.NHANVIEN_TABLE_IDENTIFIERS)));
         tblNhanVien.setModel(tableModel);
 
         JTableHeader jTableHeader = tblNhanVien.getTableHeader();
@@ -88,7 +89,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         tblNhanVien.getColumnModel().getColumn(3).setPreferredWidth((int) (tableWidth * 0.45));
 
 //        Add data to combobox
-        for (String identifier : TableStructureHelper.NHANVIEN_TABLE_IDENTIFIERS) {
+        for (String identifier : ObjectStructureHelper.NHANVIEN_TABLE_IDENTIFIERS) {
             cboBoLoc.addItem(identifier);
         }
         cboBoLoc.setSelectedIndex(1);
@@ -104,20 +105,25 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
     private void loadDataToTable() {
         tableData.clear();
-        nhanVienList = new NhanVienDaoImpl().selectByProperties(null, null, "vaiTro", CoreConstant.SORT_DESC, null, null);
-        Vector<Vector> convertedVector;
+        List<NhanVien> dataLoadedList = new NhanVienDaoImpl().selectByProperties(null, null, "vaiTro", CoreConstant.SORT_DESC, null, null);
+
         try {
-            convertedVector = DataFactoryUtil.objectListToVectorByFields(nhanVienList, TableStructureHelper.NHANVIEN_TABLE_FEILDS);
-            for (Vector object : convertedVector) {
-                int fieldVaiTro = object.size() - 1;
-                boolean isTruongPhong = (boolean) object.get(fieldVaiTro);
-                object.set(fieldVaiTro, isTruongPhong ? "Trưởng phòng" : "Nhân viên");
-                tableData.add(object);
+            for (NhanVien nhanVien : dataLoadedList) {
+//                Convert nhanvien to vector
+                Vector vData = DataFactoryUtil.objectToVectorByFields(nhanVien, ObjectStructureHelper.NHANVIEN_PROPERTIES);
+                int fieldVaiTro = vData.size() - 1;
+                boolean isTruongPhong = (boolean) vData.get(fieldVaiTro);
+                vData.set(fieldVaiTro, isTruongPhong ? "Trưởng phòng" : "Nhân viên");
+                tableData.add(vData);
+
+//                Add nhanvien to hashmap
+                nhanVienHashMap.put(nhanVien.getMaNv(), nhanVien);
             }
             tblNhanVien.updateUI();
         } catch (Exception ex) {
             Logger.getLogger(NhanVienJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         isDataLoaded = true;
     }
 
@@ -134,7 +140,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         if (selectedIndex == -1) {
             return;
         }
-        NhanVien selectedNhanVien = nhanVienList.get(selectedIndex);
+//        get ma nhan vien by selected index
+        String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
+        NhanVien selectedNhanVien = nhanVienHashMap.get(maNv);
         txtMaNhanVien.setText(selectedNhanVien.getMaNv());
         txtHoTen.setText(selectedNhanVien.getHoTen());
         txtNgaySinh.setText(DateHelper.toString(selectedNhanVien.getNgaySinh()));
@@ -169,14 +177,14 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }
 
     private void addModelToTable(NhanVien nhanVien) {
-        Vector v = new Vector();
-        v.add(nhanVien.getMaNv());
-        v.add(nhanVien.getHoTen());
-        v.add(nhanVien.getDienThoai());
-        v.add(nhanVien.getEmail());
-        v.add(nhanVien.getVaiTro() ? "Trưởng phòng" : "Nhân viên");
+        Vector vData = new Vector();
+        vData.add(nhanVien.getMaNv());
+        vData.add(nhanVien.getHoTen());
+        vData.add(nhanVien.getDienThoai());
+        vData.add(nhanVien.getEmail());
+        vData.add(nhanVien.getVaiTro() ? "Trưởng phòng" : "Nhân viên");
 
-        tableData.add(v);
+        tableData.add(vData);
     }
 
     private NhanVien getModelFromForm() {
@@ -206,7 +214,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }
 
     private boolean validateInputAddingState() {
-        for (NhanVien nhanVien : nhanVienList) {
+        for (NhanVien nhanVien : nhanVienHashMap.values()) {
             if (nhanVien.getMaNv().equals(txtMaNhanVien.getText())) {
                 DialogHelper.message(this, "Mã nhân viên đã tồn tại", DialogHelper.ERROR_MESSAGE);
                 return false;
@@ -221,8 +229,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }
 
     private boolean validateInputEditingState() {
-        if (!nhanVienList.get(selectedIndex).getEmail().equals(txtEmail.getText())) {
-            for (NhanVien nhanVien : nhanVienList) {
+        String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
+        if (!nhanVienHashMap.get(maNv).getEmail().equals(txtEmail.getText())) {
+            for (NhanVien nhanVien : nhanVienHashMap.values()) {
                 if (nhanVien.getEmail().equals(txtEmail.getText())) {
                     DialogHelper.message(this, "Email đã tồn tại", DialogHelper.ERROR_MESSAGE);
                     return false;
@@ -250,8 +259,8 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         btnCapNhat.setEnabled(true);
         btnXoa.setEnabled(true);
     }
-    
-    private void insertModel(){
+
+    private void insertModel() {
         if (validateInputAddingState()) {
             String randomPassword = "$$" + StringUtil.randomString();
             NhanVien nhanVien = getModelFromForm();
@@ -269,19 +278,13 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             }
         }
     }
-    
-    private void deleteModel(){
+
+    private void deleteModel() {
         boolean isConfirm = DialogHelper.confirm(this, "Bạn chắc chắn muốn xoá?");
         if (isConfirm) {
-            int nhanVienIndex = -1;
-            for (int i = 0; i < nhanVienList.size(); i++) {
-                if (nhanVienList.get(i).getMaNv().equals(txtMaNhanVien.getText())) {
-                    nhanVienIndex = i;
-                    break;
-                }
-            }
-            NhanVien nhanVienInList = nhanVienList.get(nhanVienIndex);
-            boolean isDeleted = new NhanVienDaoImpl().delete(nhanVienInList);
+            String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
+            NhanVien nhanVien = nhanVienHashMap.get(maNv);
+            boolean isDeleted = new NhanVienDaoImpl().delete(nhanVien);
 
             if (isDeleted) {
                 DialogHelper.message(this, "Xoá dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
@@ -293,35 +296,39 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             }
         }
     }
-    
-    private void updateModel(){
+
+    private void updateModel() {
         if (validateInputEditingState()) {
-            int nhanVienIndex = -1;
-            for (int i = 0; i < nhanVienList.size(); i++) {
-                if (nhanVienList.get(i).getMaNv().equals(txtMaNhanVien.getText())) {
-                    nhanVienIndex = i;
-                    break;
-                }
-            }
-            
-            NhanVien nhanVienInList = nhanVienList.get(nhanVienIndex);
-            NhanVien nhanVienInView = getModelFromForm();
+            String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
+            NhanVien nhanVienOldData = nhanVienHashMap.get(maNv);
+
+            NhanVien nhanVienNewData = getModelFromForm();
             boolean isUpdated = false;
             try {
-                nhanVienInList = DataFactoryUtil.mergeTwoObject(nhanVienInList, nhanVienInView);
-                isUpdated = new NhanVienDaoImpl().update(nhanVienInList);
+                nhanVienNewData = DataFactoryUtil.mergeTwoObject(nhanVienOldData, nhanVienNewData);
+                nhanVienHashMap.put(maNv, nhanVienNewData);
+
+                isUpdated = new NhanVienDaoImpl().update(nhanVienNewData);
             } catch (Exception ex) {
                 Logger.getLogger(NhanVienJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             if (isUpdated) {
-                Vector v;
+                Vector vData;
                 try {
-                    v = DataFactoryUtil.objectToVectorByFields(nhanVienInList, TableStructureHelper.NHANVIEN_TABLE_FEILDS);
-                    int fieldVaiTro = v.size() - 1;
-                    boolean isTruongPhong = (boolean) v.get(fieldVaiTro);
-                    v.set(fieldVaiTro, isTruongPhong ? "Trưởng phòng" : "Nhân viên");
-                    tableData.set(nhanVienIndex, v);
+                    vData = DataFactoryUtil.objectToVectorByFields(nhanVienNewData, ObjectStructureHelper.NHANVIEN_PROPERTIES);
+                    int fieldVaiTro = vData.size() - 1;
+                    boolean isTruongPhong = (boolean) vData.get(fieldVaiTro);
+                    vData.set(fieldVaiTro, isTruongPhong ? "Trưởng phòng" : "Nhân viên");
+
+//                    Find index of updated NhanVien in tabledata
+                    for (int i = 0; i < tableData.size(); i++) {
+                        if (tableData.get(i).get(0).equals(vData.get(0))) {
+                            tableData.set(i, vData);
+                            break;
+                        }
+                    }
+
                     tblNhanVien.updateUI();
                     DialogHelper.message(this, "Cập nhật dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 } catch (Exception ex) {
@@ -333,11 +340,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         }
     }
 
-    private void setDirectionButtonStatus(int direction){
-        if (direction == -1) {
-            
-        }
-    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -912,8 +914,10 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             selectedIndex--;
             changeSelectedIndex();
             btnNext.setEnabled(true);
-        }else{
+            btnLast.setEnabled(true);
+        } else {
             btnPrev.setEnabled(false);
+            btnFirst.setEnabled(false);
         }
     }//GEN-LAST:event_btnPrevActionPerformed
 
@@ -923,13 +927,15 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             selectedIndex++;
             changeSelectedIndex();
             btnPrev.setEnabled(true);
-        }else{
+            btnFirst.setEnabled(true);
+        } else {
             btnNext.setEnabled(false);
+            btnLast.setEnabled(false);
         }
     }//GEN-LAST:event_btnNextActionPerformed
 
     private void panelTabStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_panelTabStateChanged
-        selectedIndex = tblNhanVien.getSelectedRow();
+//        selectedIndex = tblNhanVien.getSelectedRow();
         if (selectedIndex == -1) {
             setAddingState();
         } else if (panelTab.getSelectedIndex() == 1) {
@@ -974,13 +980,18 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         if (isDataLoaded) {
             tableData.clear();
             int cboIndex = cboBoLoc.getSelectedIndex();
-            String fieldName = TableStructureHelper.NHANVIEN_TABLE_FEILDS[cboIndex];
-            for (NhanVien nhanVien : nhanVienList) {
-                String dataFromField = DataFactoryUtil.getValueByField(nhanVien, fieldName).toString();
-                dataFromField = dataFromField.toLowerCase();
-//                TODO: Truong phong ? true false;
+            String fieldName = ObjectStructureHelper.NHANVIEN_PROPERTIES[cboIndex];
+            for (NhanVien nhanVien : nhanVienHashMap.values()) {
+                Object dataFromField = DataFactoryUtil.getValueByField(nhanVien, fieldName);
+//                Kiem tra co phai file vai tro hay khong
+                if (dataFromField instanceof Boolean) {
+                    dataFromField = ((Boolean) dataFromField).booleanValue() ? "Trưởng phòng" : "Nhân viên";
+                }
+
+                String strDataFromField = dataFromField.toString().toLowerCase();
+
                 String timKiemString = txtTimKiem.getText().toLowerCase();
-                if (dataFromField.contains(timKiemString)) {
+                if (strDataFromField.contains(timKiemString)) {
                     try {
                         addModelToTable(nhanVien);
                     } catch (Exception ex) {
