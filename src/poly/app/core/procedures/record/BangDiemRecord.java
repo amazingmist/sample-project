@@ -39,7 +39,7 @@ public class BangDiemRecord {
         this.diem = diem;
     }
 
-    private String getXepLoai() {
+    public String getXepLoai() {
         String xepLoai = "";
         if (diem < 0) {
             xepLoai = "Chưa nhập";
@@ -53,6 +53,8 @@ public class BangDiemRecord {
             xepLoai = "Khá";
         } else if (diem < 9) {
             xepLoai = "Giỏi";
+        }else{
+            xepLoai = "Xuất sắc";
         }
         return xepLoai;
     }
