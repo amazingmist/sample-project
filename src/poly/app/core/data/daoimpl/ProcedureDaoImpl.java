@@ -12,12 +12,14 @@ import org.hibernate.Session;
 import poly.app.core.data.dao.ProcedureDao;
 import poly.app.core.utils.HibernateUtil;
 
-public class ProcedureDaoImpl<T> implements ProcedureDao<T> {
+public class ProcedureDaoImpl<T, R> implements ProcedureDao<T, R> {
 
     private Class<T> procedureClass;
+    private Class<R> recordClass;
 
     public ProcedureDaoImpl() {
         this.procedureClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        this.recordClass = (Class<R>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
     }
 
     public Class getProcedureClass() {
@@ -32,9 +34,40 @@ public class ProcedureDaoImpl<T> implements ProcedureDao<T> {
         return HibernateUtil.getSessionFactory().openSession();
     }
 
+    private R mappingPojo(Object[] objects) {
+        try {
+//            Create new instance from pojo class
+            R recordObject = this.recordClass.newInstance();
+
+//            Get field array form pojo class
+            Field[] fields = recordClass.getDeclaredFields();
+
+            for (int i = 0; i < fields.length; i++) {
+//                Get current field
+                Field curField = this.recordClass.getDeclaredField(fields[i].getName());
+
+//                Set can accesible this field
+                curField.setAccessible(true);
+
+//                Set value for this field
+                curField.set(recordObject, objects[i]);
+
+//                Set can not accesible this field
+                curField.setAccessible(false);
+            }
+
+            return recordObject;
+        } catch (Exception ex) {
+            Logger.getLogger(ProcedureDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
     @Override
-    public List<Object[]> execute(Object... parameters) {
+    public List<R> execute(Object... parameters) {
         List<Object[]> list = null;
+        List<R> recordList = null;
         Session session = this.getSession();
         try {
 //            Build call query
@@ -56,11 +89,17 @@ public class ProcedureDaoImpl<T> implements ProcedureDao<T> {
 
 //            get result list
             list = query.list();
+
+            recordList = new ArrayList<R>();
+            for (Object[] objects : list) {
+//              convert object[] to R
+                recordList.add(this.mappingPojo(objects));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
-        return list;
+        return recordList;
     }
 }

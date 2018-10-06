@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author vothanhtai
  */
-public interface ProcedureDao <T> {
+public interface ProcedureDao <T, POJO> {
 //    public <POJO> List<POJO> execute(POJO pojo, Object... parameters);
-    public List<Object[]> execute(Object... parameters);
+    public List<POJO> execute(Object... parameters);
 }

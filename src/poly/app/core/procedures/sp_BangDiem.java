@@ -1,9 +1,10 @@
 package poly.app.core.procedures;
 
 import java.util.List;
+import poly.app.core.procedures.record.BangDiemRecord;
 import poly.app.core.data.daoimpl.ProcedureDaoImpl;
 
-public class sp_BangDiem extends ProcedureDaoImpl<sp_BangDiem> {
+public class sp_BangDiem extends ProcedureDaoImpl<sp_BangDiem, BangDiemRecord> {
     private Integer maKhoaHoc;
 
     public sp_BangDiem() {
@@ -21,7 +22,7 @@ public class sp_BangDiem extends ProcedureDaoImpl<sp_BangDiem> {
         this.maKhoaHoc = maKhoaHoc;
     }
     
-    public List<Object[]> execute() throws NullPointerException{
+    public List<BangDiemRecord> execute() throws NullPointerException{
         if (maKhoaHoc == null) {
             throw new NullPointerException();
         }
