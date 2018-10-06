@@ -14,10 +14,11 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 public class ImageUtil {
-    public static boolean saveImage(String filePath, File file){
-        File dir = new File(filePath);
+
+    public static boolean saveImage(File file) {
+        File dir = new File("images");
         // Tạo thư mục nếu chưa tồn tại
-        if(!dir.exists()){
+        if (!dir.exists()) {
             dir.mkdirs();
         }
         File newFile = new File(dir, file.getName());
@@ -27,39 +28,52 @@ public class ImageUtil {
             Path destination = Paths.get(newFile.getAbsolutePath());
             Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
             return true;
-        } 
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return false;
         }
     }
-    
-    public static ImageIcon readFile(String filePath, String fileName){
-        File path = new File(filePath, fileName);
-        return new ImageIcon(path.getAbsolutePath());
+
+    public static ImageIcon readImage(String fileName) {
+        File file = new File("images", fileName);
+        return new ImageIcon(file.getAbsolutePath());
     }
-    
+
+    public static boolean deleteImage(String fileName) {
+        try {
+            File file = new File("images", fileName);
+            return file.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static BufferedImage cropImage(BufferedImage src, Rectangle rect) {
-      BufferedImage dest = src.getSubimage(0, 0, rect.width, rect.height);
-      return dest; 
-   }
-    
+        BufferedImage dest = src.getSubimage(0, 0, rect.width, rect.height);
+        return dest;
+    }
+
     public static BufferedImage cropImageFromXY(BufferedImage src, int startX, int startY, int endX, int endY) {
         BufferedImage img = src.getSubimage(startX, startY, endX, endY); //fill in the corners of the desired crop location here
         BufferedImage copyOfImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics g = copyOfImage.createGraphics();
         g.drawImage(img, 0, 0, null);
         return copyOfImage;
-   }
-    
-    public static ImageIcon resizeImage(String filePath, String fileName, int width, int height){
+    }
+
+    public static ImageIcon resizeImage(File file, int width, int height) {
         BufferedImage img = null;
         try {
-            img = ImageIO.read(new File(filePath + File.separator + fileName));
+            img = ImageIO.read(file);
         } catch (IOException e) {
             e.printStackTrace();
         }
         Image dimg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(dimg);
+//        ImageIcon imageIcon = new ImageIcon(dimg);
+//        imageIcon.getImage().flush();
+//        return imageIcon;
+dimg.flush();
+return  new ImageIcon(dimg);
     }
 }

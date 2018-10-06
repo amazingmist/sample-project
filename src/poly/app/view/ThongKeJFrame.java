@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.ButtonGroup;
+import poly.app.core.constant.CoreConstant;
 import poly.app.core.daoimpl.KhoaHocDaoImpl;
 import poly.app.core.entities.ChuyenDe;
 import poly.app.core.entities.KhoaHoc;
@@ -31,8 +32,11 @@ public class ThongKeJFrame extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         reRenderUI();
-        loadDataToTableTKNguoiHoc();
+    }
+    
+    public void setTab(int selectedIndex) {
         loadKhoaHocList();
+        panelTab.setSelectedIndex(selectedIndex);
     }
 
     private void reRenderUI() {
@@ -90,7 +94,10 @@ public class ThongKeJFrame extends javax.swing.JFrame {
     }
 
     private void loadKhoaHocList(){
-        khoaHocList = new KhoaHocDaoImpl().selectByProperties(null, null, "ngayKg", "DESC", null, null);
+        if (khoaHocList != null) {
+            khoaHocList.clear();
+        }
+        khoaHocList = new KhoaHocDaoImpl().selectByProperties(null, null, "ngayKg", CoreConstant.SORT_DESC, null, null);
         loadDataToCboKhoaHoc();
         loadDataToCboNamHoc();
     }

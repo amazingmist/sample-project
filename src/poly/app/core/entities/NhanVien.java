@@ -20,6 +20,7 @@ public class NhanVien  implements java.io.Serializable {
      private String dienThoai;
      private String email;
      private String diaChi;
+     private String hinh;
      private boolean vaiTro;
      private Set khoaHocs = new HashSet(0);
      private MaXacNhan maXacNhan;
@@ -29,7 +30,7 @@ public class NhanVien  implements java.io.Serializable {
     }
 
 	
-    public NhanVien(String maNv, String matKhau, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String diaChi, boolean vaiTro) {
+    public NhanVien(String maNv, String matKhau, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String diaChi, String hinh, boolean vaiTro) {
         this.maNv = maNv;
         this.matKhau = matKhau;
         this.hoTen = hoTen;
@@ -38,6 +39,7 @@ public class NhanVien  implements java.io.Serializable {
         this.dienThoai = dienThoai;
         this.email = email;
         this.diaChi = diaChi;
+        this.hinh = hinh;
         this.vaiTro = vaiTro;
     }
     public NhanVien(String maNv, String matKhau, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String diaChi, boolean vaiTro, Set khoaHocs, MaXacNhan maXacNhan, Set nguoiHocs) {
@@ -110,6 +112,14 @@ public class NhanVien  implements java.io.Serializable {
     
     public void setDiaChi(String diaChi) {
         this.diaChi = diaChi;
+    }
+
+    public String getHinh() {
+        return hinh;
+    }
+
+    public void setHinh(String hinh) {
+        this.hinh = hinh;
     }
     
     public boolean getVaiTro() {

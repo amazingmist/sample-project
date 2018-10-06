@@ -17,7 +17,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -40,6 +42,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     HashMap<String, NhanVien> nhanVienHashMap = new HashMap<>();
     int selectedIndex = -1;
     boolean isDataLoaded = false;
+    JFileChooser jFileChooser;
 
     public NhanVienJFrame() {
         initComponents();
@@ -96,9 +99,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             cboBoLoc.addItem(identifier);
         }
         cboBoLoc.setSelectedIndex(1);
-        
+
 //        Add default image to user avatar
-        lblAvatar.setIcon(ImageUtil.resizeImage(new File("./src/poly/app/view/icon/").getAbsolutePath(), "default-avatar.jpeg", lblAvatar.getWidth(), lblAvatar.getHeight()));
+        lblAvatar.setIcon(ImageUtil.resizeImage(new File("./src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
     }
 
     private void addRadioToGroup() {
@@ -111,7 +114,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
     private void loadDataToTable() {
         tableData.clear();
-        List<NhanVien> dataLoadedList = new NhanVienDaoImpl().selectByProperties(null, null, "vaiTro", CoreConstant.SORT_DESC, null, null);
+        List<NhanVien> dataLoadedList = new NhanVienDaoImpl().selectByProperties(null, null, "hoTen", CoreConstant.SORT_ASC, null, null);
 
         try {
             for (NhanVien nhanVien : dataLoadedList) {
@@ -156,6 +159,12 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         txtEmail.setText(selectedNhanVien.getEmail());
         txtDiaChi.setText(selectedNhanVien.getDiaChi());
 
+        File avatarFile = new File("images/" + selectedNhanVien.getHinh());
+        if (!avatarFile.exists() || avatarFile.isDirectory()) {
+            avatarFile = new File("./src/poly/app/view/icon/default-avatar.jpeg");
+        }
+        lblAvatar.setIcon(ImageUtil.resizeImage(avatarFile, lblAvatar.getWidth(), lblAvatar.getHeight()));
+
         if (selectedNhanVien.getVaiTro()) {
             rdoTruongPhong.setSelected(true);
         } else {
@@ -176,6 +185,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         txtSoDienThoai.setText("");
         txtEmail.setText("");
         txtDiaChi.setText("");
+        lblAvatar.setIcon(ImageUtil.resizeImage(new File("./src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
         txtMaNhanVien.requestFocus();
 
         rdoNam.setSelected(true);
@@ -256,6 +266,11 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         btnLamMoi.setEnabled(true);
         btnCapNhat.setEnabled(false);
         btnXoa.setEnabled(false);
+
+        btnLast.setEnabled(false);
+        btnPrev.setEnabled(false);
+        btnFirst.setEnabled(false);
+        btnNext.setEnabled(false);
     }
 
     private void setEditingState() {
@@ -271,6 +286,20 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             String randomPassword = "$$" + StringUtil.randomString();
             NhanVien nhanVien = getModelFromForm();
             nhanVien.setMatKhau(randomPassword);
+            
+//            Save image to folder
+            if (jFileChooser.getSelectedFile() != null) {
+                String avatarPath = jFileChooser.getSelectedFile().getAbsolutePath();
+                String fileName = avatarPath.substring(avatarPath.lastIndexOf(File.separator) + 1);
+                nhanVien.setHinh(fileName);
+
+                if (nhanVien.getHinh() != null) {
+                    ImageUtil.deleteImage(nhanVien.getHinh());
+                }
+                ImageUtil.saveImage(jFileChooser.getSelectedFile());
+                jFileChooser = null;
+            }
+            
             boolean isInserted = new NhanVienDaoImpl().insert(nhanVien);
 
             if (isInserted) {
@@ -309,6 +338,20 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             NhanVien nhanVienOldData = nhanVienHashMap.get(maNv);
 
             NhanVien nhanVienNewData = getModelFromForm();
+
+//            Save image to folder
+            if (jFileChooser.getSelectedFile() != null) {
+                String avatarPath = jFileChooser.getSelectedFile().getAbsolutePath();
+                String fileName = avatarPath.substring(avatarPath.lastIndexOf(File.separator) + 1);
+                nhanVienNewData.setHinh(fileName);
+
+                if (nhanVienOldData.getHinh() != null) {
+                    ImageUtil.deleteImage(nhanVienOldData.getHinh());
+                }
+                ImageUtil.saveImage(jFileChooser.getSelectedFile());
+                jFileChooser = null;
+            }
+
             boolean isUpdated = false;
             try {
                 nhanVienNewData = DataFactoryUtil.mergeTwoObject(nhanVienOldData, nhanVienNewData);
@@ -346,6 +389,36 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         }
     }
 
+    private void setDirectionButton() {
+        if (tableData.size() > 0 || selectedIndex != -1) {
+            if (selectedIndex == 0) {
+                btnFirst.setEnabled(false);
+                btnPrev.setEnabled(false);
+            }
+
+            if (selectedIndex > 0) {
+                btnFirst.setEnabled(true);
+                btnPrev.setEnabled(true);
+            }
+
+            if (selectedIndex == tableData.size() - 1) {
+                btnLast.setEnabled(false);
+                btnNext.setEnabled(false);
+            }
+
+            if (selectedIndex < tableData.size() - 1) {
+                btnLast.setEnabled(true);
+                btnNext.setEnabled(true);
+            }
+        } else {
+            btnFirst.setEnabled(false);
+            btnPrev.setEnabled(false);
+            btnNext.setEnabled(false);
+            btnLast.setEnabled(false);
+        }
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -364,24 +437,24 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         tblNhanVien = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        txtMaNhanVien = new javax.swing.JTextField();
+        txtHoTen = new javax.swing.JTextField();
         rdoNam = new javax.swing.JRadioButton();
         rdoNu = new javax.swing.JRadioButton();
         txtNgaySinh = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
-        txtHoTen = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        txtMaNhanVien = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
         txtSoDienThoai = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        txtDiaChi = new javax.swing.JTextField();
         rdoTruongPhong = new javax.swing.JRadioButton();
         rdoNhanVien = new javax.swing.JRadioButton();
-        txtDiaChi = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
         lblAvatar = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         btnThem = new javax.swing.JButton();
@@ -404,6 +477,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
+            }
+            public void windowDeactivated(java.awt.event.WindowEvent evt) {
+                formWindowDeactivated(evt);
             }
         });
 
@@ -465,30 +541,58 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         jPanel5.setFocusable(false);
         jPanel5.setPreferredSize(new java.awt.Dimension(408, 390));
 
-        rdoNam.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        rdoNam.setSelected(true);
-        rdoNam.setText("Nam");
-
-        rdoNu.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        rdoNu.setText("Nữ");
-
-        txtNgaySinh.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-
-        jLabel7.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jLabel7.setText("Ngày sinh");
+        txtMaNhanVien.setEditable(false);
+        txtMaNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtMaNhanVien.setFocusTraversalKeysEnabled(false);
 
         txtHoTen.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtHoTen.setFocusTraversalKeysEnabled(false);
         txtHoTen.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtHoTenKeyTyped(evt);
             }
         });
 
+        rdoNam.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        rdoNam.setSelected(true);
+        rdoNam.setText("Nam");
+        rdoNam.setFocusTraversalKeysEnabled(false);
+
+        rdoNu.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        rdoNu.setText("Nữ");
+        rdoNu.setFocusTraversalKeysEnabled(false);
+
+        txtNgaySinh.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtNgaySinh.setFocusTraversalKeysEnabled(false);
+
+        txtSoDienThoai.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtSoDienThoai.setFocusTraversalKeysEnabled(false);
+        txtSoDienThoai.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtSoDienThoaiKeyTyped(evt);
+            }
+        });
+
+        txtEmail.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtEmail.setFocusTraversalKeysEnabled(false);
+
+        txtDiaChi.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtDiaChi.setFocusTraversalKeysEnabled(false);
+
+        rdoTruongPhong.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        rdoTruongPhong.setSelected(true);
+        rdoTruongPhong.setText("Trưởng phòng");
+        rdoTruongPhong.setFocusTraversalKeysEnabled(false);
+
+        rdoNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        rdoNhanVien.setText("Nhân viên");
+        rdoNhanVien.setFocusTraversalKeysEnabled(false);
+
+        jLabel7.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jLabel7.setText("Ngày sinh");
+
         jLabel5.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel5.setText("Họ  và tên");
-
-        txtMaNhanVien.setEditable(false);
-        txtMaNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel2.setText("Mã nhân viên");
@@ -496,20 +600,11 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel10.setText("Giới tính");
 
-        txtSoDienThoai.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        txtSoDienThoai.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtSoDienThoaiKeyTyped(evt);
-            }
-        });
-
         jLabel4.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel4.setText("Số điện thoại");
 
         jLabel8.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel8.setText("Email");
-
-        txtEmail.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
 
         jLabel9.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel9.setText("Địa chỉ");
@@ -517,17 +612,14 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel6.setText("Vai Trò");
 
-        rdoTruongPhong.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        rdoTruongPhong.setSelected(true);
-        rdoTruongPhong.setText("Trưởng phòng");
-
-        rdoNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        rdoNhanVien.setText("Nhân viên");
-
-        txtDiaChi.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-
         lblAvatar.setBackground(new java.awt.Color(255, 255, 255));
+        lblAvatar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblAvatar.setOpaque(true);
+        lblAvatar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblAvatarMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -877,6 +969,8 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
+        selectedIndex = -1;
+        tblNhanVien.clearSelection();
         resetForm();
         setAddingState();
     }//GEN-LAST:event_btnLamMoiActionPerformed
@@ -894,6 +988,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         if (evt.getClickCount() == 2) {
             if (selectedIndex >= 0) {
                 panelTab.setSelectedIndex(1);
+                setDirectionButton();
             }
         }
     }//GEN-LAST:event_tblNhanVienMouseClicked
@@ -907,11 +1002,8 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         if (tableData.size() > 0) {
             selectedIndex = 0;
             changeSelectedIndex();
-            btnNext.setEnabled(true);
         }
-        btnFirst.setEnabled(false);
-        btnLast.setEnabled(true);
-        btnPrev.setEnabled(false);
+        setDirectionButton();
     }//GEN-LAST:event_btnFirstActionPerformed
 
     private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
@@ -919,11 +1011,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         if (tableData.size() > 0) {
             selectedIndex = tableData.size() - 1;
             changeSelectedIndex();
-            btnPrev.setEnabled(true);
         }
-        btnLast.setEnabled(false);
-        btnFirst.setEnabled(true);
-        btnNext.setEnabled(false);
+
+        setDirectionButton();
     }//GEN-LAST:event_btnLastActionPerformed
 
     private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
@@ -931,12 +1021,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         if (selectedIndex > 0) {
             selectedIndex--;
             changeSelectedIndex();
-            btnNext.setEnabled(true);
-            btnLast.setEnabled(true);
-        } else {
-            btnPrev.setEnabled(false);
-            btnFirst.setEnabled(false);
         }
+
+        setDirectionButton();
     }//GEN-LAST:event_btnPrevActionPerformed
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
@@ -944,21 +1031,20 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         if (selectedIndex < tableData.size() - 1) {
             selectedIndex++;
             changeSelectedIndex();
-            btnPrev.setEnabled(true);
-            btnFirst.setEnabled(true);
-        } else {
-            btnNext.setEnabled(false);
-            btnLast.setEnabled(false);
         }
+
+        setDirectionButton();
     }//GEN-LAST:event_btnNextActionPerformed
 
     private void panelTabStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_panelTabStateChanged
-//        selectedIndex = tblNhanVien.getSelectedRow();
+        selectedIndex = tblNhanVien.getSelectedRow();
         if (selectedIndex == -1) {
             setAddingState();
         } else if (panelTab.getSelectedIndex() == 1) {
             setEditingState();
             setModelToForm();
+            txtTimKiem.setFocusable(false);
+            requestFocusInWindow();
         }
     }//GEN-LAST:event_panelTabStateChanged
 
@@ -967,6 +1053,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         selectedIndex = tblNhanVien.getSelectedRow();
         resetForm();
         setAddingState();
+        panelTab.setSelectedIndex(0);
     }//GEN-LAST:event_formWindowClosing
 
     private void txtHoTenKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHoTenKeyTyped
@@ -986,6 +1073,8 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTimKiemKeyTyped
 
     private void txtTimKiemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtTimKiemMouseClicked
+        selectedIndex = -1;
+        tblNhanVien.clearSelection();
         txtTimKiem.setFocusable(true);
         txtTimKiem.requestFocus();
         panelTab.setSelectedIndex(0);
@@ -996,7 +1085,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_cboBoLocPropertyChange
 
     private void txtTimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyReleased
-        if (isDataLoaded) {
+        if (evt != null && isDataLoaded) {
             tableData.clear();
             int cboIndex = cboBoLoc.getSelectedIndex();
             String fieldName = ObjectStructureHelper.NHANVIEN_PROPERTIES[cboIndex];
@@ -1021,6 +1110,24 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             tblNhanVien.updateUI();
         }
     }//GEN-LAST:event_txtTimKiemKeyReleased
+
+    private void lblAvatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAvatarMouseClicked
+        jFileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Images", "jpeg", "jpg", "png", "gif");
+        jFileChooser.setFileFilter(filter);
+        int result = jFileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            try {
+                lblAvatar.setIcon(ImageUtil.resizeImage(jFileChooser.getSelectedFile(), lblAvatar.getWidth(), lblAvatar.getHeight()));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_lblAvatarMouseClicked
+
+    private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
+        txtTimKiem.setRequestFocusEnabled(false);
+    }//GEN-LAST:event_formWindowDeactivated
 
     /**
      * @param args the command line arguments
@@ -1048,22 +1155,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(NhanVienJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

@@ -13,6 +13,7 @@
   </SyntheticProperties>
   <Events>
     <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>
+    <EventHandler event="windowDeactivated" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowDeactivated"/>
   </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -351,6 +352,26 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
+                    <Component class="javax.swing.JTextField" name="txtMaNhanVien">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Open Sans" size="14" style="0"/>
+                        </Property>
+                        <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtHoTen">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Open Sans" size="14" style="0"/>
+                        </Property>
+                        <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtHoTenKeyTyped"/>
+                      </Events>
+                    </Component>
                     <Component class="javax.swing.JRadioButton" name="rdoNam">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -358,6 +379,7 @@
                         </Property>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="text" type="java.lang.String" value="Nam"/>
+                        <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JRadioButton" name="rdoNu">
@@ -366,6 +388,7 @@
                           <Font name="Open Sans" size="14" style="0"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="N&#x1eef;"/>
+                        <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JTextField" name="txtNgaySinh">
@@ -373,6 +396,53 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Open Sans" size="14" style="0"/>
                         </Property>
+                        <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtSoDienThoai">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Open Sans" size="14" style="0"/>
+                        </Property>
+                        <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSoDienThoaiKeyTyped"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtEmail">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Open Sans" size="14" style="0"/>
+                        </Property>
+                        <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtDiaChi">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Open Sans" size="14" style="0"/>
+                        </Property>
+                        <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JRadioButton" name="rdoTruongPhong">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Open Sans" size="14" style="0"/>
+                        </Property>
+                        <Property name="selected" type="boolean" value="true"/>
+                        <Property name="text" type="java.lang.String" value="Tr&#x1b0;&#x1edf;ng ph&#xf2;ng"/>
+                        <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JRadioButton" name="rdoNhanVien">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Open Sans" size="14" style="0"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Nh&#xe2;n vi&#xea;n"/>
+                        <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel7">
@@ -383,30 +453,12 @@
                         <Property name="text" type="java.lang.String" value="Ng&#xe0;y sinh"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="txtHoTen">
-                      <Properties>
-                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Open Sans" size="14" style="0"/>
-                        </Property>
-                      </Properties>
-                      <Events>
-                        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtHoTenKeyTyped"/>
-                      </Events>
-                    </Component>
                     <Component class="javax.swing.JLabel" name="jLabel5">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Open Sans" size="14" style="0"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="H&#x1ecd;  v&#xe0; t&#xea;n"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JTextField" name="txtMaNhanVien">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Open Sans" size="14" style="0"/>
-                        </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel2">
@@ -425,16 +477,6 @@
                         <Property name="text" type="java.lang.String" value="Gi&#x1edb;i t&#xed;nh"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="txtSoDienThoai">
-                      <Properties>
-                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Open Sans" size="14" style="0"/>
-                        </Property>
-                      </Properties>
-                      <Events>
-                        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSoDienThoaiKeyTyped"/>
-                      </Events>
-                    </Component>
                     <Component class="javax.swing.JLabel" name="jLabel4">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -449,13 +491,6 @@
                           <Font name="Open Sans" size="14" style="0"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Email"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JTextField" name="txtEmail">
-                      <Properties>
-                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Open Sans" size="14" style="0"/>
-                        </Property>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel9">
@@ -474,37 +509,19 @@
                         <Property name="text" type="java.lang.String" value="Vai Tr&#xf2;"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JRadioButton" name="rdoTruongPhong">
-                      <Properties>
-                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Open Sans" size="14" style="0"/>
-                        </Property>
-                        <Property name="selected" type="boolean" value="true"/>
-                        <Property name="text" type="java.lang.String" value="Tr&#x1b0;&#x1edf;ng ph&#xf2;ng"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JRadioButton" name="rdoNhanVien">
-                      <Properties>
-                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Open Sans" size="14" style="0"/>
-                        </Property>
-                        <Property name="text" type="java.lang.String" value="Nh&#xe2;n vi&#xea;n"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JTextField" name="txtDiaChi">
-                      <Properties>
-                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Open Sans" size="14" style="0"/>
-                        </Property>
-                      </Properties>
-                    </Component>
                     <Component class="javax.swing.JLabel" name="lblAvatar">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
                         </Property>
+                        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                          <Color id="Hand Cursor"/>
+                        </Property>
                         <Property name="opaque" type="boolean" value="true"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblAvatarMouseClicked"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>

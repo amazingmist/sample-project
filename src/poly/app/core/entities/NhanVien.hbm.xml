@@ -32,6 +32,9 @@
         <property name="vaiTro" type="boolean">
             <column name="VaiTro" not-null="true" />
         </property>
+        <property name="hinh" type="string">
+            <column name="hinh" not-null="false"/>
+        </property>
         <set name="khoaHocs" table="KhoaHoc" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="MaNV" length="50" not-null="true" />

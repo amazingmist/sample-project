@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.Toolkit;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.JFrame;
 import javax.swing.Timer;
 import poly.app.core.helper.DialogHelper;
 import poly.app.core.helper.ShareHelper;
@@ -23,7 +24,9 @@ import poly.app.core.utils.HibernateUtil;
  */
 public class MainJFrame extends javax.swing.JFrame {
 
+    JFrame currentFrame = new JFrame();
     NhanVienJFrame nhanVienJFrame;
+    ThongKeJFrame thongKeJFrame;
 
     /**
      * Creates new form MainJFrame
@@ -44,6 +47,7 @@ public class MainJFrame extends javax.swing.JFrame {
         new Thread(() -> {
             HibernateUtil.getSessionFactory();
             nhanVienJFrame = new NhanVienJFrame();
+            thongKeJFrame = new ThongKeJFrame();
         }).start();
     }
 
@@ -410,23 +414,43 @@ public class MainJFrame extends javax.swing.JFrame {
         mniTKNguoiHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         mniTKNguoiHoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Clien list.png"))); // NOI18N
         mniTKNguoiHoc.setText("Người học từng năm");
+        mniTKNguoiHoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniTKNguoiHocActionPerformed(evt);
+            }
+        });
         mniNguoiHocTungNam.add(mniTKNguoiHoc);
         mniNguoiHocTungNam.add(jSeparator3);
 
         mniTKBangDiemKhoa.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         mniTKBangDiemKhoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Card file.png"))); // NOI18N
         mniTKBangDiemKhoa.setText("Bảng điểm khoá");
+        mniTKBangDiemKhoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniTKBangDiemKhoaActionPerformed(evt);
+            }
+        });
         mniNguoiHocTungNam.add(mniTKBangDiemKhoa);
 
         mniTKDiemTungKhoaHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         mniTKDiemTungKhoaHoc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Bar chart.png"))); // NOI18N
         mniTKDiemTungKhoaHoc.setText("Điểm từng khoá học");
+        mniTKDiemTungKhoaHoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniTKDiemTungKhoaHocActionPerformed(evt);
+            }
+        });
         mniNguoiHocTungNam.add(mniTKDiemTungKhoaHoc);
         mniNguoiHocTungNam.add(jSeparator4);
 
         mniTKDoanhThu.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         mniTKDoanhThu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/poly/app/view/icon/Dollar.png"))); // NOI18N
         mniTKDoanhThu.setText("Doanh thu từng chuyên đề");
+        mniTKDoanhThu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniTKDoanhThuActionPerformed(evt);
+            }
+        });
         mniNguoiHocTungNam.add(mniTKDoanhThu);
 
         jMenuBar1.add(mniNguoiHocTungNam);
@@ -484,17 +508,18 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_mniDoiMatKhauActionPerformed
 
     private void btnNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhanVienActionPerformed
-        nhanVienJFrame.requestFocus();
-        nhanVienJFrame.setVisible(true);
+        currentFrame = nhanVienJFrame;
+        currentFrame.requestFocus();
+        currentFrame.setVisible(true);
     }//GEN-LAST:event_btnNhanVienActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        nhanVienJFrame.setAlwaysOnTop(true);
-        nhanVienJFrame.requestFocus();
+        currentFrame.setAlwaysOnTop(true);
+        currentFrame.requestFocus();
     }//GEN-LAST:event_formWindowActivated
 
     private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
-        nhanVienJFrame.setAlwaysOnTop(false);
+        currentFrame.setAlwaysOnTop(false);
     }//GEN-LAST:event_formWindowDeactivated
 
     private void btnKhoaHocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhoaHocActionPerformed
@@ -520,6 +545,50 @@ public class MainJFrame extends javax.swing.JFrame {
     private void mniKetThucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniKetThucActionPerformed
         this.btnKetThucActionPerformed(evt);
     }//GEN-LAST:event_mniKetThucActionPerformed
+
+    private void mniTKNguoiHocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniTKNguoiHocActionPerformed
+        if(!ShareHelper.USER.getVaiTro()){
+            DialogHelper.message(this, "Bạn không có quyền truy cập vào chức năng này", DialogHelper.ERROR_MESSAGE);
+        }else{
+            currentFrame = thongKeJFrame;
+            currentFrame.requestFocus();
+            currentFrame.setVisible(true);
+            thongKeJFrame.setTab(0);
+        }
+    }//GEN-LAST:event_mniTKNguoiHocActionPerformed
+
+    private void mniTKBangDiemKhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniTKBangDiemKhoaActionPerformed
+        if(!ShareHelper.USER.getVaiTro()){
+            DialogHelper.message(this, "Bạn không có quyền truy cập vào chức năng này", DialogHelper.ERROR_MESSAGE);
+        }else{
+            currentFrame = thongKeJFrame;
+            currentFrame.requestFocus();
+            currentFrame.setVisible(true);
+            thongKeJFrame.setTab(1);
+        }
+    }//GEN-LAST:event_mniTKBangDiemKhoaActionPerformed
+
+    private void mniTKDiemTungKhoaHocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniTKDiemTungKhoaHocActionPerformed
+        if(!ShareHelper.USER.getVaiTro()){
+            DialogHelper.message(this, "Bạn không có quyền truy cập vào chức năng này", DialogHelper.ERROR_MESSAGE);
+        }else{
+            currentFrame = thongKeJFrame;
+            currentFrame.requestFocus();
+            currentFrame.setVisible(true);
+            thongKeJFrame.setTab(2);
+        }
+    }//GEN-LAST:event_mniTKDiemTungKhoaHocActionPerformed
+
+    private void mniTKDoanhThuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniTKDoanhThuActionPerformed
+        if(!ShareHelper.USER.getVaiTro()){
+            DialogHelper.message(this, "Bạn không có quyền truy cập vào chức năng này", DialogHelper.ERROR_MESSAGE);
+        }else{
+            currentFrame = thongKeJFrame;
+            currentFrame.requestFocus();
+            currentFrame.setVisible(true);
+            thongKeJFrame.setTab(3);
+        }
+    }//GEN-LAST:event_mniTKDoanhThuActionPerformed
 
     /**
      * @param args the command line arguments
