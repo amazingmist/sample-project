@@ -1,5 +1,5 @@
 package poly.app.core.entities;
-// Generated Sep 26, 2018 4:18:31 PM by Hibernate Tools 4.3.1
+// Generated Oct 7, 2018 2:44:16 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -13,6 +13,7 @@ public class NguoiHoc  implements java.io.Serializable {
 
 
      private String maNh;
+     private NhanVien nhanVien;
      private String hoTen;
      private Date ngaySinh;
      private boolean gioiTinh;
@@ -21,26 +22,25 @@ public class NguoiHoc  implements java.io.Serializable {
      private String ghiChu;
      private Date ngayDk;
      private String hinh;
-     private NhanVien nhanVien;
      private Set hocViens = new HashSet(0);
 
     public NguoiHoc() {
     }
 
 	
-    public NguoiHoc(String maNh, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, Date ngayDk, String hinh, NhanVien nhanVien) {
+    public NguoiHoc(String maNh, NhanVien nhanVien, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, Date ngayDk) {
         this.maNh = maNh;
+        this.nhanVien = nhanVien;
         this.hoTen = hoTen;
         this.ngaySinh = ngaySinh;
         this.gioiTinh = gioiTinh;
         this.dienThoai = dienThoai;
         this.email = email;
         this.ngayDk = ngayDk;
-        this.hinh = hinh;
-        this.nhanVien = nhanVien;
     }
-    public NguoiHoc(String maNh, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String ghiChu, Date ngayDk, String hinh, NhanVien nhanVien, Set hocViens) {
+    public NguoiHoc(String maNh, NhanVien nhanVien, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String ghiChu, Date ngayDk, String hinh, Set hocViens) {
        this.maNh = maNh;
+       this.nhanVien = nhanVien;
        this.hoTen = hoTen;
        this.ngaySinh = ngaySinh;
        this.gioiTinh = gioiTinh;
@@ -49,7 +49,6 @@ public class NguoiHoc  implements java.io.Serializable {
        this.ghiChu = ghiChu;
        this.ngayDk = ngayDk;
        this.hinh = hinh;
-       this.nhanVien = nhanVien;
        this.hocViens = hocViens;
     }
    
@@ -116,15 +115,13 @@ public class NguoiHoc  implements java.io.Serializable {
     public void setNgayDk(Date ngayDk) {
         this.ngayDk = ngayDk;
     }
-
     public String getHinh() {
-        return hinh;
+        return this.hinh;
     }
-
+    
     public void setHinh(String hinh) {
         this.hinh = hinh;
     }
-    
     public Set getHocViens() {
         return this.hocViens;
     }

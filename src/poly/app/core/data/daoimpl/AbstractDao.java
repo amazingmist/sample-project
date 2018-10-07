@@ -58,6 +58,8 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
             result = (T) session.get(this.getPersistenceClass(), id);
         }catch (HibernateException ex){
             ex.printStackTrace();
+        }finally{
+            session.close();
         }
         return result;
     }
@@ -90,6 +92,8 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
         }catch (HibernateException ex){
             ex.printStackTrace();
             return null;
+        }finally{
+            session.close();
         }
         return list;
     }

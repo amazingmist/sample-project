@@ -1,5 +1,5 @@
 package poly.app.core.entities;
-// Generated Sep 26, 2018 4:18:31 PM by Hibernate Tools 4.3.1
+// Generated Oct 7, 2018 2:44:16 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -30,7 +30,7 @@ public class NhanVien  implements java.io.Serializable {
     }
 
 	
-    public NhanVien(String maNv, String matKhau, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String diaChi, String hinh, boolean vaiTro) {
+    public NhanVien(String maNv, String matKhau, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String diaChi, boolean vaiTro) {
         this.maNv = maNv;
         this.matKhau = matKhau;
         this.hoTen = hoTen;
@@ -39,10 +39,9 @@ public class NhanVien  implements java.io.Serializable {
         this.dienThoai = dienThoai;
         this.email = email;
         this.diaChi = diaChi;
-        this.hinh = hinh;
         this.vaiTro = vaiTro;
     }
-    public NhanVien(String maNv, String matKhau, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String diaChi, boolean vaiTro, Set khoaHocs, MaXacNhan maXacNhan, Set nguoiHocs) {
+    public NhanVien(String maNv, String matKhau, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String diaChi, String hinh, boolean vaiTro, Set khoaHocs, MaXacNhan maXacNhan, Set nguoiHocs) {
        this.maNv = maNv;
        this.matKhau = matKhau;
        this.hoTen = hoTen;
@@ -51,6 +50,7 @@ public class NhanVien  implements java.io.Serializable {
        this.dienThoai = dienThoai;
        this.email = email;
        this.diaChi = diaChi;
+       this.hinh = hinh;
        this.vaiTro = vaiTro;
        this.khoaHocs = khoaHocs;
        this.maXacNhan = maXacNhan;
@@ -113,19 +113,17 @@ public class NhanVien  implements java.io.Serializable {
     public void setDiaChi(String diaChi) {
         this.diaChi = diaChi;
     }
-
     public String getHinh() {
-        return hinh;
+        return this.hinh;
     }
-
+    
     public void setHinh(String hinh) {
         this.hinh = hinh;
     }
-    
     public boolean getVaiTro() {
         return this.vaiTro;
     }
-
+    
     public void setVaiTro(boolean vaiTro) {
         this.vaiTro = vaiTro;
     }
@@ -150,6 +148,10 @@ public class NhanVien  implements java.io.Serializable {
     public void setNguoiHocs(Set nguoiHocs) {
         this.nguoiHocs = nguoiHocs;
     }
+
+
+
+
 }
 
 

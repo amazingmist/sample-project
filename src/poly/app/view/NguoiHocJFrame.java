@@ -23,8 +23,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import poly.app.core.constant.CoreConstant;
-import poly.app.core.daoimpl.NhanVienDaoImpl;
-import poly.app.core.entities.NhanVien;
+import poly.app.core.daoimpl.NguoiHocDaoImpl;
+import poly.app.core.entities.NguoiHoc;
 import poly.app.core.helper.DateHelper;
 import poly.app.core.helper.ObjectStructureHelper;
 import poly.app.core.helper.DialogHelper;
@@ -34,15 +34,15 @@ import poly.app.core.utils.EMailUtil;
 import poly.app.core.utils.ImageUtil;
 import poly.app.core.utils.StringUtil;
 
-public class NhanVienJFrame extends javax.swing.JFrame {
+public class NguoiHocJFrame extends javax.swing.JFrame {
 
     Vector<Vector> tableData = new Vector<>();
-    HashMap<String, NhanVien> nhanVienHashMap = new HashMap<>();
+    HashMap<String, NguoiHoc> nguoiHocHashMap = new HashMap<>();
     int selectedIndex = -1;
     boolean isDataLoaded = false;
     JFileChooser jFileChooser;
 
-    public NhanVienJFrame() {
+    public NguoiHocJFrame() {
         initComponents();
         setLocationRelativeTo(null);
         reRenderUI();
@@ -51,17 +51,17 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }
 
     private void reRenderUI() {
-        DefaultTableModel tableModel = (DefaultTableModel) tblNhanVien.getModel();
+        DefaultTableModel tableModel = (DefaultTableModel) tblNguoiHoc.getModel();
         tableModel = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        tableModel.setDataVector(tableData, new Vector(Arrays.asList(ObjectStructureHelper.NHANVIEN_TABLE_IDENTIFIERS)));
-        tblNhanVien.setModel(tableModel);
+        tableModel.setDataVector(tableData, new Vector(Arrays.asList(ObjectStructureHelper.NGUOIHOC_TABLE_IDENTIFIERS)));
+        tblNguoiHoc.setModel(tableModel);
 
-        JTableHeader jTableHeader = tblNhanVien.getTableHeader();
+        JTableHeader jTableHeader = tblNguoiHoc.getTableHeader();
         jTableHeader.setFont(new Font("open sans", Font.PLAIN, 14)); // font name style size
         // canh giua man hinh
         ((DefaultTableCellRenderer) jTableHeader.getDefaultRenderer())
@@ -69,8 +69,8 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         // chieu cao header
         jTableHeader.setPreferredSize(new Dimension(0, 25));
         jTableHeader.setForeground(Color.decode("#000")); // change the Foreground
-        tblNhanVien.setFillsViewportHeight(true);
-        tblNhanVien.setBackground(Color.WHITE);
+        tblNguoiHoc.setFillsViewportHeight(true);
+        tblNguoiHoc.setBackground(Color.WHITE);
 
         DefaultTableCellRenderer cellLeft = new DefaultTableCellRenderer();
         cellLeft.setHorizontalAlignment(JLabel.LEFT);
@@ -81,19 +81,19 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         DefaultTableCellRenderer cellRight = new DefaultTableCellRenderer();
         cellRight.setHorizontalAlignment(JLabel.RIGHT);
 
-        tblNhanVien.getColumnModel().getColumn(0).setCellRenderer(cellLeft);
-        tblNhanVien.getColumnModel().getColumn(1).setCellRenderer(cellLeft);
-        tblNhanVien.getColumnModel().getColumn(2).setCellRenderer(cellRight);
-        tblNhanVien.getColumnModel().getColumn(3).setCellRenderer(cellRight);
-        tblNhanVien.getColumnModel().getColumn(4).setCellRenderer(cellCenter);
+        tblNguoiHoc.getColumnModel().getColumn(0).setCellRenderer(cellLeft);
+        tblNguoiHoc.getColumnModel().getColumn(1).setCellRenderer(cellLeft);
+        tblNguoiHoc.getColumnModel().getColumn(2).setCellRenderer(cellRight);
+        tblNguoiHoc.getColumnModel().getColumn(3).setCellRenderer(cellRight);
+        tblNguoiHoc.getColumnModel().getColumn(4).setCellRenderer(cellCenter);
 
         // set width for column
-        double tableWidth = tblNhanVien.getPreferredSize().getWidth();
-        tblNhanVien.getColumnModel().getColumn(1).setPreferredWidth((int) (tableWidth * 0.35));
-        tblNhanVien.getColumnModel().getColumn(3).setPreferredWidth((int) (tableWidth * 0.45));
+        double tableWidth = tblNguoiHoc.getPreferredSize().getWidth();
+        tblNguoiHoc.getColumnModel().getColumn(1).setPreferredWidth((int) (tableWidth * 0.35));
+        tblNguoiHoc.getColumnModel().getColumn(3).setPreferredWidth((int) (tableWidth * 0.45));
 
 //        Add data to combobox
-        for (String identifier : ObjectStructureHelper.NHANVIEN_TABLE_IDENTIFIERS) {
+        for (String identifier : ObjectStructureHelper.NGUOIHOC_TABLE_IDENTIFIERS) {
             cboBoLoc.addItem(identifier);
         }
         cboBoLoc.setSelectedIndex(1);
@@ -105,30 +105,24 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private void addRadioToGroup() {
         gioiTinhGroup.add(rdoNam);
         gioiTinhGroup.add(rdoNu);
-
-        vaiTroGroup.add(rdoTruongPhong);
-        vaiTroGroup.add(rdoNhanVien);
     }
 
     private void loadDataToTable() {
         tableData.clear();
-        List<NhanVien> dataLoadedList = new NhanVienDaoImpl().selectByProperties(null, null, "hoTen", CoreConstant.SORT_ASC, null, null);
+        List<NguoiHoc> dataLoadedList = new NguoiHocDaoImpl().selectByProperties(null, null, "hoTen", CoreConstant.SORT_ASC, null, null);
 
         try {
-            for (NhanVien nhanVien : dataLoadedList) {
-//                Convert nhanvien to vector
-                Vector vData = DataFactoryUtil.objectToVectorByFields(nhanVien, ObjectStructureHelper.NHANVIEN_PROPERTIES);
-                int fieldVaiTro = vData.size() - 1;
-                boolean isTruongPhong = (boolean) vData.get(fieldVaiTro);
-                vData.set(fieldVaiTro, isTruongPhong ? "Trưởng phòng" : "Nhân viên");
+            for (NguoiHoc nguoiHoc : dataLoadedList) {
+//                Convert nguoihoc to vector
+                Vector vData = DataFactoryUtil.objectToVectorByFields(nguoiHoc, ObjectStructureHelper.NGUOIHOC_PROPERTIES);
                 tableData.add(vData);
 
-//                Add nhanvien to hashmap
-                nhanVienHashMap.put(nhanVien.getMaNv(), nhanVien);
+//                Add nguoihoc to hashmap
+                nguoiHocHashMap.put(nguoiHoc.getMaNh(), nguoiHoc);
             }
-            tblNhanVien.updateUI();
+            tblNguoiHoc.updateUI();
         } catch (Exception ex) {
-            Logger.getLogger(NhanVienJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(NguoiHocJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         isDataLoaded = true;
@@ -136,7 +130,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
     private void changeSelectedIndex() {
         if (selectedIndex >= 0) {
-            tblNhanVien.setRowSelectionInterval(selectedIndex, selectedIndex);
+            tblNguoiHoc.setRowSelectionInterval(selectedIndex, selectedIndex);
             setModelToForm();
         } else {
             resetForm();
@@ -148,28 +142,23 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             return;
         }
 //        get ma nhan vien by selected index
-        String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
-        NhanVien selectedNhanVien = nhanVienHashMap.get(maNv);
-        txtMaNhanVien.setText(selectedNhanVien.getMaNv());
-        txtHoTen.setText(selectedNhanVien.getHoTen());
-        txtNgaySinh.setText(DateHelper.toString(selectedNhanVien.getNgaySinh()));
-        txtSoDienThoai.setText(selectedNhanVien.getDienThoai());
-        txtEmail.setText(selectedNhanVien.getEmail());
-        txtDiaChi.setText(selectedNhanVien.getDiaChi());
+        String maNh = tblNguoiHoc.getValueAt(selectedIndex, 0).toString();
+        NguoiHoc selectedNguoiHoc = nguoiHocHashMap.get(maNh);
 
-        File avatarFile = new File(URLHelper.URL_NHANVIEN_IMAGE + selectedNhanVien.getHinh());
+        txtMaNguoiHoc.setText(selectedNguoiHoc.getMaNh());
+        txtHoTen.setText(selectedNguoiHoc.getHoTen());
+        txtNgaySinh.setText(DateHelper.toString(selectedNguoiHoc.getNgaySinh()));
+        txtSoDienThoai.setText(selectedNguoiHoc.getDienThoai());
+        txtEmail.setText(selectedNguoiHoc.getEmail());
+        txtGhiChu.setText(selectedNguoiHoc.getGhiChu());
+
+        File avatarFile = new File(URLHelper.URL_NGUOIHOC_IMAGE + selectedNguoiHoc.getHinh());
         if (!avatarFile.exists() || avatarFile.isDirectory()) {
             avatarFile = new File("./src/poly/app/view/icon/default-avatar.jpeg");
         }
         lblAvatar.setIcon(ImageUtil.resizeImage(avatarFile, lblAvatar.getWidth(), lblAvatar.getHeight()));
 
-        if (selectedNhanVien.getVaiTro()) {
-            rdoTruongPhong.setSelected(true);
-        } else {
-            rdoNhanVien.setSelected(true);
-        }
-
-        if (selectedNhanVien.getGioiTinh()) {
+        if (selectedNguoiHoc.getGioiTinh()) {
             rdoNam.setSelected(true);
         } else {
             rdoNu.setSelected(true);
@@ -177,62 +166,49 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }
 
     private void resetForm() {
-        txtMaNhanVien.setText("");
+        txtMaNguoiHoc.setText("");
         txtHoTen.setText("");
         txtNgaySinh.setText("");
         txtSoDienThoai.setText("");
         txtEmail.setText("");
-        txtDiaChi.setText("");
+        txtGhiChu.setText("");
         lblAvatar.setIcon(ImageUtil.resizeImage(new File("./src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
-        txtMaNhanVien.requestFocus();
+        txtMaNguoiHoc.requestFocus();
 
         rdoNam.setSelected(true);
-        rdoTruongPhong.setSelected(true);
     }
 
-    private void addModelToTable(NhanVien nhanVien) {
+    private void addModelToTable(NguoiHoc nguoiHoc) {
         Vector vData = new Vector();
-        vData.add(nhanVien.getMaNv());
-        vData.add(nhanVien.getHoTen());
-        vData.add(nhanVien.getDienThoai());
-        vData.add(nhanVien.getEmail());
-        vData.add(nhanVien.getVaiTro() ? "Trưởng phòng" : "Nhân viên");
+        vData.add(nguoiHoc.getMaNh());
+        vData.add(nguoiHoc.getHoTen());
+        vData.add(nguoiHoc.getDienThoai());
+        vData.add(nguoiHoc.getEmail());
+        vData.add(nguoiHoc.getNgayDk());
 
         tableData.add(vData);
     }
 
-    private NhanVien getModelFromForm() {
-        NhanVien nhanVien = new NhanVien();
-        nhanVien.setMaNv(txtMaNhanVien.getText());
-        nhanVien.setHoTen(txtHoTen.getText());
-        nhanVien.setNgaySinh(DateHelper.toDate(txtNgaySinh.getText()));
-        nhanVien.setGioiTinh(rdoNam.isSelected());
-        nhanVien.setDienThoai(txtSoDienThoai.getText());
-        nhanVien.setEmail(txtEmail.getText());
-        nhanVien.setDiaChi(txtDiaChi.getText());
-        nhanVien.setVaiTro(rdoTruongPhong.isSelected());
+    private NguoiHoc getModelFromForm() {
+        NguoiHoc nguoiHoc = new NguoiHoc();
 
-        return nhanVien;
-    }
+        nguoiHoc.setMaNh(txtMaNguoiHoc.getText());
+        nguoiHoc.setHoTen(txtHoTen.getText());
+        nguoiHoc.setNgaySinh(DateHelper.toDate(txtNgaySinh.getText()));
+        nguoiHoc.setGioiTinh(rdoNam.isSelected());
+        nguoiHoc.setDienThoai(txtSoDienThoai.getText());
+        nguoiHoc.setEmail(txtEmail.getText());
+        nguoiHoc.setGhiChu(txtGhiChu.getText());
 
-    private void sendUserInfoToEmail(NhanVien nhanVien) {
-        new Thread(() -> {
-            String matKhau = nhanVien.getMatKhau();
-            String msgSubject = "Thông tin tài khoản";
-            String msgBody = "<h2 style='color: #B93B2D'>Xin chào!<br>Dưới đây là thông tin tài khoản của bạn.</h2>"
-                    + "<br>Mã nhân viên: <b>" + nhanVien.getMaNv()
-                    + "</b><br>Mật khẩu: <b>" + matKhau
-                    + "</b><br>Sử dụng tài khoản và mật khẩu trên để đăng nhập vào hệ thống.";
-            new EMailUtil(nhanVien.getEmail(), msgBody, msgSubject).sendMail();
-        }).start();
+        return nguoiHoc;
     }
 
     private boolean validateInputAddingState() {
-        for (NhanVien nhanVien : nhanVienHashMap.values()) {
-            if (nhanVien.getMaNv().equals(txtMaNhanVien.getText())) {
+        for (NguoiHoc nguoiHoc : nguoiHocHashMap.values()) {
+            if (nguoiHoc.getMaNh().equals(txtMaNguoiHoc.getText())) {
                 DialogHelper.message(this, "Mã nhân viên đã tồn tại", DialogHelper.ERROR_MESSAGE);
                 return false;
-            } else if (nhanVien.getEmail().equals(txtEmail.getText())) {
+            } else if (nguoiHoc.getEmail().equals(txtEmail.getText())) {
                 DialogHelper.message(this, "Email đã tồn tại", DialogHelper.ERROR_MESSAGE);
                 return false;
             }
@@ -243,10 +219,10 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }
 
     private boolean validateInputEditingState() {
-        String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
-        if (!nhanVienHashMap.get(maNv).getEmail().equals(txtEmail.getText())) {
-            for (NhanVien nhanVien : nhanVienHashMap.values()) {
-                if (nhanVien.getEmail().equals(txtEmail.getText())) {
+        String maNh = tblNguoiHoc.getValueAt(selectedIndex, 0).toString();
+        if (!nguoiHocHashMap.get(maNh).getEmail().equals(txtEmail.getText())) {
+            for (NguoiHoc nguoiHoc : nguoiHocHashMap.values()) {
+                if (nguoiHoc.getEmail().equals(txtEmail.getText())) {
                     DialogHelper.message(this, "Email đã tồn tại", DialogHelper.ERROR_MESSAGE);
                     return false;
                 }
@@ -258,8 +234,8 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }
 
     private void setAddingState() {
-        txtMaNhanVien.setEditable(true);
-        txtMaNhanVien.requestFocus();
+        txtMaNguoiHoc.setEditable(true);
+        txtMaNguoiHoc.requestFocus();
         btnThem.setEnabled(true);
         btnLamMoi.setEnabled(true);
         btnCapNhat.setEnabled(false);
@@ -272,7 +248,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }
 
     private void setEditingState() {
-        txtMaNhanVien.setEditable(false);
+        txtMaNguoiHoc.setEditable(false);
         btnThem.setEnabled(false);
         btnLamMoi.setEnabled(true);
         btnCapNhat.setEnabled(true);
@@ -281,32 +257,29 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
     private void insertModel() {
         if (validateInputAddingState()) {
-            String randomPassword = "$$" + StringUtil.randomString();
-            NhanVien nhanVien = getModelFromForm();
-            nhanVien.setMatKhau(randomPassword);
+            NguoiHoc nguoiHoc = getModelFromForm();
 
 //            Save image to folder
             try {
                 if (jFileChooser.getSelectedFile() != null) {
-                    nhanVien.setHinh(nhanVien.getMaNv().concat(".jpg"));
+                    nguoiHoc.setHinh(nguoiHoc.getMaNh().concat(".jpg"));
 
-                    if (nhanVien.getHinh() != null) {
-                        ImageUtil.deleteImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVien.getHinh());
+                    if (nguoiHoc.getHinh() != null) {
+                        ImageUtil.deleteImage(URLHelper.URL_NGUOIHOC_IMAGE, nguoiHoc.getHinh());
                     }
-                    ImageUtil.saveImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVien.getHinh(), jFileChooser.getSelectedFile());
+                    ImageUtil.saveImage(URLHelper.URL_NGUOIHOC_IMAGE, nguoiHoc.getHinh(), jFileChooser.getSelectedFile());
                     jFileChooser = null;
                 }
             } catch (Exception ex) {
 //                ex.printStackTrace();
             }
 
-            boolean isInserted = new NhanVienDaoImpl().insert(nhanVien);
+            boolean isInserted = new NguoiHocDaoImpl().insert(nguoiHoc);
 
             if (isInserted) {
-                sendUserInfoToEmail(nhanVien);
-                DialogHelper.message(this, "Thêm dữ liệu thành công.\nKiểm tra email để nhận thông tin đăng nhập.", DialogHelper.INFORMATION_MESSAGE);
+                DialogHelper.message(this, "Thêm dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
-                tblNhanVien.updateUI();
+                tblNguoiHoc.updateUI();
                 setEditingState();
             } else {
                 DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
@@ -317,14 +290,14 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private void deleteModel() {
         boolean isConfirm = DialogHelper.confirm(this, "Bạn chắc chắn muốn xoá?");
         if (isConfirm) {
-            String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
-            NhanVien nhanVien = nhanVienHashMap.get(maNv);
-            boolean isDeleted = new NhanVienDaoImpl().delete(nhanVien);
+            String maNh = tblNguoiHoc.getValueAt(selectedIndex, 0).toString();
+            NguoiHoc nguoiHoc = nguoiHocHashMap.get(maNh);
+            boolean isDeleted = new NguoiHocDaoImpl().delete(nguoiHoc);
 
             if (isDeleted) {
                 DialogHelper.message(this, "Xoá dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
-                tblNhanVien.updateUI();
+                tblNguoiHoc.updateUI();
                 changeSelectedIndex();
             } else {
                 DialogHelper.message(this, "Xoá dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
@@ -334,20 +307,20 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
     private void updateModel() {
         if (validateInputEditingState()) {
-            String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
-            NhanVien nhanVienOldData = nhanVienHashMap.get(maNv);
+            String maNh = tblNguoiHoc.getValueAt(selectedIndex, 0).toString();
+            NguoiHoc nguoiHocOldData = nguoiHocHashMap.get(maNh);
 
-            NhanVien nhanVienNewData = getModelFromForm();
+            NguoiHoc nguoiHocNewData = getModelFromForm();
 
 //            Save image to folder
             try {
                 if (jFileChooser.getSelectedFile() != null) {
-                    nhanVienNewData.setHinh(nhanVienNewData.getMaNv().concat(".jpg"));
+                    nguoiHocNewData.setHinh(nguoiHocNewData.getMaNh().concat(".jpg"));
 
-                    if (nhanVienOldData.getHinh() != null) {
-                        ImageUtil.deleteImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVienOldData.getHinh());
+                    if (nguoiHocOldData.getHinh() != null) {
+                        ImageUtil.deleteImage(URLHelper.URL_NGUOIHOC_IMAGE, nguoiHocOldData.getHinh());
                     }
-                    ImageUtil.saveImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVienNewData.getHinh(), jFileChooser.getSelectedFile());
+                    ImageUtil.saveImage(URLHelper.URL_NGUOIHOC_IMAGE, nguoiHocNewData.getHinh(), jFileChooser.getSelectedFile());
                     jFileChooser = null;
                 }
             } catch (Exception ex) {
@@ -356,23 +329,20 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
             boolean isUpdated = false;
             try {
-                nhanVienNewData = DataFactoryUtil.mergeTwoObject(nhanVienOldData, nhanVienNewData);
-                nhanVienHashMap.put(maNv, nhanVienNewData);
+                nguoiHocNewData = DataFactoryUtil.mergeTwoObject(nguoiHocOldData, nguoiHocNewData);
+                nguoiHocHashMap.put(maNh, nguoiHocNewData);
 
-                isUpdated = new NhanVienDaoImpl().update(nhanVienNewData);
+                isUpdated = new NguoiHocDaoImpl().update(nguoiHocNewData);
             } catch (Exception ex) {
-                Logger.getLogger(NhanVienJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(NguoiHocJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             if (isUpdated) {
                 Vector vData;
                 try {
-                    vData = DataFactoryUtil.objectToVectorByFields(nhanVienNewData, ObjectStructureHelper.NHANVIEN_PROPERTIES);
-                    int fieldVaiTro = vData.size() - 1;
-                    boolean isTruongPhong = (boolean) vData.get(fieldVaiTro);
-                    vData.set(fieldVaiTro, isTruongPhong ? "Trưởng phòng" : "Nhân viên");
+                    vData = DataFactoryUtil.objectToVectorByFields(nguoiHocNewData, ObjectStructureHelper.NGUOIHOC_PROPERTIES);
 
-//                    Find index of updated NhanVien in tabledata
+//                    Find index of updated NguoiHoc in tabledata
                     for (int i = 0; i < tableData.size(); i++) {
                         if (tableData.get(i).get(0).equals(vData.get(0))) {
                             tableData.set(i, vData);
@@ -380,10 +350,10 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                         }
                     }
 
-                    tblNhanVien.updateUI();
+                    tblNguoiHoc.updateUI();
                     DialogHelper.message(this, "Cập nhật dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 } catch (Exception ex) {
-                    Logger.getLogger(NhanVienJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(NguoiHocJFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 DialogHelper.message(this, "Cập nhật dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
@@ -436,19 +406,16 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         panelTab = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblNhanVien = new javax.swing.JTable();
+        tblNguoiHoc = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
-        txtMaNhanVien = new javax.swing.JTextField();
+        txtMaNguoiHoc = new javax.swing.JTextField();
         txtHoTen = new javax.swing.JTextField();
         rdoNam = new javax.swing.JRadioButton();
         rdoNu = new javax.swing.JRadioButton();
         txtNgaySinh = new javax.swing.JTextField();
         txtSoDienThoai = new javax.swing.JTextField();
         txtEmail = new javax.swing.JTextField();
-        txtDiaChi = new javax.swing.JTextField();
-        rdoTruongPhong = new javax.swing.JRadioButton();
-        rdoNhanVien = new javax.swing.JRadioButton();
         jLabel7 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -456,8 +423,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         lblAvatar = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtGhiChu = new javax.swing.JTextArea();
         jPanel7 = new javax.swing.JPanel();
         btnThem = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
@@ -503,9 +471,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             }
         });
 
-        tblNhanVien.setAutoCreateRowSorter(true);
-        tblNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        tblNhanVien.setModel(new javax.swing.table.DefaultTableModel(
+        tblNguoiHoc.setAutoCreateRowSorter(true);
+        tblNguoiHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        tblNguoiHoc.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -513,18 +481,18 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
             }
         ));
-        tblNhanVien.setGridColor(new java.awt.Color(204, 204, 204));
-        tblNhanVien.setIntercellSpacing(new java.awt.Dimension(0, 1));
-        tblNhanVien.setRowHeight(23);
-        tblNhanVien.setSelectionBackground(new java.awt.Color(65, 76, 89));
-        tblNhanVien.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        tblNhanVien.setShowGrid(false);
-        tblNhanVien.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblNguoiHoc.setGridColor(new java.awt.Color(204, 204, 204));
+        tblNguoiHoc.setIntercellSpacing(new java.awt.Dimension(0, 1));
+        tblNguoiHoc.setRowHeight(23);
+        tblNguoiHoc.setSelectionBackground(new java.awt.Color(65, 76, 89));
+        tblNguoiHoc.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblNguoiHoc.setShowGrid(false);
+        tblNguoiHoc.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblNhanVienMouseClicked(evt);
+                tblNguoiHocMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tblNhanVien);
+        jScrollPane1.setViewportView(tblNguoiHoc);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -543,9 +511,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         jPanel5.setFocusable(false);
         jPanel5.setPreferredSize(new java.awt.Dimension(408, 390));
 
-        txtMaNhanVien.setEditable(false);
-        txtMaNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        txtMaNhanVien.setFocusTraversalKeysEnabled(false);
+        txtMaNguoiHoc.setEditable(false);
+        txtMaNguoiHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtMaNguoiHoc.setFocusTraversalKeysEnabled(false);
 
         txtHoTen.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtHoTen.setFocusTraversalKeysEnabled(false);
@@ -578,18 +546,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         txtEmail.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtEmail.setFocusTraversalKeysEnabled(false);
 
-        txtDiaChi.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        txtDiaChi.setFocusTraversalKeysEnabled(false);
-
-        rdoTruongPhong.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        rdoTruongPhong.setSelected(true);
-        rdoTruongPhong.setText("Trưởng phòng");
-        rdoTruongPhong.setFocusTraversalKeysEnabled(false);
-
-        rdoNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        rdoNhanVien.setText("Nhân viên");
-        rdoNhanVien.setFocusTraversalKeysEnabled(false);
-
         jLabel7.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel7.setText("Ngày sinh");
 
@@ -597,7 +553,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         jLabel5.setText("Họ  và tên");
 
         jLabel2.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jLabel2.setText("Mã nhân viên");
+        jLabel2.setText("Mã người học");
 
         jLabel10.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel10.setText("Giới tính");
@@ -609,10 +565,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         jLabel8.setText("Email");
 
         jLabel9.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jLabel9.setText("Địa chỉ");
-
-        jLabel6.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jLabel6.setText("Vai Trò");
+        jLabel9.setText("Ghi chú");
 
         lblAvatar.setBackground(new java.awt.Color(255, 255, 255));
         lblAvatar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -622,6 +575,10 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                 lblAvatarMouseClicked(evt);
             }
         });
+
+        txtGhiChu.setColumns(20);
+        txtGhiChu.setRows(5);
+        jScrollPane2.setViewportView(txtGhiChu);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -633,7 +590,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                         .addGap(31, 31, 31)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel5)
-                            .addComponent(txtMaNhanVien)
+                            .addComponent(txtMaNguoiHoc)
                             .addComponent(jLabel2)
                             .addComponent(txtHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel5Layout.createSequentialGroup()
@@ -644,23 +601,16 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(138, 138, 138)
                         .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel4)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel5Layout.createSequentialGroup()
-                            .addComponent(rdoTruongPhong)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(rdoNhanVien))
-                        .addComponent(jLabel6)
-                        .addComponent(jLabel9)
-                        .addComponent(txtSoDienThoai)
-                        .addComponent(txtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtSoDienThoai, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
                     .addComponent(jLabel8)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel7)
-                        .addComponent(txtNgaySinh, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)))
+                    .addComponent(jLabel7)
+                    .addComponent(txtNgaySinh, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
                 .addGap(31, 31, 31))
         );
         jPanel5Layout.setVerticalGroup(
@@ -680,7 +630,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                         .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -688,17 +638,11 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(rdoTruongPhong)
-                            .addComponent(rdoNhanVien)))
+                        .addComponent(jScrollPane2))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtMaNhanVien, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtMaNguoiHoc, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -972,7 +916,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
     private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
         selectedIndex = -1;
-        tblNhanVien.clearSelection();
+        tblNguoiHoc.clearSelection();
         resetForm();
         setAddingState();
     }//GEN-LAST:event_btnLamMoiActionPerformed
@@ -985,15 +929,15 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         this.deleteModel();
     }//GEN-LAST:event_btnXoaActionPerformed
 
-    private void tblNhanVienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNhanVienMouseClicked
-        selectedIndex = tblNhanVien.rowAtPoint(evt.getPoint());
+    private void tblNguoiHocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNguoiHocMouseClicked
+        selectedIndex = tblNguoiHoc.rowAtPoint(evt.getPoint());
         if (evt.getClickCount() == 2) {
             if (selectedIndex >= 0) {
                 panelTab.setSelectedIndex(1);
                 setDirectionButton();
             }
         }
-    }//GEN-LAST:event_tblNhanVienMouseClicked
+    }//GEN-LAST:event_tblNguoiHocMouseClicked
 
     private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
         this.updateModel();
@@ -1040,7 +984,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
     private void panelTabStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_panelTabStateChanged
         if (evt != null && isDataLoaded) {
-            selectedIndex = tblNhanVien.getSelectedRow();
+            selectedIndex = tblNguoiHoc.getSelectedRow();
             if (selectedIndex == -1) {
                 resetForm();
                 setAddingState();
@@ -1054,8 +998,8 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_panelTabStateChanged
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        tblNhanVien.clearSelection();
-        selectedIndex = tblNhanVien.getSelectedRow();
+        tblNguoiHoc.clearSelection();
+        selectedIndex = tblNguoiHoc.getSelectedRow();
         resetForm();
         setAddingState();
         panelTab.setSelectedIndex(0);
@@ -1079,7 +1023,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
     private void txtTimKiemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtTimKiemMouseClicked
         selectedIndex = -1;
-        tblNhanVien.clearSelection();
+        tblNguoiHoc.clearSelection();
         txtTimKiem.setFocusable(true);
         txtTimKiem.requestFocus();
         panelTab.setSelectedIndex(0);
@@ -1094,8 +1038,8 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             tableData.clear();
             int cboIndex = cboBoLoc.getSelectedIndex();
             String fieldName = ObjectStructureHelper.NHANVIEN_PROPERTIES[cboIndex];
-            for (NhanVien nhanVien : nhanVienHashMap.values()) {
-                Object dataFromField = DataFactoryUtil.getValueByField(nhanVien, fieldName);
+            for (NguoiHoc nguoiHoc : nguoiHocHashMap.values()) {
+                Object dataFromField = DataFactoryUtil.getValueByField(nguoiHoc, fieldName);
 //                Kiem tra co phai file vai tro hay khong
                 if (dataFromField instanceof Boolean) {
                     dataFromField = ((Boolean) dataFromField).booleanValue() ? "Trưởng phòng" : "Nhân viên";
@@ -1106,13 +1050,15 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                 String timKiemString = txtTimKiem.getText().toLowerCase();
                 if (strDataFromField.contains(timKiemString)) {
                     try {
-                        addModelToTable(nhanVien);
+                        addModelToTable(nguoiHoc);
+
                     } catch (Exception ex) {
-                        Logger.getLogger(NhanVienJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(NguoiHocJFrame.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
-            tblNhanVien.updateUI();
+            tblNguoiHoc.updateUI();
         }
     }//GEN-LAST:event_txtTimKiemKeyReleased
 
@@ -1148,22 +1094,30 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                 if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NhanVienJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NguoiHocJFrame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NhanVienJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NguoiHocJFrame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NhanVienJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NguoiHocJFrame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NhanVienJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NguoiHocJFrame.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NhanVienJFrame().setVisible(true);
+                new NguoiHocJFrame().setVisible(true);
             }
         });
     }
@@ -1185,7 +1139,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -1198,21 +1151,19 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblAvatar;
     private javax.swing.JTabbedPane panelTab;
     private javax.swing.JRadioButton rdoNam;
-    private javax.swing.JRadioButton rdoNhanVien;
     private javax.swing.JRadioButton rdoNu;
-    private javax.swing.JRadioButton rdoTruongPhong;
-    private javax.swing.JTable tblNhanVien;
-    private javax.swing.JTextField txtDiaChi;
+    private javax.swing.JTable tblNguoiHoc;
     private javax.swing.JTextField txtEmail;
+    private javax.swing.JTextArea txtGhiChu;
     private javax.swing.JTextField txtHoTen;
-    private javax.swing.JTextField txtMaNhanVien;
+    private javax.swing.JTextField txtMaNguoiHoc;
     private javax.swing.JTextField txtNgaySinh;
     private javax.swing.JTextField txtSoDienThoai;
     private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables
     private ButtonGroup gioiTinhGroup = new ButtonGroup();
-    private ButtonGroup vaiTroGroup = new ButtonGroup();
 }

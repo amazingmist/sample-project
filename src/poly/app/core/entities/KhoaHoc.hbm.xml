@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Sep 26, 2018 4:18:31 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated Oct 7, 2018 2:44:16 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="poly.app.core.entities.KhoaHoc" table="KhoaHoc" catalog="Polypro" optimistic-lock="version">
         <id name="maKh" type="java.lang.Integer">
             <column name="MaKH" />
             <generator class="identity" />
         </id>
-        <many-to-one name="chuyenDe" class="poly.app.core.entities.ChuyenDe" fetch="join">
+        <many-to-one name="chuyenDe" class="poly.app.core.entities.ChuyenDe" fetch="select">
             <column name="MaCD" length="5" not-null="true" />
         </many-to-one>
         <many-to-one name="nhanVien" class="poly.app.core.entities.NhanVien" fetch="select">

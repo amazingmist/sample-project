@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.hibernate.collection.internal.PersistentSet;
+import org.hibernate.proxy.AbstractLazyInitializer;
 
 public class DataFactoryUtil {
 
@@ -72,7 +74,7 @@ public class DataFactoryUtil {
                 Field curField = clazz.getDeclaredField(field.getName());
  //                Set can accesible this field
                 curField.setAccessible(true);
- //                Get and add value to vector
+ //                Get and add value to vector && !curField.get(objectInfo).equals(curField.get(objectReusult)) && !(curField.get(objectReusult) instanceof PersistentSet)
                 if (curField.get(objectInfo) != null) {
                     curField.set(objectReusult, curField.get(objectInfo));
                 }

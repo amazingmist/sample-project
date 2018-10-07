@@ -15,13 +15,13 @@ import javax.swing.ImageIcon;
 
 public class ImageUtil {
 
-    public static boolean saveImage(File file) {
-        File dir = new File("images");
+    public static boolean saveImage(String filePath, String fileName, File file) {
+        File dir = new File(filePath);
         // Tạo thư mục nếu chưa tồn tại
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        File newFile = new File(dir, file.getName());
+        File newFile = new File(dir, fileName);
         try {
             // Copy vào thư mục logos (đè nếu đã tồn tại)
             Path source = Paths.get(file.getAbsolutePath());
@@ -34,14 +34,14 @@ public class ImageUtil {
         }
     }
 
-    public static ImageIcon readImage(String fileName) {
-        File file = new File("images", fileName);
+    public static ImageIcon readImage(String filePath, String fileName) {
+        File file = new File(filePath, fileName);
         return new ImageIcon(file.getAbsolutePath());
     }
 
-    public static boolean deleteImage(String fileName) {
+    public static boolean deleteImage(String filePath, String fileName) {
         try {
-            File file = new File("images", fileName);
+            File file = new File(filePath, fileName);
             return file.delete();
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,10 +70,7 @@ public class ImageUtil {
             e.printStackTrace();
         }
         Image dimg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-//        ImageIcon imageIcon = new ImageIcon(dimg);
-//        imageIcon.getImage().flush();
-//        return imageIcon;
-dimg.flush();
-return  new ImageIcon(dimg);
+        dimg.flush();
+        return new ImageIcon(dimg);
     }
 }

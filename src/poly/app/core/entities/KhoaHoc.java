@@ -1,5 +1,5 @@
 package poly.app.core.entities;
-// Generated Sep 26, 2018 4:18:31 PM by Hibernate Tools 4.3.1
+// Generated Oct 7, 2018 2:44:16 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -13,38 +13,38 @@ public class KhoaHoc  implements java.io.Serializable {
 
 
      private Integer maKh;
+     private ChuyenDe chuyenDe;
+     private NhanVien nhanVien;
      private int hocPhi;
      private int thoiLuong;
      private int soBuoiHoc;
      private Date ngayKg;
      private String ghiChu;
      private Date ngayTao;
-     private NhanVien nhanVien;
-     private ChuyenDe chuyenDe;
      private Set hocViens = new HashSet(0);
 
     public KhoaHoc() {
     }
 
 	
-    public KhoaHoc(int hocPhi, int thoiLuong, int soBuoiHoc, Date ngayKg, Date ngayTao, NhanVien nhanVien, ChuyenDe chuyenDe) {
+    public KhoaHoc(ChuyenDe chuyenDe, NhanVien nhanVien, int hocPhi, int thoiLuong, int soBuoiHoc, Date ngayKg, Date ngayTao) {
+        this.chuyenDe = chuyenDe;
+        this.nhanVien = nhanVien;
         this.hocPhi = hocPhi;
         this.thoiLuong = thoiLuong;
         this.soBuoiHoc = soBuoiHoc;
         this.ngayKg = ngayKg;
         this.ngayTao = ngayTao;
-        this.chuyenDe = chuyenDe;
-        this.nhanVien = nhanVien;
     }
-    public KhoaHoc(int hocPhi, int thoiLuong, int soBuoiHoc, Date ngayKg, String ghiChu, Date ngayTao, NhanVien nhanVien, ChuyenDe chuyenDe, Set hocViens) {
+    public KhoaHoc(ChuyenDe chuyenDe, NhanVien nhanVien, int hocPhi, int thoiLuong, int soBuoiHoc, Date ngayKg, String ghiChu, Date ngayTao, Set hocViens) {
+       this.chuyenDe = chuyenDe;
+       this.nhanVien = nhanVien;
        this.hocPhi = hocPhi;
        this.thoiLuong = thoiLuong;
        this.soBuoiHoc = soBuoiHoc;
        this.ngayKg = ngayKg;
        this.ghiChu = ghiChu;
        this.ngayTao = ngayTao;
-       this.chuyenDe = chuyenDe;
-       this.nhanVien = nhanVien;
        this.hocViens = hocViens;
     }
    

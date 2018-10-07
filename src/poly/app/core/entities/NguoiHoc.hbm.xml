@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Sep 26, 2018 4:18:31 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated Oct 7, 2018 2:44:16 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="poly.app.core.entities.NguoiHoc" table="NguoiHoc" catalog="Polypro" optimistic-lock="version">
         <id name="maNh" type="string">
@@ -33,7 +33,7 @@
             <column name="NgayDK" length="10" not-null="true" />
         </property>
         <property name="hinh" type="string">
-            <column name="hinh" length="255"/>
+            <column name="Hinh" />
         </property>
         <set name="hocViens" table="HocVien" inverse="true" lazy="true" fetch="select">
             <key>
