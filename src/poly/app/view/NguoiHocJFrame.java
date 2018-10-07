@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -28,6 +29,7 @@ import poly.app.core.entities.NguoiHoc;
 import poly.app.core.helper.DateHelper;
 import poly.app.core.helper.ObjectStructureHelper;
 import poly.app.core.helper.DialogHelper;
+import poly.app.core.helper.ShareHelper;
 import poly.app.core.helper.URLHelper;
 import poly.app.core.utils.DataFactoryUtil;
 import poly.app.core.utils.EMailUtil;
@@ -47,7 +49,6 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         reRenderUI();
         addRadioToGroup();
-        loadDataToTable();
     }
 
     private void reRenderUI() {
@@ -107,8 +108,9 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         gioiTinhGroup.add(rdoNu);
     }
 
-    private void loadDataToTable() {
+    public void loadDataToTable() {
         tableData.clear();
+        nguoiHocHashMap.clear();
         List<NguoiHoc> dataLoadedList = new NguoiHocDaoImpl().selectByProperties(null, null, "hoTen", CoreConstant.SORT_ASC, null, null);
 
         try {
@@ -273,13 +275,17 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
             } catch (Exception ex) {
 //                ex.printStackTrace();
             }
+            
+//            Set ngayDangKy
+            nguoiHoc.setNgayDk(new Date());
+//            Set Nhanvien dang ky
+            nguoiHoc.setNhanVien(ShareHelper.USER);
 
             boolean isInserted = new NguoiHocDaoImpl().insert(nguoiHoc);
 
             if (isInserted) {
                 DialogHelper.message(this, "Thêm dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
-                tblNguoiHoc.updateUI();
                 setEditingState();
             } else {
                 DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
@@ -849,7 +855,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         jLabel3.setText("Thuộc tính:");
 
         jLabel11.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jLabel11.setText("Nhập liệu:");
+        jLabel11.setText("Tìm kiếm:");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -923,6 +929,13 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         this.insertModel();
+        for (int i = 0; i < tableData.size(); i++) {
+            if (tableData.get(i).get(0).equals(txtMaNguoiHoc.getText())) {
+                selectedIndex = i;
+                changeSelectedIndex();
+                break;
+            }
+        }
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
