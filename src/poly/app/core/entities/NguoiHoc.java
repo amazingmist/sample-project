@@ -20,6 +20,7 @@ public class NguoiHoc  implements java.io.Serializable {
      private String email;
      private String ghiChu;
      private Date ngayDk;
+     private String hinh;
      private NhanVien nhanVien;
      private Set hocViens = new HashSet(0);
 
@@ -27,7 +28,7 @@ public class NguoiHoc  implements java.io.Serializable {
     }
 
 	
-    public NguoiHoc(String maNh, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, Date ngayDk, NhanVien nhanVien) {
+    public NguoiHoc(String maNh, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, Date ngayDk, String hinh, NhanVien nhanVien) {
         this.maNh = maNh;
         this.hoTen = hoTen;
         this.ngaySinh = ngaySinh;
@@ -35,9 +36,10 @@ public class NguoiHoc  implements java.io.Serializable {
         this.dienThoai = dienThoai;
         this.email = email;
         this.ngayDk = ngayDk;
+        this.hinh = hinh;
         this.nhanVien = nhanVien;
     }
-    public NguoiHoc(String maNh, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String ghiChu, Date ngayDk, NhanVien nhanVien, Set hocViens) {
+    public NguoiHoc(String maNh, String hoTen, Date ngaySinh, boolean gioiTinh, String dienThoai, String email, String ghiChu, Date ngayDk, String hinh, NhanVien nhanVien, Set hocViens) {
        this.maNh = maNh;
        this.hoTen = hoTen;
        this.ngaySinh = ngaySinh;
@@ -46,6 +48,7 @@ public class NguoiHoc  implements java.io.Serializable {
        this.email = email;
        this.ghiChu = ghiChu;
        this.ngayDk = ngayDk;
+       this.hinh = hinh;
        this.nhanVien = nhanVien;
        this.hocViens = hocViens;
     }
@@ -113,6 +116,15 @@ public class NguoiHoc  implements java.io.Serializable {
     public void setNgayDk(Date ngayDk) {
         this.ngayDk = ngayDk;
     }
+
+    public String getHinh() {
+        return hinh;
+    }
+
+    public void setHinh(String hinh) {
+        this.hinh = hinh;
+    }
+    
     public Set getHocViens() {
         return this.hocViens;
     }

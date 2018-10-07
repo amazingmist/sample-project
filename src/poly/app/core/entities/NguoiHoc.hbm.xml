@@ -32,6 +32,9 @@
         <property name="ngayDk" type="date">
             <column name="NgayDK" length="10" not-null="true" />
         </property>
+        <property name="hinh" type="string">
+            <column name="hinh" length="255"/>
+        </property>
         <set name="hocViens" table="HocVien" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="MaNH" length="7" not-null="true" />
