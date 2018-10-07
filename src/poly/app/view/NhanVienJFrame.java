@@ -28,6 +28,7 @@ import poly.app.core.entities.NhanVien;
 import poly.app.core.helper.DateHelper;
 import poly.app.core.helper.ObjectStructureHelper;
 import poly.app.core.helper.DialogHelper;
+import poly.app.core.helper.ShareHelper;
 import poly.app.core.helper.URLHelper;
 import poly.app.core.utils.DataFactoryUtil;
 import poly.app.core.utils.EMailUtil;
@@ -47,7 +48,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         reRenderUI();
         addRadioToGroup();
-        loadDataToTable();
     }
 
     private void reRenderUI() {
@@ -110,8 +110,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         vaiTroGroup.add(rdoNhanVien);
     }
 
-    private void loadDataToTable() {
+    public void loadDataToTable() {
         tableData.clear();
+        nhanVienHashMap.clear();
         List<NhanVien> dataLoadedList = new NhanVienDaoImpl().selectByProperties(null, null, "hoTen", CoreConstant.SORT_ASC, null, null);
 
         try {
@@ -306,7 +307,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                 sendUserInfoToEmail(nhanVien);
                 DialogHelper.message(this, "Thêm dữ liệu thành công.\nKiểm tra email để nhận thông tin đăng nhập.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
-                tblNhanVien.updateUI();
                 setEditingState();
             } else {
                 DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
@@ -905,7 +905,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         jLabel3.setText("Thuộc tính:");
 
         jLabel11.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jLabel11.setText("Nhập liệu:");
+        jLabel11.setText("Tìm kiếm:");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -979,6 +979,13 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         this.insertModel();
+        for (int i = 0; i < tableData.size(); i++) {
+            if (tableData.get(i).get(0).equals(txtMaNhanVien.getText())) {
+                selectedIndex = i;
+                changeSelectedIndex();
+                break;
+            }
+        }
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
@@ -1049,6 +1056,15 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                 setModelToForm();
                 txtTimKiem.setFocusable(false);
                 requestFocusInWindow();
+
+                //        Set state for rdovaiTro
+                if (ShareHelper.USER.getVaiTro()) {
+                    rdoTruongPhong.setEnabled(true);
+                    rdoNhanVien.setEnabled(true);
+                } else {
+                    rdoTruongPhong.setEnabled(false);
+                    rdoNhanVien.setEnabled(false);
+                }
             }
         }
     }//GEN-LAST:event_panelTabStateChanged
