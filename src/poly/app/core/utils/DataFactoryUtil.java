@@ -74,8 +74,15 @@ public class DataFactoryUtil {
                 Field curField = clazz.getDeclaredField(field.getName());
  //                Set can accesible this field
                 curField.setAccessible(true);
- //                Get and add value to vector && !curField.get(objectInfo).equals(curField.get(objectReusult)) && !(curField.get(objectReusult) instanceof PersistentSet)
-                if (curField.get(objectInfo) != null) {
+ 
+//                Get and value
+                Object curfieldInfoData = curField.get(objectInfo);
+                Object curfieldResultData = curField.get(objectReusult);
+                
+                if (curfieldInfoData != null
+                        && curfieldInfoData.getClass().equals(curfieldResultData.getClass())
+                        && !curfieldInfoData.equals(curfieldResultData)) {
+                    
                     curField.set(objectReusult, curField.get(objectInfo));
                 }
  //                Set can not accesible this field
