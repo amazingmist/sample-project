@@ -27,6 +27,7 @@ public class MainJFrame extends javax.swing.JFrame {
     JFrame currentFrame = new JFrame();
     NhanVienJFrame nhanVienJFrame;
     ThongKeJFrame thongKeJFrame;
+    NguoiHocJFrame nguoiHocJFrame;
 
     /**
      * Creates new form MainJFrame
@@ -48,6 +49,7 @@ public class MainJFrame extends javax.swing.JFrame {
             HibernateUtil.getSessionFactory();
             nhanVienJFrame = new NhanVienJFrame();
             thongKeJFrame = new ThongKeJFrame();
+            nguoiHocJFrame = new NguoiHocJFrame();
         }).start();
     }
 
@@ -508,6 +510,7 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_mniDoiMatKhauActionPerformed
 
     private void btnNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhanVienActionPerformed
+        nhanVienJFrame.loadDataToTable();
         currentFrame = nhanVienJFrame;
         currentFrame.requestFocus();
         currentFrame.setVisible(true);
@@ -531,7 +534,10 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnChuyenDeActionPerformed
 
     private void btnNguoiHocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNguoiHocActionPerformed
-        // TODO add your handling code here:
+        nguoiHocJFrame.loadDataToTable();
+        currentFrame = nguoiHocJFrame;
+        currentFrame.requestFocus();
+        currentFrame.setVisible(true);
     }//GEN-LAST:event_btnNguoiHocActionPerformed
 
     private void mniDangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniDangNhapActionPerformed

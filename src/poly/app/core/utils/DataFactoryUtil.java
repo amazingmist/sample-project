@@ -1,14 +1,10 @@
 package poly.app.core.utils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.hibernate.collection.internal.PersistentSet;
-import org.hibernate.proxy.AbstractLazyInitializer;
 
 public class DataFactoryUtil {
 
@@ -76,12 +72,12 @@ public class DataFactoryUtil {
                 curField.setAccessible(true);
  
 //                Get and value
-                Object curfieldInfoData = curField.get(objectInfo);
-                Object curfieldResultData = curField.get(objectReusult);
-                
-                if (curfieldInfoData != null
-                        && curfieldInfoData.getClass().equals(curfieldResultData.getClass())
-                        && !curfieldInfoData.equals(curfieldResultData)) {
+//                Object curfieldInfoData = curField.get(objectInfo);
+//                Object curfieldResultData = curField.get(objectReusult);
+//                
+//                        && curfieldInfoData.getClass().equals(curfieldResultData.getClass())
+//                        && !curfieldInfoData.equals(curfieldResultData)
+                if (curField.get(objectInfo) != null) {
                     
                     curField.set(objectReusult, curField.get(objectInfo));
                 }
@@ -107,14 +103,4 @@ public class DataFactoryUtil {
         }
          return result;
     }
-    
-//    public static void main(String[] args) {
-//        ChuyenDe chuyenDe = new ChuyenDe("TAI01", "Học lập trình C#", 3000, 10, "tai.png", "Học C#");
-//        try {
-//            Vector v = DataFactoryUtil.objectToVector(chuyenDe);
-//            System.out.println(v);
-//        } catch (Exception ex) {
-//            Logger.getLogger(DataFactoryUtil.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
 }

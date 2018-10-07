@@ -8,7 +8,7 @@
             <column name="MaKH" />
             <generator class="identity" />
         </id>
-        <many-to-one name="chuyenDe" class="poly.app.core.entities.ChuyenDe" fetch="select">
+        <many-to-one name="chuyenDe" class="poly.app.core.entities.ChuyenDe" fetch="join">
             <column name="MaCD" length="5" not-null="true" />
         </many-to-one>
         <many-to-one name="nhanVien" class="poly.app.core.entities.NhanVien" fetch="select">
