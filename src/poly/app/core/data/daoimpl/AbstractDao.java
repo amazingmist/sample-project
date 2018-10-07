@@ -137,7 +137,8 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
         Session session = this.getSession();
         Transaction transaction = session.beginTransaction();
         try {
-            session.delete(entity);
+            T mappedEntity = (T) session.merge(entity);
+            session.delete(mappedEntity);
             transaction.commit();
             return true;
         }catch (HibernateException ex){
@@ -155,7 +156,8 @@ public class AbstractDao<ID extends Serializable, T> implements GenericDao<ID, T
         Transaction transaction = session.beginTransaction();
         try {
             T entity = (T) session.get(this.getPersistenceClass(), id);
-            session.delete(entity);
+            T mappedEntity = (T) session.merge(entity);
+            session.delete(mappedEntity);
             transaction.commit();
             return true;
         }catch (HibernateException ex){
