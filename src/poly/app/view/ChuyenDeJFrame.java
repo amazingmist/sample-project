@@ -803,6 +803,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             if (tableData.get(i).get(0).equals(txtMaChuyenDe.getText())) {
                 selectedIndex = i;
                 changeSelectedIndex();
+                setDirectionButton();
                 break;
             }
         }

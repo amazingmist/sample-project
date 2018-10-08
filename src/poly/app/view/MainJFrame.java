@@ -50,10 +50,10 @@ public class MainJFrame extends javax.swing.JFrame {
         new Thread(() -> {
             HibernateUtil.getSessionFactory();
             nhanVienJFrame = new NhanVienJFrame();
-            thongKeJFrame  = new ThongKeJFrame();
+            thongKeJFrame = new ThongKeJFrame();
             nguoiHocJFrame = new NguoiHocJFrame();
             chuyenDeJFrame = new ChuyenDeJFrame();
-            khoaHocJFrame  = new KhoaHocJFrame();
+            khoaHocJFrame = new KhoaHocJFrame();
         }).start();
     }
 
@@ -494,10 +494,13 @@ public class MainJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangXuatActionPerformed
-        this.setVisible(false);
-        ShareHelper.logOut();
-        openDangNhapDialog();
-        this.setVisible(true);
+        boolean isConfirm = DialogHelper.confirm(this, "Bạn có muốn đăng xuất?");
+        if (isConfirm) {
+            this.setVisible(false);
+            ShareHelper.logOut();
+            openDangNhapDialog();
+            this.setVisible(true);
+        }
     }//GEN-LAST:event_btnDangXuatActionPerformed
 
     private void btnKetThucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKetThucActionPerformed
@@ -563,9 +566,9 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_mniKetThucActionPerformed
 
     private void mniTKNguoiHocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniTKNguoiHocActionPerformed
-        if(!ShareHelper.USER.getVaiTro()){
+        if (!ShareHelper.USER.getVaiTro()) {
             DialogHelper.message(this, "Bạn không có quyền truy cập vào chức năng này", DialogHelper.ERROR_MESSAGE);
-        }else{
+        } else {
             currentFrame = thongKeJFrame;
             currentFrame.requestFocus();
             thongKeJFrame.setTab(2);
@@ -575,9 +578,9 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_mniTKNguoiHocActionPerformed
 
     private void mniTKBangDiemKhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniTKBangDiemKhoaActionPerformed
-        if(!ShareHelper.USER.getVaiTro()){
+        if (!ShareHelper.USER.getVaiTro()) {
             DialogHelper.message(this, "Bạn không có quyền truy cập vào chức năng này", DialogHelper.ERROR_MESSAGE);
-        }else{
+        } else {
             currentFrame = thongKeJFrame;
             currentFrame.requestFocus();
             currentFrame.setVisible(true);
@@ -586,9 +589,9 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_mniTKBangDiemKhoaActionPerformed
 
     private void mniTKDiemTungKhoaHocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniTKDiemTungKhoaHocActionPerformed
-        if(!ShareHelper.USER.getVaiTro()){
+        if (!ShareHelper.USER.getVaiTro()) {
             DialogHelper.message(this, "Bạn không có quyền truy cập vào chức năng này", DialogHelper.ERROR_MESSAGE);
-        }else{
+        } else {
             currentFrame = thongKeJFrame;
             currentFrame.requestFocus();
             currentFrame.setVisible(true);
@@ -597,9 +600,9 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_mniTKDiemTungKhoaHocActionPerformed
 
     private void mniTKDoanhThuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniTKDoanhThuActionPerformed
-        if(!ShareHelper.USER.getVaiTro()){
+        if (!ShareHelper.USER.getVaiTro()) {
             DialogHelper.message(this, "Bạn không có quyền truy cập vào chức năng này", DialogHelper.ERROR_MESSAGE);
-        }else{
+        } else {
             currentFrame = thongKeJFrame;
             currentFrame.requestFocus();
             currentFrame.setVisible(true);

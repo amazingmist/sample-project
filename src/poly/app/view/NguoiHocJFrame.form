@@ -274,8 +274,8 @@
                                   <Component id="txtEmail" pref="360" max="32767" attributes="0"/>
                                   <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtNgaySinh" alignment="0" pref="360" max="32767" attributes="0"/>
                                   <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jdcNgaySinh" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                           </Group>
@@ -289,15 +289,15 @@
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel7" min="-2" pref="25" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="txtNgaySinh" min="-2" pref="35" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="32767" attributes="0"/>
+                                      <Component id="jdcNgaySinh" min="-2" pref="35" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
                                       <Component id="jLabel4" min="-2" pref="25" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="txtSoDienThoai" min="-2" pref="35" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="lblAvatar" min="-2" pref="140" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="4" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -370,14 +370,6 @@
                           <Font name="Open Sans" size="14" style="0"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="N&#x1eef;"/>
-                        <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JTextField" name="txtNgaySinh">
-                      <Properties>
-                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Open Sans" size="14" style="0"/>
-                        </Property>
                         <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
                       </Properties>
                     </Component>
@@ -492,6 +484,14 @@
                         </Component>
                       </SubComponents>
                     </Container>
+                    <Component class="com.toedter.calendar.JDateChooser" name="jdcNgaySinh">
+                      <Properties>
+                        <Property name="dateFormatString" type="java.lang.String" value="dd-MM-yyyy"/>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Open Sans" size="14" style="0"/>
+                        </Property>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanel7">

@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.entities.NhanVien;
@@ -119,7 +120,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         NhanVien selectedNhanVien = nhanVienHashMap.get(maNv);
         txtMaNhanVien.setText(selectedNhanVien.getMaNv());
         txtHoTen.setText(selectedNhanVien.getHoTen());
-        txtNgaySinh.setText(DateHelper.toString(selectedNhanVien.getNgaySinh()));
+        jdcNgaySinh.setDate(selectedNhanVien.getNgaySinh());
         txtSoDienThoai.setText(selectedNhanVien.getDienThoai());
         txtEmail.setText(selectedNhanVien.getEmail());
         txtDiaChi.setText(selectedNhanVien.getDiaChi());
@@ -146,7 +147,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private void resetForm() {
         txtMaNhanVien.setText("");
         txtHoTen.setText("");
-        txtNgaySinh.setText("");
+        jdcNgaySinh.setDate(null);
         txtSoDienThoai.setText("");
         txtEmail.setText("");
         txtDiaChi.setText("");
@@ -172,7 +173,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         NhanVien nhanVien = new NhanVien();
         nhanVien.setMaNv(txtMaNhanVien.getText());
         nhanVien.setHoTen(txtHoTen.getText());
-        nhanVien.setNgaySinh(DateHelper.toDate(txtNgaySinh.getText()));
+        nhanVien.setNgaySinh(jdcNgaySinh.getDate());
         nhanVien.setGioiTinh(rdoNam.isSelected());
         nhanVien.setDienThoai(txtSoDienThoai.getText());
         nhanVien.setEmail(txtEmail.getText());
@@ -409,7 +410,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         txtHoTen = new javax.swing.JTextField();
         rdoNam = new javax.swing.JRadioButton();
         rdoNu = new javax.swing.JRadioButton();
-        txtNgaySinh = new javax.swing.JTextField();
         txtSoDienThoai = new javax.swing.JTextField();
         txtEmail = new javax.swing.JTextField();
         txtDiaChi = new javax.swing.JTextField();
@@ -424,6 +424,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         lblAvatar = new javax.swing.JLabel();
+        jdcNgaySinh = new com.toedter.calendar.JDateChooser();
         jPanel7 = new javax.swing.JPanel();
         btnThem = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
@@ -527,9 +528,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         rdoNu.setText("Nữ");
         rdoNu.setFocusTraversalKeysEnabled(false);
 
-        txtNgaySinh.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        txtNgaySinh.setFocusTraversalKeysEnabled(false);
-
         txtSoDienThoai.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtSoDienThoai.setFocusTraversalKeysEnabled(false);
         txtSoDienThoai.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -586,6 +584,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             }
         });
 
+        jdcNgaySinh.setDateFormatString("dd-MM-yyyy");
+        jdcNgaySinh.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -607,23 +608,21 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(138, 138, 138)
                         .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel4)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel5Layout.createSequentialGroup()
-                            .addComponent(rdoTruongPhong)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(rdoNhanVien))
-                        .addComponent(jLabel6)
-                        .addComponent(jLabel9)
-                        .addComponent(txtSoDienThoai)
-                        .addComponent(txtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(rdoTruongPhong)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(rdoNhanVien))
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel9)
+                    .addComponent(txtSoDienThoai)
+                    .addComponent(txtDiaChi, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
                     .addComponent(jLabel8)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel7)
-                        .addComponent(txtNgaySinh, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)))
+                    .addComponent(jLabel7)
+                    .addComponent(jdcNgaySinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(31, 31, 31))
         );
         jPanel5Layout.setVerticalGroup(
@@ -634,14 +633,14 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jdcNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtSoDienThoai, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 4, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
@@ -938,6 +937,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             if (tableData.get(i).get(0).equals(txtMaNhanVien.getText())) {
                 selectedIndex = i;
                 changeSelectedIndex();
+                setDirectionButton();
                 break;
             }
         }
@@ -1162,6 +1162,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private com.toedter.calendar.JDateChooser jdcNgaySinh;
     private javax.swing.JLabel lblAvatar;
     private javax.swing.JTabbedPane panelTab;
     private javax.swing.JRadioButton rdoNam;
@@ -1173,7 +1174,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtHoTen;
     private javax.swing.JTextField txtMaNhanVien;
-    private javax.swing.JTextField txtNgaySinh;
     private javax.swing.JTextField txtSoDienThoai;
     private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables

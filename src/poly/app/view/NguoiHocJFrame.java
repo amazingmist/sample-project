@@ -113,7 +113,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
 
         txtMaNguoiHoc.setText(selectedNguoiHoc.getMaNh());
         txtHoTen.setText(selectedNguoiHoc.getHoTen());
-        txtNgaySinh.setText(DateHelper.toString(selectedNguoiHoc.getNgaySinh()));
+        jdcNgaySinh.setDate(selectedNguoiHoc.getNgaySinh());
         txtSoDienThoai.setText(selectedNguoiHoc.getDienThoai());
         txtEmail.setText(selectedNguoiHoc.getEmail());
         txtGhiChu.setText(selectedNguoiHoc.getGhiChu());
@@ -134,7 +134,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
     private void resetForm() {
         txtMaNguoiHoc.setText("");
         txtHoTen.setText("");
-        txtNgaySinh.setText("");
+        jdcNgaySinh.setDate(null);
         txtSoDienThoai.setText("");
         txtEmail.setText("");
         txtGhiChu.setText("");
@@ -160,7 +160,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
 
         nguoiHoc.setMaNh(txtMaNguoiHoc.getText());
         nguoiHoc.setHoTen(txtHoTen.getText());
-        nguoiHoc.setNgaySinh(DateHelper.toDate(txtNgaySinh.getText()));
+        nguoiHoc.setNgaySinh(jdcNgaySinh.getDate());
         nguoiHoc.setGioiTinh(rdoNam.isSelected());
         nguoiHoc.setDienThoai(txtSoDienThoai.getText());
         nguoiHoc.setEmail(txtEmail.getText());
@@ -383,7 +383,6 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         txtHoTen = new javax.swing.JTextField();
         rdoNam = new javax.swing.JRadioButton();
         rdoNu = new javax.swing.JRadioButton();
-        txtNgaySinh = new javax.swing.JTextField();
         txtSoDienThoai = new javax.swing.JTextField();
         txtEmail = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
@@ -396,6 +395,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         lblAvatar = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtGhiChu = new javax.swing.JTextArea();
+        jdcNgaySinh = new com.toedter.calendar.JDateChooser();
         jPanel7 = new javax.swing.JPanel();
         btnThem = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
@@ -499,9 +499,6 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         rdoNu.setText("Nữ");
         rdoNu.setFocusTraversalKeysEnabled(false);
 
-        txtNgaySinh.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        txtNgaySinh.setFocusTraversalKeysEnabled(false);
-
         txtSoDienThoai.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtSoDienThoai.setFocusTraversalKeysEnabled(false);
         txtSoDienThoai.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -548,6 +545,9 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         txtGhiChu.setRows(5);
         jScrollPane2.setViewportView(txtGhiChu);
 
+        jdcNgaySinh.setDateFormatString("dd-MM-yyyy");
+        jdcNgaySinh.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -577,8 +577,8 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
                     .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
                     .addComponent(jLabel8)
                     .addComponent(jLabel7)
-                    .addComponent(txtNgaySinh, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
+                    .addComponent(jScrollPane2)
+                    .addComponent(jdcNgaySinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(31, 31, 31))
         );
         jPanel5Layout.setVerticalGroup(
@@ -589,14 +589,14 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jdcNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtSoDienThoai, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 4, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
@@ -887,6 +887,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
             if (tableData.get(i).get(0).equals(txtMaNguoiHoc.getText())) {
                 selectedIndex = i;
                 changeSelectedIndex();
+                setDirectionButton();
                 break;
             }
         }
@@ -1108,6 +1109,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private com.toedter.calendar.JDateChooser jdcNgaySinh;
     private javax.swing.JLabel lblAvatar;
     private javax.swing.JTabbedPane panelTab;
     private javax.swing.JRadioButton rdoNam;
@@ -1117,7 +1119,6 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
     private javax.swing.JTextArea txtGhiChu;
     private javax.swing.JTextField txtHoTen;
     private javax.swing.JTextField txtMaNguoiHoc;
-    private javax.swing.JTextField txtNgaySinh;
     private javax.swing.JTextField txtSoDienThoai;
     private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables
