@@ -33,6 +33,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
     HashMap<Integer, HocVien> hocVienHashMap = new HashMap<>();
     List<NguoiHoc> nguoiHocNotInKhoaHoc = new ArrayList<>();
     KhoaHoc khoaHoc;
+    int maKhConstructor;
 
     public HocVienJFrame() {
         initComponents();
@@ -40,8 +41,13 @@ public class HocVienJFrame extends javax.swing.JFrame {
         reRenderUI();
         addEventForTable();
         addFillterToButtonGroup();
+    }
+    
+    public void setMaKh(int maKh) {
+        this.maKhConstructor = maKh;
         loadData();
     }
+    
 
     private void reRenderUI() {
         //        TBL HOC VIEN
@@ -104,7 +110,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
     private void loadDataToTable() {
         tableData.clear();
         hocVienHashMap.clear();
-        khoaHoc = new KhoaHocDaoImpl().selectById(1);
+        khoaHoc = new KhoaHocDaoImpl().selectById(maKhConstructor);
         List<HocVien> dataLoadedList = new HocVienDaoImpl().selectByProperties("khoaHoc", khoaHoc, null, null, null, null);
 
         try {
@@ -530,7 +536,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
 
         if (deleteHocVien.size() > 0) {
             boolean isConfirm = DialogHelper.confirm(this, "Bạn có muốn xoá những học viên đã chọn?");
-            if (!isConfirm) {
+            if (isConfirm) {
                 boolean isDeleted = true;
                 for (HocVien hocVien : deleteHocVien) {
                     try {

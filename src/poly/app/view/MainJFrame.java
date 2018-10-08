@@ -29,6 +29,7 @@ public class MainJFrame extends javax.swing.JFrame {
     ThongKeJFrame thongKeJFrame;
     NguoiHocJFrame nguoiHocJFrame;
     ChuyenDeJFrame chuyenDeJFrame;
+    KhoaHocJFrame khoaHocJFrame;
 
     /**
      * Creates new form MainJFrame
@@ -52,6 +53,7 @@ public class MainJFrame extends javax.swing.JFrame {
             thongKeJFrame  = new ThongKeJFrame();
             nguoiHocJFrame = new NguoiHocJFrame();
             chuyenDeJFrame = new ChuyenDeJFrame();
+            khoaHocJFrame  = new KhoaHocJFrame();
         }).start();
     }
 
@@ -528,7 +530,10 @@ public class MainJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowDeactivated
 
     private void btnKhoaHocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhoaHocActionPerformed
-        // TODO add your handling code here:
+        khoaHocJFrame.loadDataToTable();
+        currentFrame = khoaHocJFrame;
+        currentFrame.requestFocus();
+        currentFrame.setVisible(true);
     }//GEN-LAST:event_btnKhoaHocActionPerformed
 
     private void btnChuyenDeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChuyenDeActionPerformed
@@ -563,6 +568,7 @@ public class MainJFrame extends javax.swing.JFrame {
         }else{
             currentFrame = thongKeJFrame;
             currentFrame.requestFocus();
+            thongKeJFrame.setTab(2);
             currentFrame.setVisible(true);
             thongKeJFrame.setTab(0);
         }

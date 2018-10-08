@@ -72,15 +72,11 @@ public class DataFactoryUtil {
                 curField.setAccessible(true);
  
 //                Get and value
-//                Object curfieldInfoData = curField.get(objectInfo);
-//                Object curfieldResultData = curField.get(objectReusult);
-//                
-//                        && curfieldInfoData.getClass().equals(curfieldResultData.getClass())
-//                        && !curfieldInfoData.equals(curfieldResultData)
                 if (curField.get(objectInfo) != null) {
                     
                     curField.set(objectReusult, curField.get(objectInfo));
                 }
+                
  //                Set can not accesible this field
                 curField.setAccessible(false);
             }

@@ -10,20 +10,47 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import poly.app.core.helper.ObjectStructureHelper;
+import javax.swing.table.TableModel;
 
 public class TableRenderer {
+
     public static final int CELL_ALIGN_LEFT = 2;
     public static final int CELL_ALIGN_CENTER = 0;
     public static final int CELL_ALIGN_RIGHT = 4;
-    
+
     private JTable jTable;
 
     public TableRenderer(JTable jTable) {
         this.jTable = jTable;
     }
-    
-    public void setCellEditable(boolean isEditable){
+
+    public TableRenderer(JTable jTable, Class[] columnClass) {
+        this.jTable = new JTable() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public Class<?> getColumnClass(int column) {
+//                return columnClass[column];
+                switch (column) {
+                    case 0:
+                        return String.class;
+                    case 1:
+                        return String.class;
+                    case 2:
+                        return String.class;
+                    case 3:
+                        return String.class;
+                    case 4:
+                        return String.class;
+                    default:
+                        return Boolean.class;
+                }
+            }
+        };
+        jTable.setPreferredScrollableViewportSize(jTable.getPreferredSize());
+        jTable = this.jTable;
+    }
+
+    public void setCellEditable(boolean isEditable) {
         DefaultTableModel tableModel = (DefaultTableModel) this.jTable.getModel();
         tableModel = new DefaultTableModel() {
             @Override
@@ -34,13 +61,17 @@ public class TableRenderer {
         this.jTable.setModel(tableModel);
     }
     
-    public void setDataVector(Vector tableData, String[] tableIdentifiers){
+    public void setCellEditable(int columnIndex) {
+        this.jTable.getModel().isCellEditable(-1, columnIndex);
+    }
+
+    public void setDataVector(Vector tableData, String[] tableIdentifiers) {
         DefaultTableModel tableModel = (DefaultTableModel) this.jTable.getModel();
         tableModel.setDataVector(tableData, new Vector(Arrays.asList(tableIdentifiers)));
         this.jTable.setModel(tableModel);
     }
-    
-    public void changeHeaderStyle(){
+
+    public void changeHeaderStyle() {
         JTableHeader jTableHeader = this.jTable.getTableHeader();
         jTableHeader.setFont(new Font("open sans", Font.PLAIN, 14)); // font name style size
         // canh giua man hinh
@@ -52,14 +83,14 @@ public class TableRenderer {
         this.jTable.setFillsViewportHeight(true);
         this.jTable.setBackground(Color.WHITE);
     }
-    
-    public void setColumnAlignment(int columnIndex, int cellAlignment){
+
+    public void setColumnAlignment(int columnIndex, int cellAlignment) {
         DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
         cellRenderer.setHorizontalAlignment(cellAlignment);
         this.jTable.getColumnModel().getColumn(columnIndex).setCellRenderer(cellRenderer);
     }
-    
-    public void setColoumnWidthByPersent(int columnIndex, int persent){
+
+    public void setColoumnWidthByPersent(int columnIndex, int persent) {
         double tableWidth = this.jTable.getPreferredSize().getWidth();
         this.jTable.getColumnModel().getColumn(columnIndex).setPreferredWidth((int) (tableWidth * persent / 100));
     }

@@ -35,7 +35,7 @@
         <property name="hinh" type="string">
             <column name="Hinh" />
         </property>
-        <set name="hocViens" table="HocVien" inverse="true" lazy="true" fetch="select">
+        <set name="hocViens" table="HocVien" inverse="true" fetch="select">
             <key>
                 <column name="MaNH" length="7" not-null="true" />
             </key>

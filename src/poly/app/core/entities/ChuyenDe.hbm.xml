@@ -5,7 +5,7 @@
 <hibernate-mapping>
     <class name="poly.app.core.entities.ChuyenDe" table="ChuyenDe" catalog="Polypro" optimistic-lock="version">
         <id name="maCd" type="string">
-            <column name="MaCD" length="5" />
+            <column name="MaCD" length="10" />
             <generator class="assigned" />
         </id>
         <property name="tenCd" type="string">
@@ -18,7 +18,7 @@
             <column name="ThoiLuong" not-null="true" />
         </property>
         <property name="hinh" type="string">
-            <column name="Hinh" length="50" not-null="true" />
+            <column name="Hinh" length="50"/>
         </property>
         <property name="moTa" type="string">
             <column name="MoTa" not-null="true" />

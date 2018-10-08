@@ -91,8 +91,10 @@ public class ChuyenDe  implements java.io.Serializable {
         this.khoaHocs = khoaHocs;
     }
 
-
-
+    @Override
+    public String toString() {
+        return maCd + " " + tenCd;
+    }
 
 }
 

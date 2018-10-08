@@ -8,10 +8,10 @@
             <column name="MaHV" />
             <generator class="identity" />
         </id>
-        <many-to-one name="khoaHoc" class="poly.app.core.entities.KhoaHoc" fetch="select">
+        <many-to-one name="khoaHoc" class="poly.app.core.entities.KhoaHoc" fetch="join">
             <column name="MaKH" not-null="true" />
         </many-to-one>
-        <many-to-one name="nguoiHoc" class="poly.app.core.entities.NguoiHoc" fetch="select">
+        <many-to-one name="nguoiHoc" class="poly.app.core.entities.NguoiHoc" fetch="join">
             <column name="MaNH" length="7" not-null="true" />
         </many-to-one>
         <property name="diem" type="float">

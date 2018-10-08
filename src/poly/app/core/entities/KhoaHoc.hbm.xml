@@ -11,7 +11,7 @@
         <many-to-one name="chuyenDe" class="poly.app.core.entities.ChuyenDe" fetch="join">
             <column name="MaCD" length="5" not-null="true" />
         </many-to-one>
-        <many-to-one name="nhanVien" class="poly.app.core.entities.NhanVien" fetch="select">
+        <many-to-one name="nhanVien" class="poly.app.core.entities.NhanVien" fetch="join">
             <column name="MaNV" length="50" not-null="true" />
         </many-to-one>
         <property name="hocPhi" type="int">
@@ -19,9 +19,6 @@
         </property>
         <property name="thoiLuong" type="int">
             <column name="ThoiLuong" not-null="true" />
-        </property>
-        <property name="soBuoiHoc" type="int">
-            <column name="SoBuoiHoc" not-null="true" />
         </property>
         <property name="ngayKg" type="date">
             <column name="NgayKG" length="10" not-null="true" />

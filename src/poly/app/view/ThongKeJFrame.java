@@ -28,6 +28,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
 
     Vector<Vector> tableData = new Vector<>();
     List<KhoaHoc> khoaHocList;
+    boolean isDataLoaded = false;
 
     public ThongKeJFrame() {
         initComponents();
@@ -35,9 +36,10 @@ public class ThongKeJFrame extends javax.swing.JFrame {
         reRenderUI();
     }
 
-    public void setTab(int selectedIndex) {
+    public void setTab(int tabIndex) {
         loadKhoaHocList();
-        panelTab.setSelectedIndex(selectedIndex);
+        isDataLoaded = true;
+        panelTab.setSelectedIndex(tabIndex);
     }
 
     private void reRenderUI() {
@@ -172,6 +174,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
             String item = chuyenDe.getMaCd() + "(" + khoaHoc.getNgayKg() + " - " + chuyenDe.getTenCd() + ")";
             cboKhoaHoc.addItem(item);
         }
+        cboKhoaHoc.setSelectedIndex(0);
     }
 
     private void loadDataToCboNamHoc() {
@@ -186,6 +189,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
                 tempYear = item.toString();
             }
         }
+        cboNamHoc.setSelectedIndex(0);
     }
 
     /**
@@ -220,6 +224,11 @@ public class ThongKeJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel3.setBackground(new java.awt.Color(65, 76, 89));
 
@@ -457,16 +466,20 @@ public class ThongKeJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_panelTabStateChanged
 
     private void cboKhoaHocItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboKhoaHocItemStateChanged
-        if (panelTab.getSelectedIndex() == 1) {
+        if (panelTab.getSelectedIndex() == 1 && isDataLoaded) {
             loadDataToTableTKBangDiem();
         }
     }//GEN-LAST:event_cboKhoaHocItemStateChanged
 
     private void cboNamHocItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboNamHocItemStateChanged
-        if (panelTab.getSelectedIndex() == 3) {
+        if (panelTab.getSelectedIndex() == 3 && isDataLoaded) {
             loadDataToTableTKDoanhThu();
         }
     }//GEN-LAST:event_cboNamHocItemStateChanged
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        isDataLoaded = false;
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

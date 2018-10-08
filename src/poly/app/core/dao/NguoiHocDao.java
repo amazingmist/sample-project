@@ -5,6 +5,7 @@
  */
 package poly.app.core.dao;
 
+import java.util.List;
 import poly.app.core.data.dao.GenericDao;
 import poly.app.core.entities.NguoiHoc;
 
@@ -13,5 +14,5 @@ import poly.app.core.entities.NguoiHoc;
  * @author vothanhtai
  */
 public interface NguoiHocDao extends GenericDao<String, NguoiHoc>{
-    
+    public List<Object[]> selectNguoiHocNotInKhoaHoc(int maKh);
 }

@@ -17,7 +17,6 @@ public class KhoaHoc  implements java.io.Serializable {
      private NhanVien nhanVien;
      private int hocPhi;
      private int thoiLuong;
-     private int soBuoiHoc;
      private Date ngayKg;
      private String ghiChu;
      private Date ngayTao;
@@ -27,21 +26,19 @@ public class KhoaHoc  implements java.io.Serializable {
     }
 
 	
-    public KhoaHoc(ChuyenDe chuyenDe, NhanVien nhanVien, int hocPhi, int thoiLuong, int soBuoiHoc, Date ngayKg, Date ngayTao) {
+    public KhoaHoc(ChuyenDe chuyenDe, NhanVien nhanVien, int hocPhi, int thoiLuong, Date ngayKg, Date ngayTao) {
         this.chuyenDe = chuyenDe;
         this.nhanVien = nhanVien;
         this.hocPhi = hocPhi;
         this.thoiLuong = thoiLuong;
-        this.soBuoiHoc = soBuoiHoc;
         this.ngayKg = ngayKg;
         this.ngayTao = ngayTao;
     }
-    public KhoaHoc(ChuyenDe chuyenDe, NhanVien nhanVien, int hocPhi, int thoiLuong, int soBuoiHoc, Date ngayKg, String ghiChu, Date ngayTao, Set hocViens) {
+    public KhoaHoc(ChuyenDe chuyenDe, NhanVien nhanVien, int hocPhi, int thoiLuong, Date ngayKg, String ghiChu, Date ngayTao, Set hocViens) {
        this.chuyenDe = chuyenDe;
        this.nhanVien = nhanVien;
        this.hocPhi = hocPhi;
        this.thoiLuong = thoiLuong;
-       this.soBuoiHoc = soBuoiHoc;
        this.ngayKg = ngayKg;
        this.ghiChu = ghiChu;
        this.ngayTao = ngayTao;
@@ -83,13 +80,7 @@ public class KhoaHoc  implements java.io.Serializable {
     public void setThoiLuong(int thoiLuong) {
         this.thoiLuong = thoiLuong;
     }
-    public int getSoBuoiHoc() {
-        return this.soBuoiHoc;
-    }
-    
-    public void setSoBuoiHoc(int soBuoiHoc) {
-        this.soBuoiHoc = soBuoiHoc;
-    }
+
     public Date getNgayKg() {
         return this.ngayKg;
     }
@@ -118,10 +109,11 @@ public class KhoaHoc  implements java.io.Serializable {
     public void setHocViens(Set hocViens) {
         this.hocViens = hocViens;
     }
-
-
-
-
+    
+    @Override
+    public String toString() {
+        return maKh + " " + chuyenDe.getMaCd() + " " + nhanVien.getMaNv();
+    }
 }
 
 

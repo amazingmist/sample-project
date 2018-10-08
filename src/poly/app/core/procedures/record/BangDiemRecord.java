@@ -49,7 +49,7 @@ public class BangDiemRecord {
             xepLoai = "Yếu";
         } else if (diem < 6.5) {
             xepLoai = "Trung bình";
-        } else if (diem < 7.5) {
+        } else if (diem < 8.0) {
             xepLoai = "Khá";
         } else if (diem < 9) {
             xepLoai = "Giỏi";
@@ -57,10 +57,5 @@ public class BangDiemRecord {
             xepLoai = "Xuất sắc";
         }
         return xepLoai;
-    }
-
-    @Override
-    public String toString() {
-        return "DiemHocVien{" + "maNH=" + maNH + ", hoTen=" + hoTen + ", diem=" + diem + "}";
     }
 }
