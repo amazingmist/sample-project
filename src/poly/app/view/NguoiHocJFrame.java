@@ -5,11 +5,7 @@
  */
 package poly.app.view;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,11 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import poly.app.core.constant.CoreConstant;
 import poly.app.core.daoimpl.NguoiHocDaoImpl;
 import poly.app.core.entities.NguoiHoc;
@@ -32,9 +24,8 @@ import poly.app.core.helper.DialogHelper;
 import poly.app.core.helper.ShareHelper;
 import poly.app.core.helper.URLHelper;
 import poly.app.core.utils.DataFactoryUtil;
-import poly.app.core.utils.EMailUtil;
 import poly.app.core.utils.ImageUtil;
-import poly.app.core.utils.StringUtil;
+import poly.app.view.utils.TableRenderer;
 
 public class NguoiHocJFrame extends javax.swing.JFrame {
 
@@ -52,46 +43,18 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
     }
 
     private void reRenderUI() {
-        DefaultTableModel tableModel = (DefaultTableModel) tblNguoiHoc.getModel();
-        tableModel = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tableModel.setDataVector(tableData, new Vector(Arrays.asList(ObjectStructureHelper.NGUOIHOC_TABLE_IDENTIFIERS)));
-        tblNguoiHoc.setModel(tableModel);
-
-        JTableHeader jTableHeader = tblNguoiHoc.getTableHeader();
-        jTableHeader.setFont(new Font("open sans", Font.PLAIN, 14)); // font name style size
-        // canh giua man hinh
-        ((DefaultTableCellRenderer) jTableHeader.getDefaultRenderer())
-                .setHorizontalAlignment(JLabel.CENTER);
-        // chieu cao header
-        jTableHeader.setPreferredSize(new Dimension(0, 25));
-        jTableHeader.setForeground(Color.decode("#000")); // change the Foreground
-        tblNguoiHoc.setFillsViewportHeight(true);
-        tblNguoiHoc.setBackground(Color.WHITE);
-
-        DefaultTableCellRenderer cellLeft = new DefaultTableCellRenderer();
-        cellLeft.setHorizontalAlignment(JLabel.LEFT);
-
-        DefaultTableCellRenderer cellCenter = new DefaultTableCellRenderer();
-        cellCenter.setHorizontalAlignment(JLabel.CENTER);
-
-        DefaultTableCellRenderer cellRight = new DefaultTableCellRenderer();
-        cellRight.setHorizontalAlignment(JLabel.RIGHT);
-
-        tblNguoiHoc.getColumnModel().getColumn(0).setCellRenderer(cellLeft);
-        tblNguoiHoc.getColumnModel().getColumn(1).setCellRenderer(cellLeft);
-        tblNguoiHoc.getColumnModel().getColumn(2).setCellRenderer(cellRight);
-        tblNguoiHoc.getColumnModel().getColumn(3).setCellRenderer(cellRight);
-        tblNguoiHoc.getColumnModel().getColumn(4).setCellRenderer(cellCenter);
-
-        // set width for column
-        double tableWidth = tblNguoiHoc.getPreferredSize().getWidth();
-        tblNguoiHoc.getColumnModel().getColumn(1).setPreferredWidth((int) (tableWidth * 0.35));
-        tblNguoiHoc.getColumnModel().getColumn(3).setPreferredWidth((int) (tableWidth * 0.45));
+        //        TBL NGUOI HOC
+        TableRenderer tblRenderer1 = new TableRenderer(tblNguoiHoc);
+        tblRenderer1.setCellEditable(false);
+        tblRenderer1.setDataVector(tableData, ObjectStructureHelper.NGUOIHOC_TABLE_IDENTIFIERS);
+        tblRenderer1.changeHeaderStyle();
+        tblRenderer1.setColumnAlignment(0, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer1.setColumnAlignment(1, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer1.setColumnAlignment(2, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer1.setColumnAlignment(3, TableRenderer.CELL_ALIGN_RIGHT);
+        tblRenderer1.setColumnAlignment(4, TableRenderer.CELL_ALIGN_CENTER);
+        tblRenderer1.setColoumnWidthByPersent(1, 35);
+        tblRenderer1.setColoumnWidthByPersent(3, 45);
 
 //        Add data to combobox
         for (String identifier : ObjectStructureHelper.NGUOIHOC_TABLE_IDENTIFIERS) {
@@ -143,7 +106,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         if (selectedIndex == -1) {
             return;
         }
-//        get ma nhan vien by selected index
+//        get ma nguoi hoc by selected index
         String maNh = tblNguoiHoc.getValueAt(selectedIndex, 0).toString();
         NguoiHoc selectedNguoiHoc = nguoiHocHashMap.get(maNh);
 
@@ -208,7 +171,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
     private boolean validateInputAddingState() {
         for (NguoiHoc nguoiHoc : nguoiHocHashMap.values()) {
             if (nguoiHoc.getMaNh().equals(txtMaNguoiHoc.getText())) {
-                DialogHelper.message(this, "Mã nhân viên đã tồn tại", DialogHelper.ERROR_MESSAGE);
+                DialogHelper.message(this, "Mã người học đã tồn tại", DialogHelper.ERROR_MESSAGE);
                 return false;
             } else if (nguoiHoc.getEmail().equals(txtEmail.getText())) {
                 DialogHelper.message(this, "Email đã tồn tại", DialogHelper.ERROR_MESSAGE);
@@ -574,6 +537,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         jLabel9.setText("Ghi chú");
 
         lblAvatar.setBackground(new java.awt.Color(255, 255, 255));
+        lblAvatar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         lblAvatar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblAvatar.setOpaque(true);
         lblAvatar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1050,17 +1014,13 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         if (evt != null && isDataLoaded) {
             tableData.clear();
             int cboIndex = cboBoLoc.getSelectedIndex();
-            String fieldName = ObjectStructureHelper.NHANVIEN_PROPERTIES[cboIndex];
+            String fieldName = ObjectStructureHelper.NGUOIHOC_PROPERTIES[cboIndex];
             for (NguoiHoc nguoiHoc : nguoiHocHashMap.values()) {
                 Object dataFromField = DataFactoryUtil.getValueByField(nguoiHoc, fieldName);
-//                Kiem tra co phai file vai tro hay khong
-                if (dataFromField instanceof Boolean) {
-                    dataFromField = ((Boolean) dataFromField).booleanValue() ? "Trưởng phòng" : "Nhân viên";
-                }
-
+                
                 String strDataFromField = dataFromField.toString().toLowerCase();
-
                 String timKiemString = txtTimKiem.getText().toLowerCase();
+                
                 if (strDataFromField.contains(timKiemString)) {
                     try {
                         addModelToTable(nguoiHoc);
