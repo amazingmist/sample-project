@@ -5,12 +5,9 @@
  */
 package poly.app.view;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 
 /**
  *
@@ -29,7 +26,7 @@ public class ChaoJDialog extends javax.swing.JDialog {
 
     public void init() {
         setLocationRelativeTo(null);
-        new Timer(40, new ActionListener() {
+        new Timer(50, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int value = progressBar.getValue();
