@@ -5,40 +5,27 @@
  */
 package poly.app.view;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import poly.app.core.constant.CoreConstant;
-import poly.app.core.daoimpl.NhanVienDaoImpl;
-import poly.app.core.entities.NhanVien;
-import poly.app.core.helper.DateHelper;
+import poly.app.core.daoimpl.ChuyenDeDaoImpl;
+import poly.app.core.entities.ChuyenDe;
 import poly.app.core.helper.ObjectStructureHelper;
 import poly.app.core.helper.DialogHelper;
-import poly.app.core.helper.ShareHelper;
 import poly.app.core.helper.URLHelper;
 import poly.app.core.utils.DataFactoryUtil;
-import poly.app.core.utils.EMailUtil;
 import poly.app.core.utils.ImageUtil;
-import poly.app.core.utils.StringUtil;
+import poly.app.view.utils.TableRenderer;
 
 public class ChuyenDeJFrame extends javax.swing.JFrame {
 
     Vector<Vector> tableData = new Vector<>();
-    HashMap<String, NhanVien> nhanVienHashMap = new HashMap<>();
+    HashMap<String, ChuyenDe> chuyenDeHashMap = new HashMap<>();
     int selectedIndex = -1;
     boolean isDataLoaded = false;
     JFileChooser jFileChooser;
@@ -47,53 +34,24 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         reRenderUI();
-        addRadioToGroup();
     }
 
     private void reRenderUI() {
-        DefaultTableModel tableModel = (DefaultTableModel) tblNhanVien.getModel();
-        tableModel = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tableModel.setDataVector(tableData, new Vector(Arrays.asList(ObjectStructureHelper.NHANVIEN_TABLE_IDENTIFIERS)));
-        tblNhanVien.setModel(tableModel);
-
-        JTableHeader jTableHeader = tblNhanVien.getTableHeader();
-        jTableHeader.setFont(new Font("open sans", Font.PLAIN, 14)); // font name style size
-        // canh giua man hinh
-        ((DefaultTableCellRenderer) jTableHeader.getDefaultRenderer())
-                .setHorizontalAlignment(JLabel.CENTER);
-        // chieu cao header
-        jTableHeader.setPreferredSize(new Dimension(0, 25));
-        jTableHeader.setForeground(Color.decode("#000")); // change the Foreground
-        tblNhanVien.setFillsViewportHeight(true);
-        tblNhanVien.setBackground(Color.WHITE);
-
-        DefaultTableCellRenderer cellLeft = new DefaultTableCellRenderer();
-        cellLeft.setHorizontalAlignment(JLabel.LEFT);
-
-        DefaultTableCellRenderer cellCenter = new DefaultTableCellRenderer();
-        cellCenter.setHorizontalAlignment(JLabel.CENTER);
-
-        DefaultTableCellRenderer cellRight = new DefaultTableCellRenderer();
-        cellRight.setHorizontalAlignment(JLabel.RIGHT);
-
-        tblNhanVien.getColumnModel().getColumn(0).setCellRenderer(cellLeft);
-        tblNhanVien.getColumnModel().getColumn(1).setCellRenderer(cellLeft);
-        tblNhanVien.getColumnModel().getColumn(2).setCellRenderer(cellRight);
-        tblNhanVien.getColumnModel().getColumn(3).setCellRenderer(cellRight);
-        tblNhanVien.getColumnModel().getColumn(4).setCellRenderer(cellCenter);
-
-        // set width for column
-        double tableWidth = tblNhanVien.getPreferredSize().getWidth();
-        tblNhanVien.getColumnModel().getColumn(1).setPreferredWidth((int) (tableWidth * 0.35));
-        tblNhanVien.getColumnModel().getColumn(3).setPreferredWidth((int) (tableWidth * 0.45));
+        //        TBL CHUYEN DE
+        TableRenderer tblRenderer1 = new TableRenderer(tblChuyenDe);
+        tblRenderer1.setCellEditable(false);
+        tblRenderer1.setDataVector(tableData, ObjectStructureHelper.CHUYENDE_TABLE_IDENTIFIERS);
+        tblRenderer1.changeHeaderStyle();
+        tblRenderer1.setColumnAlignment(0, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer1.setColumnAlignment(1, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer1.setColumnAlignment(2, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer1.setColumnAlignment(3, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer1.setColumnAlignment(4, TableRenderer.CELL_ALIGN_LEFT);
+        tblRenderer1.setColoumnWidthByPersent(1, 35);
+//        tblRenderer1.setColoumnWidthByPersent(3, 45);
 
 //        Add data to combobox
-        for (String identifier : ObjectStructureHelper.NHANVIEN_TABLE_IDENTIFIERS) {
+        for (String identifier : ObjectStructureHelper.CHUYENDE_TABLE_IDENTIFIERS) {
             cboBoLoc.addItem(identifier);
         }
         cboBoLoc.setSelectedIndex(1);
@@ -102,32 +60,21 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         lblAvatar.setIcon(ImageUtil.resizeImage(new File("./src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
     }
 
-    private void addRadioToGroup() {
-        gioiTinhGroup.add(rdoNam);
-        gioiTinhGroup.add(rdoNu);
-
-        vaiTroGroup.add(rdoTruongPhong);
-        vaiTroGroup.add(rdoNhanVien);
-    }
-
     public void loadDataToTable() {
         tableData.clear();
-        nhanVienHashMap.clear();
-        List<NhanVien> dataLoadedList = new NhanVienDaoImpl().selectByProperties(null, null, "hoTen", CoreConstant.SORT_ASC, null, null);
+        chuyenDeHashMap.clear();
+        List<ChuyenDe> dataLoadedList = new ChuyenDeDaoImpl().selectAll();
 
         try {
-            for (NhanVien nhanVien : dataLoadedList) {
-//                Convert nhanvien to vector
-                Vector vData = DataFactoryUtil.objectToVectorByFields(nhanVien, ObjectStructureHelper.NHANVIEN_PROPERTIES);
-                int fieldVaiTro = vData.size() - 1;
-                boolean isTruongPhong = (boolean) vData.get(fieldVaiTro);
-                vData.set(fieldVaiTro, isTruongPhong ? "Trưởng phòng" : "Nhân viên");
+            for (ChuyenDe chuyenDe : dataLoadedList) {
+//                Convert chuyende to vector
+                Vector vData = DataFactoryUtil.objectToVectorByFields(chuyenDe, ObjectStructureHelper.CHUYENDE_PROPERTIES);
                 tableData.add(vData);
-
-//                Add nhanvien to hashmap
-                nhanVienHashMap.put(nhanVien.getMaNv(), nhanVien);
+                
+//                Add chuyende to hashmap
+                chuyenDeHashMap.put(chuyenDe.getMaCd(), chuyenDe);
             }
-            tblNhanVien.updateUI();
+            tblChuyenDe.updateUI();
         } catch (Exception ex) {
             Logger.getLogger(ChuyenDeJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -137,7 +84,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
     private void changeSelectedIndex() {
         if (selectedIndex >= 0) {
-            tblNhanVien.setRowSelectionInterval(selectedIndex, selectedIndex);
+            tblChuyenDe.setRowSelectionInterval(selectedIndex, selectedIndex);
             setModelToForm();
         } else {
             resetForm();
@@ -149,92 +96,58 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             return;
         }
 //        get ma nhan vien by selected index
-        String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
-        NhanVien selectedNhanVien = nhanVienHashMap.get(maNv);
-        txtMaNhanVien.setText(selectedNhanVien.getMaNv());
-        txtHoTen.setText(selectedNhanVien.getHoTen());
-        txtNgaySinh.setText(DateHelper.toString(selectedNhanVien.getNgaySinh()));
-        txtSoDienThoai.setText(selectedNhanVien.getDienThoai());
-        txtEmail.setText(selectedNhanVien.getEmail());
-        txtDiaChi.setText(selectedNhanVien.getDiaChi());
+        String maNv = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
+        ChuyenDe selectedChuyenDe = chuyenDeHashMap.get(maNv);
+        txtMaChuyenDe.setText(selectedChuyenDe.getMaCd());
+        txtTenChuyenDe.setText(selectedChuyenDe.getTenCd());
+        txtThoiLuong.setText(selectedChuyenDe.getThoiLuong() + "");
+        txtHocPhi.setText(selectedChuyenDe.getHocPhi() + "");
+        txtMoTa.setText(selectedChuyenDe.getMoTa());
 
-        File avatarFile = new File(URLHelper.URL_NHANVIEN_IMAGE + selectedNhanVien.getHinh());
+        File avatarFile = new File(URLHelper.URL_CHUYENDE_IMAGE + selectedChuyenDe.getHinh());
         if (!avatarFile.exists() || avatarFile.isDirectory()) {
             avatarFile = new File("./src/poly/app/view/icon/default-avatar.jpeg");
         }
         lblAvatar.setIcon(ImageUtil.resizeImage(avatarFile, lblAvatar.getWidth(), lblAvatar.getHeight()));
-
-        if (selectedNhanVien.getVaiTro()) {
-            rdoTruongPhong.setSelected(true);
-        } else {
-            rdoNhanVien.setSelected(true);
-        }
-
-        if (selectedNhanVien.getGioiTinh()) {
-            rdoNam.setSelected(true);
-        } else {
-            rdoNu.setSelected(true);
-        }
     }
 
     private void resetForm() {
-        txtMaNhanVien.setText("");
-        txtHoTen.setText("");
-        txtNgaySinh.setText("");
-        txtSoDienThoai.setText("");
-        txtEmail.setText("");
-        txtDiaChi.setText("");
+        txtMaChuyenDe.setText("");
+        txtTenChuyenDe.setText("");
+        txtThoiLuong.setText("");
+        txtHocPhi.setText("");
+        txtMoTa.setText("");
+        
         lblAvatar.setIcon(ImageUtil.resizeImage(new File("./src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
-        txtMaNhanVien.requestFocus();
-
-        rdoNam.setSelected(true);
-        rdoTruongPhong.setSelected(true);
+        txtMaChuyenDe.requestFocus();
     }
 
-    private void addModelToTable(NhanVien nhanVien) {
+    private void addModelToTable(ChuyenDe chuyenDe) {
         Vector vData = new Vector();
-        vData.add(nhanVien.getMaNv());
-        vData.add(nhanVien.getHoTen());
-        vData.add(nhanVien.getDienThoai());
-        vData.add(nhanVien.getEmail());
-        vData.add(nhanVien.getVaiTro() ? "Trưởng phòng" : "Nhân viên");
+        vData.add(chuyenDe.getMaCd());
+        vData.add(chuyenDe.getTenCd());
+        vData.add(chuyenDe.getHocPhi());
+        vData.add(chuyenDe.getThoiLuong());
+        vData.add(chuyenDe.getHinh());
 
         tableData.add(vData);
     }
 
-    private NhanVien getModelFromForm() {
-        NhanVien nhanVien = new NhanVien();
-        nhanVien.setMaNv(txtMaNhanVien.getText());
-        nhanVien.setHoTen(txtHoTen.getText());
-        nhanVien.setNgaySinh(DateHelper.toDate(txtNgaySinh.getText()));
-        nhanVien.setGioiTinh(rdoNam.isSelected());
-        nhanVien.setDienThoai(txtSoDienThoai.getText());
-        nhanVien.setEmail(txtEmail.getText());
-        nhanVien.setDiaChi(txtDiaChi.getText());
-        nhanVien.setVaiTro(rdoTruongPhong.isSelected());
+    private ChuyenDe getModelFromForm() {
+        ChuyenDe chuyenDe = new ChuyenDe();
+        chuyenDe.setMaCd(txtMaChuyenDe.getText());
+        chuyenDe.setTenCd(txtTenChuyenDe.getText());
+        chuyenDe.setThoiLuong(Integer.parseInt(txtThoiLuong.getText()));
+        chuyenDe.setHocPhi(Integer.parseInt(txtHocPhi.getText()));
+        chuyenDe.setMoTa(txtMoTa.getText());
 
-        return nhanVien;
-    }
-
-    private void sendUserInfoToEmail(NhanVien nhanVien) {
-        new Thread(() -> {
-            String matKhau = nhanVien.getMatKhau();
-            String msgSubject = "Thông tin tài khoản";
-            String msgBody = "<h2 style='color: #B93B2D'>Xin chào!<br>Dưới đây là thông tin tài khoản của bạn.</h2>"
-                    + "<br>Mã nhân viên: <b>" + nhanVien.getMaNv()
-                    + "</b><br>Mật khẩu: <b>" + matKhau
-                    + "</b><br>Sử dụng tài khoản và mật khẩu trên để đăng nhập vào hệ thống.";
-            new EMailUtil(nhanVien.getEmail(), msgBody, msgSubject).sendMail();
-        }).start();
+        return chuyenDe;
     }
 
     private boolean validateInputAddingState() {
-        for (NhanVien nhanVien : nhanVienHashMap.values()) {
-            if (nhanVien.getMaNv().equals(txtMaNhanVien.getText())) {
-                DialogHelper.message(this, "Mã nhân viên đã tồn tại", DialogHelper.ERROR_MESSAGE);
-                return false;
-            } else if (nhanVien.getEmail().equals(txtEmail.getText())) {
-                DialogHelper.message(this, "Email đã tồn tại", DialogHelper.ERROR_MESSAGE);
+        for (ChuyenDe chuyenDe : chuyenDeHashMap.values()) {
+            if (chuyenDe.getMaCd().equals(txtMaChuyenDe.getText())) {
+                DialogHelper.message(this, "Mã chuyên đề đã tồn tại", DialogHelper.ERROR_MESSAGE);
                 return false;
             }
         }
@@ -244,23 +157,14 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     }
 
     private boolean validateInputEditingState() {
-        String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
-        if (!nhanVienHashMap.get(maNv).getEmail().equals(txtEmail.getText())) {
-            for (NhanVien nhanVien : nhanVienHashMap.values()) {
-                if (nhanVien.getEmail().equals(txtEmail.getText())) {
-                    DialogHelper.message(this, "Email đã tồn tại", DialogHelper.ERROR_MESSAGE);
-                    return false;
-                }
-            }
-        }
 
 //        TODO: validate here
         return true;
     }
 
     private void setAddingState() {
-        txtMaNhanVien.setEditable(true);
-        txtMaNhanVien.requestFocus();
+        txtMaChuyenDe.setEditable(true);
+        txtMaChuyenDe.requestFocus();
         btnThem.setEnabled(true);
         btnLamMoi.setEnabled(true);
         btnCapNhat.setEnabled(false);
@@ -273,7 +177,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     }
 
     private void setEditingState() {
-        txtMaNhanVien.setEditable(false);
+        txtMaChuyenDe.setEditable(false);
         btnThem.setEnabled(false);
         btnLamMoi.setEnabled(true);
         btnCapNhat.setEnabled(true);
@@ -282,30 +186,27 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
     private void insertModel() {
         if (validateInputAddingState()) {
-            String randomPassword = "$$" + StringUtil.randomString();
-            NhanVien nhanVien = getModelFromForm();
-            nhanVien.setMatKhau(randomPassword);
+            ChuyenDe chuyenDe = getModelFromForm();
 
 //            Save image to folder
             try {
                 if (jFileChooser.getSelectedFile() != null) {
-                    nhanVien.setHinh(nhanVien.getMaNv().concat(".jpg"));
+                    chuyenDe.setHinh(chuyenDe.getMaCd().concat(".jpg"));
 
-                    if (nhanVien.getHinh() != null) {
-                        ImageUtil.deleteImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVien.getHinh());
+                    if (chuyenDe.getHinh() != null) {
+                        ImageUtil.deleteImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDe.getHinh());
                     }
-                    ImageUtil.saveImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVien.getHinh(), jFileChooser.getSelectedFile());
+                    ImageUtil.saveImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDe.getHinh(), jFileChooser.getSelectedFile());
                     jFileChooser = null;
                 }
             } catch (Exception ex) {
 //                ex.printStackTrace();
             }
 
-            boolean isInserted = new NhanVienDaoImpl().insert(nhanVien);
+            boolean isInserted = new ChuyenDeDaoImpl().insert(chuyenDe);
 
             if (isInserted) {
-                sendUserInfoToEmail(nhanVien);
-                DialogHelper.message(this, "Thêm dữ liệu thành công.\nKiểm tra email để nhận thông tin đăng nhập.", DialogHelper.INFORMATION_MESSAGE);
+                DialogHelper.message(this, "Thêm dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
                 setEditingState();
             } else {
@@ -317,14 +218,14 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     private void deleteModel() {
         boolean isConfirm = DialogHelper.confirm(this, "Bạn chắc chắn muốn xoá?");
         if (isConfirm) {
-            String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
-            NhanVien nhanVien = nhanVienHashMap.get(maNv);
-            boolean isDeleted = new NhanVienDaoImpl().delete(nhanVien);
+            String maNv = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
+            ChuyenDe chuyenDe = chuyenDeHashMap.get(maNv);
+            boolean isDeleted = new ChuyenDeDaoImpl().delete(chuyenDe);
 
             if (isDeleted) {
                 DialogHelper.message(this, "Xoá dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
-                tblNhanVien.updateUI();
+                tblChuyenDe.updateUI();
                 changeSelectedIndex();
             } else {
                 DialogHelper.message(this, "Xoá dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
@@ -334,20 +235,20 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
     private void updateModel() {
         if (validateInputEditingState()) {
-            String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
-            NhanVien nhanVienOldData = nhanVienHashMap.get(maNv);
+            String maNv = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
+            ChuyenDe chuyenDeOldData = chuyenDeHashMap.get(maNv);
 
-            NhanVien nhanVienNewData = getModelFromForm();
+            ChuyenDe chuyenDeNewData = getModelFromForm();
 
 //            Save image to folder
             try {
                 if (jFileChooser.getSelectedFile() != null) {
-                    nhanVienNewData.setHinh(nhanVienNewData.getMaNv().concat(".jpg"));
+                    chuyenDeNewData.setHinh(chuyenDeNewData.getMaCd().concat(".jpg"));
 
-                    if (nhanVienOldData.getHinh() != null) {
-                        ImageUtil.deleteImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVienOldData.getHinh());
+                    if (chuyenDeOldData.getHinh() != null) {
+                        ImageUtil.deleteImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDeOldData.getHinh());
                     }
-                    ImageUtil.saveImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVienNewData.getHinh(), jFileChooser.getSelectedFile());
+                    ImageUtil.saveImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDeNewData.getHinh(), jFileChooser.getSelectedFile());
                     jFileChooser = null;
                 }
             } catch (Exception ex) {
@@ -356,10 +257,10 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
             boolean isUpdated = false;
             try {
-                nhanVienNewData = DataFactoryUtil.mergeTwoObject(nhanVienOldData, nhanVienNewData);
-                nhanVienHashMap.put(maNv, nhanVienNewData);
+                chuyenDeNewData = DataFactoryUtil.mergeTwoObject(chuyenDeOldData, chuyenDeNewData);
+                chuyenDeHashMap.put(maNv, chuyenDeNewData);
 
-                isUpdated = new NhanVienDaoImpl().update(nhanVienNewData);
+                isUpdated = new ChuyenDeDaoImpl().update(chuyenDeNewData);
             } catch (Exception ex) {
                 Logger.getLogger(ChuyenDeJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -367,12 +268,8 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             if (isUpdated) {
                 Vector vData;
                 try {
-                    vData = DataFactoryUtil.objectToVectorByFields(nhanVienNewData, ObjectStructureHelper.NHANVIEN_PROPERTIES);
-                    int fieldVaiTro = vData.size() - 1;
-                    boolean isTruongPhong = (boolean) vData.get(fieldVaiTro);
-                    vData.set(fieldVaiTro, isTruongPhong ? "Trưởng phòng" : "Nhân viên");
-
-//                    Find index of updated NhanVien in tabledata
+                    vData = DataFactoryUtil.objectToVectorByFields(chuyenDeNewData, ObjectStructureHelper.CHUYENDE_PROPERTIES);
+//                    Find index of updated ChuyenDe in tabledata
                     for (int i = 0; i < tableData.size(); i++) {
                         if (tableData.get(i).get(0).equals(vData.get(0))) {
                             tableData.set(i, vData);
@@ -380,7 +277,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
                         }
                     }
 
-                    tblNhanVien.updateUI();
+                    tblChuyenDe.updateUI();
                     DialogHelper.message(this, "Cập nhật dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 } catch (Exception ex) {
                     Logger.getLogger(ChuyenDeJFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -436,19 +333,21 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         panelTab = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblNhanVien = new javax.swing.JTable();
+        tblChuyenDe = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
-        txtMaNhanVien = new javax.swing.JTextField();
-        txtHoTen = new javax.swing.JTextField();
-        txtNgaySinh = new javax.swing.JTextField();
-        txtSoDienThoai = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
+        txtMaChuyenDe = new javax.swing.JTextField();
+        txtTenChuyenDe = new javax.swing.JTextField();
+        txtThoiLuong = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         lblAvatar = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtHocPhi = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtMoTa = new javax.swing.JTextArea();
         jPanel7 = new javax.swing.JPanel();
         btnThem = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
@@ -494,9 +393,9 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             }
         });
 
-        tblNhanVien.setAutoCreateRowSorter(true);
-        tblNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        tblNhanVien.setModel(new javax.swing.table.DefaultTableModel(
+        tblChuyenDe.setAutoCreateRowSorter(true);
+        tblChuyenDe.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        tblChuyenDe.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -504,18 +403,18 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
             }
         ));
-        tblNhanVien.setGridColor(new java.awt.Color(204, 204, 204));
-        tblNhanVien.setIntercellSpacing(new java.awt.Dimension(0, 1));
-        tblNhanVien.setRowHeight(23);
-        tblNhanVien.setSelectionBackground(new java.awt.Color(65, 76, 89));
-        tblNhanVien.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        tblNhanVien.setShowGrid(false);
-        tblNhanVien.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblChuyenDe.setGridColor(new java.awt.Color(204, 204, 204));
+        tblChuyenDe.setIntercellSpacing(new java.awt.Dimension(0, 1));
+        tblChuyenDe.setRowHeight(23);
+        tblChuyenDe.setSelectionBackground(new java.awt.Color(65, 76, 89));
+        tblChuyenDe.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblChuyenDe.setShowGrid(false);
+        tblChuyenDe.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblNhanVienMouseClicked(evt);
+                tblChuyenDeMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tblNhanVien);
+        jScrollPane1.setViewportView(tblChuyenDe);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -534,31 +433,25 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         jPanel5.setFocusable(false);
         jPanel5.setPreferredSize(new java.awt.Dimension(408, 390));
 
-        txtMaNhanVien.setEditable(false);
-        txtMaNhanVien.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        txtMaNhanVien.setFocusTraversalKeysEnabled(false);
+        txtMaChuyenDe.setEditable(false);
+        txtMaChuyenDe.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtMaChuyenDe.setFocusTraversalKeysEnabled(false);
 
-        txtHoTen.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        txtHoTen.setFocusTraversalKeysEnabled(false);
-        txtHoTen.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtTenChuyenDe.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtTenChuyenDe.setFocusTraversalKeysEnabled(false);
+        txtTenChuyenDe.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtHoTenKeyTyped(evt);
+                txtTenChuyenDeKeyTyped(evt);
             }
         });
 
-        txtNgaySinh.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        txtNgaySinh.setFocusTraversalKeysEnabled(false);
-
-        txtSoDienThoai.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        txtSoDienThoai.setFocusTraversalKeysEnabled(false);
-        txtSoDienThoai.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtThoiLuong.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtThoiLuong.setFocusTraversalKeysEnabled(false);
+        txtThoiLuong.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtSoDienThoaiKeyTyped(evt);
+                txtThoiLuongKeyTyped(evt);
             }
         });
-
-        jLabel7.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jLabel7.setText("Ngày sinh");
 
         jLabel5.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel5.setText("Tên chuyên đề");
@@ -569,10 +462,8 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel4.setText("Thời lượng (giờ)");
 
-        jLabel8.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        jLabel8.setText("Email");
-
         lblAvatar.setBackground(new java.awt.Color(255, 255, 255));
+        lblAvatar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         lblAvatar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblAvatar.setOpaque(true);
         lblAvatar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -581,62 +472,80 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jLabel6.setText("Học phí");
+
+        txtHocPhi.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtHocPhi.setFocusTraversalKeysEnabled(false);
+        txtHocPhi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtHocPhiKeyTyped(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        jLabel7.setText("Mô tả chuyên đề");
+
+        txtMoTa.setColumns(20);
+        txtMoTa.setRows(5);
+        jScrollPane2.setViewportView(txtMoTa);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
+                        .addComponent(jScrollPane2))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(31, 31, 31)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtMaChuyenDe, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel7)))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(102, 102, 102)
+                                .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel5)
-                            .addComponent(txtMaNhanVien)
-                            .addComponent(jLabel2)
-                            .addComponent(txtHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(138, 138, 138)
-                        .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(txtSoDienThoai, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel7)
-                        .addComponent(txtNgaySinh, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)))
+                            .addComponent(txtTenChuyenDe)
+                            .addComponent(txtHocPhi)
+                            .addComponent(jLabel4)
+                            .addComponent(txtThoiLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))))
                 .addGap(31, 31, 31))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSoDienThoai, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(202, 202, 202))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtMaNhanVien, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(83, 83, 83))))
+                        .addComponent(txtTenChuyenDe, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtThoiLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtHocPhi, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMaChuyenDe, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(8, Short.MAX_VALUE))
         );
 
         jPanel7.setBackground(new java.awt.Color(245, 245, 245));
@@ -899,7 +808,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
     private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
         selectedIndex = -1;
-        tblNhanVien.clearSelection();
+        tblChuyenDe.clearSelection();
         resetForm();
         setAddingState();
     }//GEN-LAST:event_btnLamMoiActionPerformed
@@ -907,7 +816,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         this.insertModel();
         for (int i = 0; i < tableData.size(); i++) {
-            if (tableData.get(i).get(0).equals(txtMaNhanVien.getText())) {
+            if (tableData.get(i).get(0).equals(txtMaChuyenDe.getText())) {
                 selectedIndex = i;
                 changeSelectedIndex();
                 break;
@@ -919,15 +828,15 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         this.deleteModel();
     }//GEN-LAST:event_btnXoaActionPerformed
 
-    private void tblNhanVienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNhanVienMouseClicked
-        selectedIndex = tblNhanVien.rowAtPoint(evt.getPoint());
+    private void tblChuyenDeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblChuyenDeMouseClicked
+        selectedIndex = tblChuyenDe.rowAtPoint(evt.getPoint());
         if (evt.getClickCount() == 2) {
             if (selectedIndex >= 0) {
                 panelTab.setSelectedIndex(1);
                 setDirectionButton();
             }
         }
-    }//GEN-LAST:event_tblNhanVienMouseClicked
+    }//GEN-LAST:event_tblChuyenDeMouseClicked
 
     private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
         this.updateModel();
@@ -974,7 +883,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
     private void panelTabStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_panelTabStateChanged
         if (evt != null && isDataLoaded) {
-            selectedIndex = tblNhanVien.getSelectedRow();
+            selectedIndex = tblChuyenDe.getSelectedRow();
             if (selectedIndex == -1) {
                 resetForm();
                 setAddingState();
@@ -983,38 +892,29 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
                 setModelToForm();
                 txtTimKiem.setFocusable(false);
                 requestFocusInWindow();
-
-                //        Set state for rdovaiTro
-                if (ShareHelper.USER.getVaiTro()) {
-                    rdoTruongPhong.setEnabled(true);
-                    rdoNhanVien.setEnabled(true);
-                } else {
-                    rdoTruongPhong.setEnabled(false);
-                    rdoNhanVien.setEnabled(false);
-                }
             }
         }
     }//GEN-LAST:event_panelTabStateChanged
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        tblNhanVien.clearSelection();
-        selectedIndex = tblNhanVien.getSelectedRow();
+        tblChuyenDe.clearSelection();
+        selectedIndex = tblChuyenDe.getSelectedRow();
         resetForm();
         setAddingState();
         panelTab.setSelectedIndex(0);
     }//GEN-LAST:event_formWindowClosing
 
-    private void txtHoTenKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHoTenKeyTyped
+    private void txtTenChuyenDeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTenChuyenDeKeyTyped
         if (String.valueOf(evt.getKeyChar()).matches("\\d")) {
             evt.consume();
         }
-    }//GEN-LAST:event_txtHoTenKeyTyped
+    }//GEN-LAST:event_txtTenChuyenDeKeyTyped
 
-    private void txtSoDienThoaiKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSoDienThoaiKeyTyped
+    private void txtThoiLuongKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtThoiLuongKeyTyped
         if (!String.valueOf(evt.getKeyChar()).matches("[\\d]")) {
             evt.consume();
         }
-    }//GEN-LAST:event_txtSoDienThoaiKeyTyped
+    }//GEN-LAST:event_txtThoiLuongKeyTyped
 
     private void txtTimKiemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyTyped
 
@@ -1022,7 +922,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
     private void txtTimKiemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtTimKiemMouseClicked
         selectedIndex = -1;
-        tblNhanVien.clearSelection();
+        tblChuyenDe.clearSelection();
         txtTimKiem.setFocusable(true);
         txtTimKiem.requestFocus();
         panelTab.setSelectedIndex(0);
@@ -1036,26 +936,22 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         if (evt != null && isDataLoaded) {
             tableData.clear();
             int cboIndex = cboBoLoc.getSelectedIndex();
-            String fieldName = ObjectStructureHelper.NHANVIEN_PROPERTIES[cboIndex];
-            for (NhanVien nhanVien : nhanVienHashMap.values()) {
-                Object dataFromField = DataFactoryUtil.getValueByField(nhanVien, fieldName);
-//                Kiem tra co phai file vai tro hay khong
-                if (dataFromField instanceof Boolean) {
-                    dataFromField = ((Boolean) dataFromField).booleanValue() ? "Trưởng phòng" : "Nhân viên";
-                }
+            String fieldName = ObjectStructureHelper.CHUYENDE_PROPERTIES[cboIndex];
+            for (ChuyenDe chuyenDe : chuyenDeHashMap.values()) {
+                Object dataFromField = DataFactoryUtil.getValueByField(chuyenDe, fieldName);
 
                 String strDataFromField = dataFromField.toString().toLowerCase();
-
                 String timKiemString = txtTimKiem.getText().toLowerCase();
+                
                 if (strDataFromField.contains(timKiemString)) {
                     try {
-                        addModelToTable(nhanVien);
+                        addModelToTable(chuyenDe);
                     } catch (Exception ex) {
                         Logger.getLogger(ChuyenDeJFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
-            tblNhanVien.updateUI();
+            tblChuyenDe.updateUI();
         }
     }//GEN-LAST:event_txtTimKiemKeyReleased
 
@@ -1076,6 +972,10 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
         txtTimKiem.setRequestFocusEnabled(false);
     }//GEN-LAST:event_formWindowDeactivated
+
+    private void txtHocPhiKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHocPhiKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtHocPhiKeyTyped
 
     /**
      * @param args the command line arguments
@@ -1127,8 +1027,8 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -1138,15 +1038,15 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblAvatar;
     private javax.swing.JTabbedPane panelTab;
-    private javax.swing.JTable tblNhanVien;
-    private javax.swing.JTextField txtHoTen;
-    private javax.swing.JTextField txtMaNhanVien;
-    private javax.swing.JTextField txtNgaySinh;
-    private javax.swing.JTextField txtSoDienThoai;
+    private javax.swing.JTable tblChuyenDe;
+    private javax.swing.JTextField txtHocPhi;
+    private javax.swing.JTextField txtMaChuyenDe;
+    private javax.swing.JTextArea txtMoTa;
+    private javax.swing.JTextField txtTenChuyenDe;
+    private javax.swing.JTextField txtThoiLuong;
     private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables
-    private ButtonGroup gioiTinhGroup = new ButtonGroup();
-    private ButtonGroup vaiTroGroup = new ButtonGroup();
 }
