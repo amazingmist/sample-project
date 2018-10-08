@@ -5,6 +5,7 @@
  */
 package poly.app.view;
 
+import java.awt.Rectangle;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,6 @@ import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import poly.app.core.constant.CoreConstant;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.entities.NhanVien;
 import poly.app.core.helper.DateHelper;
@@ -78,7 +78,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     public void loadDataToTable() {
         tableData.clear();
         nhanVienHashMap.clear();
-        List<NhanVien> dataLoadedList = new NhanVienDaoImpl().selectByProperties(null, null, "hoTen", CoreConstant.SORT_ASC, null, null);
+        List<NhanVien> dataLoadedList = new NhanVienDaoImpl().selectAll();
 
         try {
             for (NhanVien nhanVien : dataLoadedList) {
@@ -103,6 +103,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private void changeSelectedIndex() {
         if (selectedIndex >= 0) {
             tblNhanVien.setRowSelectionInterval(selectedIndex, selectedIndex);
+            tblNhanVien.scrollRectToVisible(new Rectangle(tblNhanVien.getCellRect(selectedIndex, 0, true)));
             setModelToForm();
         } else {
             resetForm();
@@ -444,9 +445,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
-            }
-            public void windowDeactivated(java.awt.event.WindowEvent evt) {
-                formWindowDeactivated(evt);
             }
         });
 
@@ -838,7 +836,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tìm kiếm", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Open Sans", 0, 14))); // NOI18N
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "TÌM KIẾM", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Open Sans", 1, 14))); // NOI18N
 
         txtTimKiem.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtTimKiem.setFocusTraversalKeysEnabled(false);
@@ -849,9 +847,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             }
         });
         txtTimKiem.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtTimKiemKeyTyped(evt);
-            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtTimKiemKeyReleased(evt);
             }
@@ -860,11 +855,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         cboBoLoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         cboBoLoc.setFocusTraversalKeysEnabled(false);
         cboBoLoc.setFocusable(false);
-        cboBoLoc.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                cboBoLocPropertyChange(evt);
-            }
-        });
 
         jLabel3.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel3.setText("Thuộc tính:");
@@ -1040,6 +1030,8 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         resetForm();
         setAddingState();
         panelTab.setSelectedIndex(0);
+        txtTimKiem.setText("");
+        txtTimKiem.setRequestFocusEnabled(false);
     }//GEN-LAST:event_formWindowClosing
 
     private void txtHoTenKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHoTenKeyTyped
@@ -1054,10 +1046,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtSoDienThoaiKeyTyped
 
-    private void txtTimKiemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyTyped
-
-    }//GEN-LAST:event_txtTimKiemKeyTyped
-
     private void txtTimKiemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtTimKiemMouseClicked
         selectedIndex = -1;
         tblNhanVien.clearSelection();
@@ -1066,11 +1054,10 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         panelTab.setSelectedIndex(0);
     }//GEN-LAST:event_txtTimKiemMouseClicked
 
-    private void cboBoLocPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_cboBoLocPropertyChange
-        txtTimKiemKeyReleased(null);
-    }//GEN-LAST:event_cboBoLocPropertyChange
-
     private void txtTimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyReleased
+        selectedIndex = -1;
+        tblNhanVien.clearSelection();
+        tblNhanVien.getRowSorter().setSortKeys(null);
         if (evt != null && isDataLoaded) {
             tableData.clear();
             int cboIndex = cboBoLoc.getSelectedIndex();
@@ -1110,10 +1097,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_lblAvatarMouseClicked
-
-    private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
-        txtTimKiem.setRequestFocusEnabled(false);
-    }//GEN-LAST:event_formWindowDeactivated
 
     /**
      * @param args the command line arguments
