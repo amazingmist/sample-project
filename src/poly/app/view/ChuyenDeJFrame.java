@@ -5,6 +5,7 @@
  */
 package poly.app.view;
 
+import java.awt.Rectangle;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -47,17 +48,13 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         tblRenderer1.setColumnAlignment(2, TableRenderer.CELL_ALIGN_LEFT);
         tblRenderer1.setColumnAlignment(3, TableRenderer.CELL_ALIGN_LEFT);
         tblRenderer1.setColumnAlignment(4, TableRenderer.CELL_ALIGN_LEFT);
-        tblRenderer1.setColoumnWidthByPersent(1, 35);
-//        tblRenderer1.setColoumnWidthByPersent(3, 45);
+        tblRenderer1.setColoumnWidthByPersent(1, 60);
 
 //        Add data to combobox
         for (String identifier : ObjectStructureHelper.CHUYENDE_TABLE_IDENTIFIERS) {
             cboBoLoc.addItem(identifier);
         }
         cboBoLoc.setSelectedIndex(1);
-
-//        Add default image to user avatar
-        lblAvatar.setIcon(ImageUtil.resizeImage(new File("./src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
     }
 
     public void loadDataToTable() {
@@ -85,6 +82,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     private void changeSelectedIndex() {
         if (selectedIndex >= 0) {
             tblChuyenDe.setRowSelectionInterval(selectedIndex, selectedIndex);
+            tblChuyenDe.scrollRectToVisible(new Rectangle(tblChuyenDe.getCellRect(selectedIndex, 0, true)));
             setModelToForm();
         } else {
             resetForm();
@@ -96,8 +94,8 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             return;
         }
 //        get ma nhan vien by selected index
-        String maNv = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
-        ChuyenDe selectedChuyenDe = chuyenDeHashMap.get(maNv);
+        String maKh = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
+        ChuyenDe selectedChuyenDe = chuyenDeHashMap.get(maKh);
         txtMaChuyenDe.setText(selectedChuyenDe.getMaCd());
         txtTenChuyenDe.setText(selectedChuyenDe.getTenCd());
         txtThoiLuong.setText(selectedChuyenDe.getThoiLuong() + "");
@@ -106,9 +104,10 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
         File avatarFile = new File(URLHelper.URL_CHUYENDE_IMAGE + selectedChuyenDe.getHinh());
         if (!avatarFile.exists() || avatarFile.isDirectory()) {
-            avatarFile = new File("./src/poly/app/view/icon/default-avatar.jpeg");
+            lblAvatar.setIcon(null);
+        }else{
+            lblAvatar.setIcon(ImageUtil.resizeImage(avatarFile, lblAvatar.getWidth(), lblAvatar.getHeight()));
         }
-        lblAvatar.setIcon(ImageUtil.resizeImage(avatarFile, lblAvatar.getWidth(), lblAvatar.getHeight()));
     }
 
     private void resetForm() {
@@ -118,7 +117,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         txtHocPhi.setText("");
         txtMoTa.setText("");
         
-        lblAvatar.setIcon(ImageUtil.resizeImage(new File("./src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
+        lblAvatar.setIcon(null);
         txtMaChuyenDe.requestFocus();
     }
 
@@ -218,8 +217,8 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     private void deleteModel() {
         boolean isConfirm = DialogHelper.confirm(this, "Bạn chắc chắn muốn xoá?");
         if (isConfirm) {
-            String maNv = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
-            ChuyenDe chuyenDe = chuyenDeHashMap.get(maNv);
+            String maKh = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
+            ChuyenDe chuyenDe = chuyenDeHashMap.get(maKh);
             boolean isDeleted = new ChuyenDeDaoImpl().delete(chuyenDe);
 
             if (isDeleted) {
@@ -235,8 +234,8 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
     private void updateModel() {
         if (validateInputEditingState()) {
-            String maNv = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
-            ChuyenDe chuyenDeOldData = chuyenDeHashMap.get(maNv);
+            String maKh = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
+            ChuyenDe chuyenDeOldData = chuyenDeHashMap.get(maKh);
 
             ChuyenDe chuyenDeNewData = getModelFromForm();
 
@@ -258,7 +257,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             boolean isUpdated = false;
             try {
                 chuyenDeNewData = DataFactoryUtil.mergeTwoObject(chuyenDeOldData, chuyenDeNewData);
-                chuyenDeHashMap.put(maNv, chuyenDeNewData);
+                chuyenDeHashMap.put(maKh, chuyenDeNewData);
 
                 isUpdated = new ChuyenDeDaoImpl().update(chuyenDeNewData);
             } catch (Exception ex) {
@@ -269,6 +268,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
                 Vector vData;
                 try {
                     vData = DataFactoryUtil.objectToVectorByFields(chuyenDeNewData, ObjectStructureHelper.CHUYENDE_PROPERTIES);
+
 //                    Find index of updated ChuyenDe in tabledata
                     for (int i = 0; i < tableData.size(); i++) {
                         if (tableData.get(i).get(0).equals(vData.get(0))) {
@@ -370,9 +370,6 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
-            public void windowDeactivated(java.awt.event.WindowEvent evt) {
-                formWindowDeactivated(evt);
-            }
         });
 
         jPanel3.setBackground(new java.awt.Color(65, 76, 89));
@@ -380,7 +377,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Open Sans", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("QUẢN LÝ NHÂN VIÊN");
+        jLabel1.setText("QUẢN LÝ CHUYÊN ĐỀ");
         jPanel3.add(jLabel1);
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
@@ -477,11 +474,6 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
         txtHocPhi.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtHocPhi.setFocusTraversalKeysEnabled(false);
-        txtHocPhi.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtHocPhiKeyTyped(evt);
-            }
-        });
 
         jLabel7.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel7.setText("Mô tả chuyên đề");
@@ -709,7 +701,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tìm kiếm", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Open Sans", 0, 14))); // NOI18N
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "TÌM KIẾM", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Open Sans", 1, 14))); // NOI18N
 
         txtTimKiem.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtTimKiem.setFocusTraversalKeysEnabled(false);
@@ -720,9 +712,6 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             }
         });
         txtTimKiem.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtTimKiemKeyTyped(evt);
-            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtTimKiemKeyReleased(evt);
             }
@@ -731,11 +720,6 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         cboBoLoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         cboBoLoc.setFocusTraversalKeysEnabled(false);
         cboBoLoc.setFocusable(false);
-        cboBoLoc.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                cboBoLocPropertyChange(evt);
-            }
-        });
 
         jLabel3.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel3.setText("Thuộc tính:");
@@ -902,6 +886,8 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         resetForm();
         setAddingState();
         panelTab.setSelectedIndex(0);
+        txtTimKiem.setText("");
+        txtTimKiem.setRequestFocusEnabled(false);
     }//GEN-LAST:event_formWindowClosing
 
     private void txtTenChuyenDeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTenChuyenDeKeyTyped
@@ -916,10 +902,6 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtThoiLuongKeyTyped
 
-    private void txtTimKiemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyTyped
-
-    }//GEN-LAST:event_txtTimKiemKeyTyped
-
     private void txtTimKiemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtTimKiemMouseClicked
         selectedIndex = -1;
         tblChuyenDe.clearSelection();
@@ -928,11 +910,10 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         panelTab.setSelectedIndex(0);
     }//GEN-LAST:event_txtTimKiemMouseClicked
 
-    private void cboBoLocPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_cboBoLocPropertyChange
-        txtTimKiemKeyReleased(null);
-    }//GEN-LAST:event_cboBoLocPropertyChange
-
     private void txtTimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyReleased
+        selectedIndex = -1;
+        tblChuyenDe.clearSelection();
+        tblChuyenDe.getRowSorter().setSortKeys(null);
         if (evt != null && isDataLoaded) {
             tableData.clear();
             int cboIndex = cboBoLoc.getSelectedIndex();
@@ -968,14 +949,6 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_lblAvatarMouseClicked
-
-    private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
-        txtTimKiem.setRequestFocusEnabled(false);
-    }//GEN-LAST:event_formWindowDeactivated
-
-    private void txtHocPhiKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHocPhiKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtHocPhiKeyTyped
 
     /**
      * @param args the command line arguments
