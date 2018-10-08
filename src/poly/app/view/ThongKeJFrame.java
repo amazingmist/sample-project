@@ -25,6 +25,7 @@ import poly.app.core.procedures.sp_ThongKeNguoiHoc;
 import poly.app.view.utils.TableRenderer;
 
 public class ThongKeJFrame extends javax.swing.JFrame {
+
     Vector<Vector> tableData = new Vector<>();
     List<KhoaHoc> khoaHocList;
 
@@ -33,7 +34,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         reRenderUI();
     }
-    
+
     public void setTab(int selectedIndex) {
         loadKhoaHocList();
         panelTab.setSelectedIndex(selectedIndex);
@@ -52,7 +53,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
         tblRenderer1.setColoumnWidthByPersent(1, 20);
         tblRenderer1.setColoumnWidthByPersent(2, 35);
         tblRenderer1.setColoumnWidthByPersent(3, 35);
-        
+
 //        TBL BANG DIEM
         TableRenderer tblRenderer2 = new TableRenderer(tblTKBangDiem);
         tblRenderer2.setCellEditable(false);
@@ -64,7 +65,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
         tblRenderer2.setColumnAlignment(3, TableRenderer.CELL_ALIGN_CENTER);
         tblRenderer2.setColoumnWidthByPersent(1, 45);
         tblRenderer2.setColoumnWidthByPersent(3, 35);
-        
+
 //        TBL BANG DIEM
         TableRenderer tblRenderer3 = new TableRenderer(tblTKTongHopDiem);
         tblRenderer3.setCellEditable(false);
@@ -76,7 +77,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
         tblRenderer3.setColumnAlignment(3, TableRenderer.CELL_ALIGN_RIGHT);
         tblRenderer3.setColumnAlignment(4, TableRenderer.CELL_ALIGN_RIGHT);
         tblRenderer3.setColoumnWidthByPersent(0, 80);
-        
+
 //        TBL DOANH THU
         TableRenderer tblRenderer4 = new TableRenderer(tblTKDoanhThu);
         tblRenderer4.setCellEditable(false);
@@ -89,11 +90,11 @@ public class ThongKeJFrame extends javax.swing.JFrame {
         tblRenderer4.setColumnAlignment(4, TableRenderer.CELL_ALIGN_RIGHT);
         tblRenderer4.setColumnAlignment(5, TableRenderer.CELL_ALIGN_RIGHT);
         tblRenderer4.setColumnAlignment(6, TableRenderer.CELL_ALIGN_RIGHT);
-        
+
         tblRenderer4.setColoumnWidthByPersent(0, 40);
     }
 
-    private void loadKhoaHocList(){
+    private void loadKhoaHocList() {
         if (khoaHocList != null) {
             khoaHocList.clear();
         }
@@ -140,7 +141,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
             vData.add(record.getSoHocVien());
             vData.add(record.getDiemCaoNhat());
             vData.add(record.getDiemThapNhat());
-            vData.add(record.getDiemTrungBinh());
+            vData.add(String.format("%.2f", record.getDiemTrungBinh()));
             tableData.add(vData);
         }
         tblTKTongHopDiem.updateUI();
@@ -163,18 +164,20 @@ public class ThongKeJFrame extends javax.swing.JFrame {
         }
         tblTKDoanhThu.updateUI();
     }
-    
-    private void loadDataToCboKhoaHoc(){
+
+    private void loadDataToCboKhoaHoc() {
+        cboKhoaHoc.removeAllItems();
         for (KhoaHoc khoaHoc : khoaHocList) {
             ChuyenDe chuyenDe = khoaHoc.getChuyenDe();
             String item = chuyenDe.getMaCd() + "(" + khoaHoc.getNgayKg() + " - " + chuyenDe.getTenCd() + ")";
             cboKhoaHoc.addItem(item);
         }
     }
-    
-    private void loadDataToCboNamHoc(){
+
+    private void loadDataToCboNamHoc() {
+        cboNamHoc.removeAllItems();
         String tempYear = "";
-        for (KhoaHoc khoaHoc : khoaHocList) { 
+        for (KhoaHoc khoaHoc : khoaHocList) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(khoaHoc.getNgayKg());
             String item = calendar.get(Calendar.YEAR) + "";
@@ -184,6 +187,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
             }
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -222,7 +226,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Open Sans", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("QUẢN LÝ NHÂN VIÊN");
+        jLabel1.setText("THỐNG KÊ");
         jPanel3.add(jLabel1);
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
@@ -434,19 +438,21 @@ public class ThongKeJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void panelTabStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_panelTabStateChanged
-        switch(panelTab.getSelectedIndex()){
-            case 0:
-                loadDataToTableTKNguoiHoc();
-                break;
-            case 1:
-                loadDataToTableTKBangDiem();
-                break;
-            case 2:
-                loadDataToTableTKTongHopDiem();
-                break;
-            case 3:
-                loadDataToTableTKDoanhThu();
-                break;
+        if (panelTab.getTabCount() > 1) {
+            switch (panelTab.getSelectedIndex()) {
+                case 0:
+                    loadDataToTableTKNguoiHoc();
+                    break;
+                case 1:
+                    loadDataToTableTKBangDiem();
+                    break;
+                case 2:
+                    loadDataToTableTKTongHopDiem();
+                    break;
+                case 3:
+                    loadDataToTableTKDoanhThu();
+                    break;
+            }
         }
     }//GEN-LAST:event_panelTabStateChanged
 
@@ -488,7 +494,7 @@ public class ThongKeJFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ThongKeJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
