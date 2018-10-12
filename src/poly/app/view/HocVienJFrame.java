@@ -22,6 +22,7 @@ import poly.app.core.entities.KhoaHoc;
 import poly.app.core.entities.NguoiHoc;
 import poly.app.core.helper.DialogHelper;
 import poly.app.core.helper.ObjectStructureHelper;
+import poly.app.core.helper.ShareHelper;
 import poly.app.core.utils.DataFactoryUtil;
 import poly.app.view.utils.TableRenderer;
 
@@ -46,6 +47,12 @@ public class HocVienJFrame extends javax.swing.JFrame {
     public void setMaKh(int maKh) {
         this.maKhConstructor = maKh;
         loadData();
+
+        if (ShareHelper.USER.getVaiTro()) {
+            btnXoa.setEnabled(true);
+        } else {
+            btnXoa.setEnabled(false);
+        }
     }
 
     private void reRenderUI() {
@@ -82,7 +89,19 @@ public class HocVienJFrame extends javax.swing.JFrame {
                         return;
                     }
 
-                    float newDiem = Float.parseFloat(tblHocVien.getValueAt(row, column).toString());
+                    float newDiem;
+                    try {
+                        newDiem = Float.parseFloat(tblHocVien.getValueAt(row, column).toString());
+
+                        if ((newDiem < 0 && newDiem != -1) || newDiem > 10) {
+                            throw new Exception();
+                        }
+
+                    } catch (Exception ex) {
+                        DialogHelper.message(HocVienJFrame.this, "Điếm không hợp lệ", DialogHelper.ERROR_MESSAGE);
+                        tblHocVien.setValueAt(-1.0, row, column);
+                        return;
+                    }
 
                     int maHv = Integer.parseInt(tblHocVien.getValueAt(row, 0).toString());
                     HocVien hocVien = hocVienHashMap.get(maHv);
@@ -121,13 +140,17 @@ public class HocVienJFrame extends javax.swing.JFrame {
 
                     float newDiem;
                     try {
-                        newDiem = Float.parseFloat(tblHocVienKhac.getValueAt(row, column).toString());
-                        if (newDiem == -1.0 && column == 2) {
+                        if (tblHocVienKhac.getValueAt(row, column).toString().equals("Chưa nhập") && column == 2) {
                             return;
+                        }
+                        newDiem = Float.parseFloat(tblHocVienKhac.getValueAt(row, column).toString());
+
+                        if ((newDiem < 0 && newDiem != -1) || newDiem > 10) {
+                            throw new Exception();
                         }
                     } catch (Exception ex) {
                         DialogHelper.message(HocVienJFrame.this, "Điếm không hợp lệ", DialogHelper.ERROR_MESSAGE);
-                        tblHocVienKhac.setValueAt(-1.0, row, column);
+                        tblHocVienKhac.setValueAt("Chưa nhập", row, column);
                         return;
                     }
 
@@ -160,8 +183,14 @@ public class HocVienJFrame extends javax.swing.JFrame {
                         tableHocVienKhacData.remove(row);
                         tblHocVienKhac.updateUI();
 
-                        tblHocVienKhac.updateUI();
-                        tblHocVien.setRowSelectionInterval(tableHocVienData.size() - 1, tableHocVienData.size() - 1);
+                        rdoTatCaActionPerformed(null);
+                        for (int i = 0; i < tableHocVienData.size(); i++) {
+                            if (hocVien.getMaHv() == tblHocVien.getValueAt(i, 0)) {
+                                tblHocVien.setRowSelectionInterval(i, i);
+                                break;
+                            }
+                        }
+
                     } else {
                         DialogHelper.message(rootPane, "Cập nhật điểm thất bại", DialogHelper.ERROR_MESSAGE);
                     }
@@ -223,7 +252,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
         for (NguoiHoc nguoiHoc : nguoiHocHashMap.values()) {
             try {
                 Vector vData = DataFactoryUtil.objectToVectorByFields(nguoiHoc, new String[]{"maNh", "hoTen"});
-                vData.add(-1.0);
+                vData.add("Chưa nhập");
                 tableHocVienKhacData.add(vData);
             } catch (Exception ex) {
                 Logger.getLogger(HocVienJFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -248,7 +277,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblHocVien = new javax.swing.JTable();
         jPanel7 = new javax.swing.JPanel();
-        btnCapNhat = new javax.swing.JButton();
+        btnXoa = new javax.swing.JButton();
         rdoTatCa = new javax.swing.JRadioButton();
         rdoDaNhapDiem = new javax.swing.JRadioButton();
         rdoChuaNhapDiem = new javax.swing.JRadioButton();
@@ -316,13 +345,13 @@ public class HocVienJFrame extends javax.swing.JFrame {
 
         jPanel7.setBackground(new java.awt.Color(245, 245, 245));
 
-        btnCapNhat.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
-        btnCapNhat.setText("Xoá");
-        btnCapNhat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnCapNhat.setFocusTraversalKeysEnabled(false);
-        btnCapNhat.addActionListener(new java.awt.event.ActionListener() {
+        btnXoa.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
+        btnXoa.setText("Xoá");
+        btnXoa.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnXoa.setFocusTraversalKeysEnabled(false);
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCapNhatActionPerformed(evt);
+                btnXoaActionPerformed(evt);
             }
         });
 
@@ -368,7 +397,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(rdoChuaNhapDiem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
-                .addComponent(btnCapNhat, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -376,7 +405,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addGap(4, 4, 4)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCapNhat, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rdoTatCa)
                     .addComponent(rdoDaNhapDiem)
                     .addComponent(rdoChuaNhapDiem)
@@ -515,7 +544,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
-    private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
         List<HocVien> deleteHocVien = new ArrayList<>();
         for (int i = 0; i < tableHocVienData.size(); i++) {
             Vector vData = tableHocVienData.get(i);
@@ -547,7 +576,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
         } else {
             DialogHelper.message(this, "Vui lòng chọn học viên cần xoá", DialogHelper.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_btnCapNhatActionPerformed
+    }//GEN-LAST:event_btnXoaActionPerformed
 
     private void tblHocVienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblHocVienKeyPressed
         evt.consume();
@@ -581,6 +610,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
             }
         }
         tblHocVien.updateUI();
+        tblHocVien.clearSelection();
     }//GEN-LAST:event_rdoTatCaActionPerformed
 
     private void rdoDaNhapDiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdoDaNhapDiemActionPerformed
@@ -606,6 +636,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
             }
         }
         tblHocVien.updateUI();
+        tblHocVien.clearSelection();
     }//GEN-LAST:event_rdoDaNhapDiemActionPerformed
 
     private void rdoChuaNhapDiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdoChuaNhapDiemActionPerformed
@@ -631,6 +662,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
             }
         }
         tblHocVien.updateUI();
+        tblHocVien.clearSelection();
     }//GEN-LAST:event_rdoChuaNhapDiemActionPerformed
 
     private void tblHocVienKhacMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHocVienKhacMouseReleased
@@ -680,7 +712,7 @@ public class HocVienJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCapNhat;
+    private javax.swing.JButton btnXoa;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JPanel jPanel1;

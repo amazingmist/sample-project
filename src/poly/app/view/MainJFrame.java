@@ -496,10 +496,10 @@ public class MainJFrame extends javax.swing.JFrame {
     private void btnDangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangXuatActionPerformed
         boolean isConfirm = DialogHelper.confirm(this, "Bạn có muốn đăng xuất?");
         if (isConfirm) {
-            this.setVisible(false);
+            setVisible(false);
             ShareHelper.logOut();
             openDangNhapDialog();
-            this.setVisible(true);
+            setVisible(true);
         }
     }//GEN-LAST:event_btnDangXuatActionPerformed
 

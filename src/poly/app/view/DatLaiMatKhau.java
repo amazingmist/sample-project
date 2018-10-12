@@ -32,27 +32,28 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
     }
     
     private boolean validateInput() {
-        if (txtMatKhauMoi.getText().startsWith("$$")) {
+        if (String.valueOf(txtMatKhauMoi.getPassword()).startsWith("$$")) {
             DialogHelper.message(this, "Mật khẩu mới không được bắt đầu bằng ký tự \"$$\"", DialogHelper.ERROR_MESSAGE);
             return false;
         }
         
-        if (ValidationUtil.isLenghtEnought(txtMatKhauMoi.getText(), 3)) {
+        if (ValidationUtil.isEmpty(String.valueOf(txtMatKhauMoi.getPassword()))) {
+            DialogHelper.message(this, "Mật khẩu mới không được để trống", DialogHelper.ERROR_MESSAGE);
+            return false;
+        }
+        
+        if (!ValidationUtil.isLenghtEnought(String.valueOf(txtMatKhauMoi.getPassword()), 3)) {
             DialogHelper.message(this, "Mật khẩu phải từ 3 ký tự trở lên", DialogHelper.ERROR_MESSAGE);
             return false;
         }
 
-        if (ValidationUtil.isEmpty(txtMatKhauMoi.getText())) {
-            DialogHelper.message(this, "Mật khẩu mới không được để trống", DialogHelper.ERROR_MESSAGE);
-            return false;
-        }
 
-        if (ValidationUtil.isEmpty(txtReMatKhauMoi.getText())) {
+        if (ValidationUtil.isEmpty(String.valueOf(txtReMatKhauMoi.getPassword()))) {
             DialogHelper.message(this, "Xác nhận mật khẩu mới không được để trống", DialogHelper.ERROR_MESSAGE);
             return false;
         }
         
-        if (!txtMatKhauMoi.getText().equals(txtReMatKhauMoi.getText())) {
+        if (!String.valueOf(txtMatKhauMoi.getPassword()).equals(String.valueOf(txtReMatKhauMoi.getPassword()))) {
             DialogHelper.message(this, "Mật khẩu mới không trùng khớp", DialogHelper.ERROR_MESSAGE);
             return false;
         }

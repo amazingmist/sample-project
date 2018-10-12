@@ -10,9 +10,13 @@ public class ValidationUtil {
     public static boolean isLenghtEnought(String input, int lenght){
         return input.length() >= lenght;
     }
+    
+    public static boolean isLenghtEqual(String input, int lenght){
+        return input.length() == lenght;
+    }
 
     public static boolean isValidEmail(String input){
-        return input.matches("^([\\w-\\.]+){1,64}@([\\w&&[^_]]+){2,255}.[a-z]{2,}$");
+        return input.matches("^([\\w\\-\\.]+){2,64}\\@(\\w){2,255}(\\.[a-z]{2,10}){1,2}$");
     }
     
     public static boolean isValidDate(String date){

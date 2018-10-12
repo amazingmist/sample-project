@@ -5,6 +5,8 @@
  */
 package poly.app.view;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Rectangle;
 import java.io.File;
 import java.util.Date;
@@ -15,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.hibernate.exception.ConstraintViolationException;
 import poly.app.core.daoimpl.NguoiHocDaoImpl;
@@ -27,6 +31,8 @@ import poly.app.core.helper.URLHelper;
 import poly.app.core.utils.DataFactoryUtil;
 import poly.app.core.utils.ImageUtil;
 import poly.app.view.utils.TableRenderer;
+import poly.app.view.utils.TooltipUtil;
+import poly.app.view.utils.ValidationUtil;
 
 public class NguoiHocJFrame extends javax.swing.JFrame {
 
@@ -65,6 +71,26 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
 
 //        Add default image to user avatar
         lblAvatar.setIcon(ImageUtil.resizeImage(new File("src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
+
+        tooltips = new JLabel[]{tooltipMa, tooltipHoTen, tooltipSoDienThoai, tooltipEmail, tooltipNgaySinh};
+        TooltipUtil.hideAllTooltips(tooltips);
+
+        addMouseListenerRecrusively(jdcNgaySinh);
+    }
+
+    private void addMouseListenerRecrusively(Container container) {
+        for (Component component : container.getComponents()) {
+            if (component instanceof Container) {
+                addMouseListenerRecrusively((Container) component);
+            }
+        }
+
+        container.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TooltipUtil.hideTooltip(tooltipNgaySinh);
+            }
+        });
+
     }
 
     private void addRadioToGroup() {
@@ -201,7 +227,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
     }
 
     private void setAddingState() {
-        txtMaNguoiHoc.setEditable(true);
+        txtMaNguoiHoc.setEnabled(true);
         txtMaNguoiHoc.requestFocus();
         btnThem.setEnabled(true);
         btnLamMoi.setEnabled(true);
@@ -215,7 +241,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
     }
 
     private void setEditingState() {
-        txtMaNguoiHoc.setEditable(false);
+        txtMaNguoiHoc.setEnabled(false);
         btnThem.setEnabled(false);
         btnLamMoi.setEnabled(true);
         btnCapNhat.setEnabled(true);
@@ -252,7 +278,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
                 DialogHelper.message(this, "Thêm dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
                 setEditingState();
-
+                
                 for (int i = 0; i < tableData.size(); i++) {
                     if (tableData.get(i).get(0).equals(txtMaNguoiHoc.getText())) {
                         selectedIndex = i;
@@ -382,6 +408,33 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
 
     }
 
+    private void showTooltipInEmptyInput() {
+        if (ValidationUtil.isEmpty(txtMaNguoiHoc.getText())) {
+            TooltipUtil.showTooltip(tooltipMa, "Không được để trống");
+        }
+
+        if (ValidationUtil.isEmpty(txtHoTen.getText())) {
+            TooltipUtil.showTooltip(tooltipHoTen, "Không được để trống");
+        }
+
+        String dateStr = ((JTextField) jdcNgaySinh.getDateEditor().getUiComponent()).getText();
+        if (ValidationUtil.isEmpty(dateStr)) {
+            TooltipUtil.showTooltip(tooltipNgaySinh, "Không được để trống");
+        }
+        
+        if (DateHelper.getDiffYears(jdcNgaySinh.getDate(), new Date()) <16) {
+            TooltipUtil.showTooltip(tooltipNgaySinh, "Phải từ 16 tuổi trở lên");
+        }
+
+        if (ValidationUtil.isEmpty(txtSoDienThoai.getText())) {
+            TooltipUtil.showTooltip(tooltipSoDienThoai, "Không được để trống");
+        }
+
+        if (ValidationUtil.isEmpty(txtEmail.getText())) {
+            TooltipUtil.showTooltip(tooltipEmail, "Không được để trống");
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -417,6 +470,11 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         txtGhiChu = new javax.swing.JTextArea();
         jdcNgaySinh = new com.toedter.calendar.JDateChooser();
+        tooltipNgaySinh = new javax.swing.JLabel();
+        tooltipSoDienThoai = new javax.swing.JLabel();
+        tooltipEmail = new javax.swing.JLabel();
+        tooltipMa = new javax.swing.JLabel();
+        tooltipHoTen = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         btnThem = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
@@ -499,12 +557,28 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         jPanel5.setFocusable(false);
         jPanel5.setPreferredSize(new java.awt.Dimension(408, 390));
 
-        txtMaNguoiHoc.setEditable(false);
         txtMaNguoiHoc.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtMaNguoiHoc.setEnabled(false);
         txtMaNguoiHoc.setFocusTraversalKeysEnabled(false);
+        txtMaNguoiHoc.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtMaNguoiHocFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtMaNguoiHocFocusLost(evt);
+            }
+        });
 
         txtHoTen.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtHoTen.setFocusTraversalKeysEnabled(false);
+        txtHoTen.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtHoTenFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtHoTenFocusLost(evt);
+            }
+        });
         txtHoTen.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtHoTenKeyTyped(evt);
@@ -522,6 +596,14 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
 
         txtSoDienThoai.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtSoDienThoai.setFocusTraversalKeysEnabled(false);
+        txtSoDienThoai.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtSoDienThoaiFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtSoDienThoaiFocusLost(evt);
+            }
+        });
         txtSoDienThoai.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtSoDienThoaiKeyTyped(evt);
@@ -530,6 +612,14 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
 
         txtEmail.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtEmail.setFocusTraversalKeysEnabled(false);
+        txtEmail.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtEmailFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtEmailFocusLost(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel7.setText("Ngày sinh");
@@ -569,6 +659,31 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         jdcNgaySinh.setDateFormatString("dd-MM-yyyy");
         jdcNgaySinh.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
 
+        tooltipNgaySinh.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipNgaySinh.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipNgaySinh.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipNgaySinh.setText("xxx");
+
+        tooltipSoDienThoai.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipSoDienThoai.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipSoDienThoai.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipSoDienThoai.setText("xxx");
+
+        tooltipEmail.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipEmail.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipEmail.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipEmail.setText("xxx");
+
+        tooltipMa.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipMa.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipMa.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipMa.setText("xxx");
+
+        tooltipHoTen.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipHoTen.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipHoTen.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipHoTen.setText("xxx");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -578,9 +693,15 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel5)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(tooltipHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(txtMaNguoiHoc)
-                            .addComponent(jLabel2)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(tooltipMa, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(txtHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGap(110, 110, 110)
@@ -592,12 +713,21 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
                         .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel4)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tooltipSoDienThoai, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel9)
                     .addComponent(txtSoDienThoai, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
                     .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel7)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tooltipEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tooltipNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2)
                     .addComponent(jdcNgaySinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(31, 31, 31))
@@ -608,11 +738,15 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tooltipNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jdcNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tooltipSoDienThoai, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtSoDienThoai, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
@@ -621,7 +755,9 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tooltipEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -629,11 +765,15 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tooltipMa, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtMaNguoiHoc, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tooltipHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -900,14 +1040,20 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         tblNguoiHoc.clearSelection();
         resetForm();
         setAddingState();
+        TooltipUtil.hideAllTooltips(tooltips);
     }//GEN-LAST:event_btnLamMoiActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        this.insertModel();
+        showTooltipInEmptyInput();
+        if (TooltipUtil.isHideAllTooltips(tooltips)) {
+            this.insertModel();
+        }
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
         this.deleteModel();
+        TooltipUtil.hideAllTooltips(tooltips);
+        tblNguoiHoc.getRowSorter().setSortKeys(null);
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void tblNguoiHocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNguoiHocMouseClicked
@@ -921,7 +1067,10 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_tblNguoiHocMouseClicked
 
     private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
-        this.updateModel();
+        showTooltipInEmptyInput();
+        if (TooltipUtil.isHideAllTooltips(tooltips)) {
+            this.updateModel();
+        }
     }//GEN-LAST:event_btnCapNhatActionPerformed
 
     private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
@@ -973,7 +1122,14 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
                 setEditingState();
                 setModelToForm();
                 txtTimKiem.setFocusable(false);
+                TooltipUtil.hideAllTooltips(tooltips);
                 requestFocusInWindow();
+                
+                if (ShareHelper.USER.getVaiTro()) {
+                    btnXoa.setEnabled(true);
+                }else{
+                    btnXoa.setEnabled(false);
+                }
             }
         }
     }//GEN-LAST:event_panelTabStateChanged
@@ -986,16 +1142,21 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         panelTab.setSelectedIndex(0);
         txtTimKiem.setText("");
         txtTimKiem.setRequestFocusEnabled(false);
+        TooltipUtil.hideAllTooltips(tooltips);
     }//GEN-LAST:event_formWindowClosing
 
     private void txtHoTenKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHoTenKeyTyped
+        TooltipUtil.hideTooltip(tooltipHoTen);
         if (String.valueOf(evt.getKeyChar()).matches("\\d")) {
+            TooltipUtil.showTooltip(tooltipHoTen, "Không được nhập số");
             evt.consume();
         }
     }//GEN-LAST:event_txtHoTenKeyTyped
 
     private void txtSoDienThoaiKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSoDienThoaiKeyTyped
-        if (!String.valueOf(evt.getKeyChar()).matches("[\\d]")) {
+        TooltipUtil.hideTooltip(tooltipSoDienThoai);
+        if (String.valueOf(evt.getKeyChar()).matches("\\D") && !String.valueOf(evt.getKeyChar()).equals("\b")) {
+            TooltipUtil.showTooltip(tooltipSoDienThoai, "Chỉ được nhập số");
             evt.consume();
         }
     }//GEN-LAST:event_txtSoDienThoaiKeyTyped
@@ -1006,6 +1167,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         txtTimKiem.setFocusable(true);
         txtTimKiem.requestFocus();
         panelTab.setSelectedIndex(0);
+        TooltipUtil.hideAllTooltips(tooltips);
     }//GEN-LAST:event_txtTimKiemMouseClicked
 
     private void txtTimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyReleased
@@ -1049,6 +1211,71 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_lblAvatarMouseClicked
+
+    private void txtMaNguoiHocFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMaNguoiHocFocusGained
+        TooltipUtil.hideTooltip(tooltipMa);
+    }//GEN-LAST:event_txtMaNguoiHocFocusGained
+
+    private void txtMaNguoiHocFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMaNguoiHocFocusLost
+        if (ValidationUtil.isEmpty(txtMaNguoiHoc.getText())) {
+            TooltipUtil.showTooltip(tooltipMa, "Không được để trống");
+        } else if (!ValidationUtil.isLenghtEqual(txtMaNguoiHoc.getText(), 7)) {
+            TooltipUtil.showTooltip(tooltipMa, "Mã phải dài 7 ký tự");
+        } else {
+            for (NguoiHoc nguoiHoc : nguoiHocHashMap.values()) {
+                if (nguoiHoc.getMaNh().equals(txtMaNguoiHoc.getText())) {
+                    TooltipUtil.showTooltip(tooltipMa, "Mã người học đã tồn tại");
+                }
+            }
+        }
+    }//GEN-LAST:event_txtMaNguoiHocFocusLost
+
+    private void txtHoTenFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHoTenFocusGained
+        TooltipUtil.hideTooltip(tooltipHoTen);
+    }//GEN-LAST:event_txtHoTenFocusGained
+
+    private void txtHoTenFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHoTenFocusLost
+        if (ValidationUtil.isEmpty(txtHoTen.getText())) {
+            TooltipUtil.showTooltip(tooltipHoTen, "Không được để trống");
+        } else {
+            TooltipUtil.hideTooltip(tooltipHoTen);
+        }
+    }//GEN-LAST:event_txtHoTenFocusLost
+
+    private void txtSoDienThoaiFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSoDienThoaiFocusGained
+        TooltipUtil.hideTooltip(tooltipSoDienThoai);
+    }//GEN-LAST:event_txtSoDienThoaiFocusGained
+
+    private void txtSoDienThoaiFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSoDienThoaiFocusLost
+        if (ValidationUtil.isEmpty(txtSoDienThoai.getText())) {
+            TooltipUtil.showTooltip(tooltipSoDienThoai, "Không được để trống");
+        } else if (!ValidationUtil.isValidNumber(Integer.class, txtSoDienThoai.getText())) {
+            TooltipUtil.showTooltip(tooltipSoDienThoai, "Không đúng định dạng");
+        } else {
+            TooltipUtil.hideTooltip(tooltipSoDienThoai);
+        }
+    }//GEN-LAST:event_txtSoDienThoaiFocusLost
+
+    private void txtEmailFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtEmailFocusGained
+        TooltipUtil.hideTooltip(tooltipEmail);
+    }//GEN-LAST:event_txtEmailFocusGained
+
+    private void txtEmailFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtEmailFocusLost
+        if (ValidationUtil.isEmpty(txtEmail.getText())) {
+            TooltipUtil.showTooltip(tooltipEmail, "Không được để trống");
+        } else if (!ValidationUtil.isValidEmail(txtEmail.getText())) {
+            TooltipUtil.showTooltip(tooltipEmail, "Không đúng định dạng");
+        } else {
+            if (nguoiHocHashMap.get(txtMaNguoiHoc.getText()) != null
+                    && !nguoiHocHashMap.get(txtMaNguoiHoc.getText()).getEmail().equals(txtEmail.getText())) {
+                for (NguoiHoc nguoiHoc : nguoiHocHashMap.values()) {
+                    if (nguoiHoc.getEmail().equals(txtEmail.getText())) {
+                        TooltipUtil.showTooltip(tooltipEmail, "Email đã tồn tại");
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_txtEmailFocusLost
 
     /**
      * @param args the command line arguments
@@ -1128,6 +1355,11 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton rdoNam;
     private javax.swing.JRadioButton rdoNu;
     private javax.swing.JTable tblNguoiHoc;
+    private javax.swing.JLabel tooltipEmail;
+    private javax.swing.JLabel tooltipHoTen;
+    private javax.swing.JLabel tooltipMa;
+    private javax.swing.JLabel tooltipNgaySinh;
+    private javax.swing.JLabel tooltipSoDienThoai;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextArea txtGhiChu;
     private javax.swing.JTextField txtHoTen;
@@ -1136,4 +1368,5 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables
     private ButtonGroup gioiTinhGroup = new ButtonGroup();
+    JLabel[] tooltips;
 }

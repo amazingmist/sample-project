@@ -5,6 +5,8 @@
  */
 package poly.app.view;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 import org.hibernate.exception.ConstraintViolationException;
 import poly.app.core.daoimpl.ChuyenDeDaoImpl;
 import poly.app.core.daoimpl.KhoaHocDaoImpl;
@@ -25,6 +29,8 @@ import poly.app.core.helper.DialogHelper;
 import poly.app.core.helper.ShareHelper;
 import poly.app.core.utils.DataFactoryUtil;
 import poly.app.view.utils.TableRenderer;
+import poly.app.view.utils.TooltipUtil;
+import poly.app.view.utils.ValidationUtil;
 
 public class KhoaHocJFrame extends javax.swing.JFrame {
 
@@ -53,6 +59,27 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
             cboBoLoc.addItem(identifier);
         }
         cboBoLoc.setSelectedIndex(1);
+
+        //        hide tooltip
+        tooltips = new JLabel[]{tooltipNgayKhaiGiang};
+        TooltipUtil.hideAllTooltips(tooltips);
+        
+        addMouseListenerRecrusively(jdcNgayKhaiGiang);
+    }
+    
+    private void addMouseListenerRecrusively(Container container) {
+        for (Component component : container.getComponents()) {
+            if (component instanceof Container) {
+                addMouseListenerRecrusively((Container) component);
+            }
+        }
+
+        container.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TooltipUtil.hideTooltip(tooltipNgayKhaiGiang);
+            }
+        });
+
     }
 
     public void loadDataToTable() {
@@ -120,7 +147,7 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
         cboChuyenDe.setSelectedIndex(0);
         txtHocPhi.setText(chuyenDeList.get(0).getHocPhi() + "");
         txtThoiLuong.setText(chuyenDeList.get(0).getThoiLuong() + "");
-        jdcNgayKhaiGiang.setDate(null);
+        jdcNgayKhaiGiang.setDate(DateHelper.add(5));
         jdcNgayTao.setDate(new Date());
         txtNguoiTao.setText(ShareHelper.USER.getMaNv());
         txtGhiChu.setText("");
@@ -153,10 +180,6 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
         return khoaHoc;
     }
 
-    private boolean validateInputForm() {
-        return true;
-    }
-
     private void setAddingState() {
         btnThem.setEnabled(true);
         btnLamMoi.setEnabled(true);
@@ -177,34 +200,32 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
     }
 
     private void insertModel() {
-        if (validateInputForm()) {
-            KhoaHoc khoaHoc = getModelFromForm();
+        KhoaHoc khoaHoc = getModelFromForm();
 
-            boolean isInserted = new KhoaHocDaoImpl().insert(khoaHoc);
+        boolean isInserted = new KhoaHocDaoImpl().insert(khoaHoc);
 
-            if (isInserted) {
-                DialogHelper.message(this, "Thêm dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
-                loadDataToTable();
-                setEditingState();
+        if (isInserted) {
+            DialogHelper.message(this, "Thêm dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
+            loadDataToTable();
+            setEditingState();
 
-                for (int i = 0; i < tableData.size(); i++) {
-                    if (tableData.get(i).get(0).equals(khoaHoc.getMaKh())) {
-                        selectedIndex = i;
-                        changeSelectedIndex();
-                        setDirectionButton();
-                        break;
-                    }
+            for (int i = 0; i < tableData.size(); i++) {
+                if (tableData.get(i).get(0).equals(khoaHoc.getMaKh())) {
+                    selectedIndex = i;
+                    changeSelectedIndex();
+                    setDirectionButton();
+                    break;
                 }
-            } else {
-                DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
             }
+        } else {
+            DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
         }
     }
 
     private void deleteModel() {
         boolean isConfirm = DialogHelper.confirm(this, "Bạn chắc chắn muốn xoá?");
         if (isConfirm) {
-            String maKh = tblKhoaHoc.getValueAt(selectedIndex, 0).toString();
+            Integer maKh = (Integer) tblKhoaHoc.getValueAt(selectedIndex, 0);
             KhoaHoc khoaHoc = khoaHocHashMap.get(maKh);
 
             boolean isDeleted = false;
@@ -217,11 +238,12 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
                 e.printStackTrace();
                 return;
             }
-            
+
             if (isDeleted) {
                 DialogHelper.message(this, "Xoá dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
                 tblKhoaHoc.updateUI();
+                selectedIndex--;
                 changeSelectedIndex();
             } else {
                 DialogHelper.message(this, "Xoá dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
@@ -230,43 +252,41 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
     }
 
     private void updateModel() {
-        if (validateInputForm()) {
-            int maKh = Integer.parseInt(tblKhoaHoc.getValueAt(selectedIndex, 0).toString());
-            KhoaHoc khoaHocOldData = khoaHocHashMap.get(maKh);
+        int maKh = Integer.parseInt(tblKhoaHoc.getValueAt(selectedIndex, 0).toString());
+        KhoaHoc khoaHocOldData = khoaHocHashMap.get(maKh);
 
-            KhoaHoc khoaHocNewData = getModelFromForm();
+        KhoaHoc khoaHocNewData = getModelFromForm();
 
-            boolean isUpdated = false;
+        boolean isUpdated = false;
+        try {
+            khoaHocNewData = DataFactoryUtil.mergeTwoObject(khoaHocOldData, khoaHocNewData);
+            khoaHocHashMap.put(maKh, khoaHocNewData);
+
+            isUpdated = new KhoaHocDaoImpl().update(khoaHocNewData);
+        } catch (Exception ex) {
+            Logger.getLogger(KhoaHocJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (isUpdated) {
+            Vector vData;
             try {
-                khoaHocNewData = DataFactoryUtil.mergeTwoObject(khoaHocOldData, khoaHocNewData);
-                khoaHocHashMap.put(maKh, khoaHocNewData);
+                vData = DataFactoryUtil.objectToVectorByFields(khoaHocNewData, ObjectStructureHelper.KHOAHOC_PROPERTIES);
 
-                isUpdated = new KhoaHocDaoImpl().update(khoaHocNewData);
+//                    Find index of updated khoaHoc in tabledata
+                for (int i = 0; i < tableData.size(); i++) {
+                    if (tableData.get(i).get(0).equals(vData.get(0))) {
+                        tableData.set(i, vData);
+                        break;
+                    }
+                }
+
+                tblKhoaHoc.updateUI();
+                DialogHelper.message(this, "Cập nhật dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
             } catch (Exception ex) {
                 Logger.getLogger(KhoaHocJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            if (isUpdated) {
-                Vector vData;
-                try {
-                    vData = DataFactoryUtil.objectToVectorByFields(khoaHocNewData, ObjectStructureHelper.KHOAHOC_PROPERTIES);
-
-//                    Find index of updated khoaHoc in tabledata
-                    for (int i = 0; i < tableData.size(); i++) {
-                        if (tableData.get(i).get(0).equals(vData.get(0))) {
-                            tableData.set(i, vData);
-                            break;
-                        }
-                    }
-
-                    tblKhoaHoc.updateUI();
-                    DialogHelper.message(this, "Cập nhật dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
-                } catch (Exception ex) {
-                    Logger.getLogger(KhoaHocJFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                DialogHelper.message(this, "Cập nhật dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
-            }
+        } else {
+            DialogHelper.message(this, "Cập nhật dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
         }
     }
 
@@ -296,6 +316,17 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
             btnPrev.setEnabled(false);
             btnNext.setEnabled(false);
             btnLast.setEnabled(false);
+        }
+    }
+
+    private void showTooltipInEmptyInput() {
+        String dateStr = ((JTextField) jdcNgayKhaiGiang.getDateEditor().getUiComponent()).getText();
+        if (ValidationUtil.isEmpty(dateStr)) {
+            TooltipUtil.showTooltip(tooltipNgayKhaiGiang, "Không được để trống");
+        }
+        
+        if (DateHelper.getDiffDays(jdcNgayTao.getDate(), jdcNgayKhaiGiang.getDate()) < 5) {
+            TooltipUtil.showTooltip(tooltipNgayKhaiGiang, "Ngày khai giảng phải sau 5 ngày");
         }
     }
 
@@ -333,6 +364,7 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
         jdcNgayTao = new com.toedter.calendar.JDateChooser();
         jLabel5 = new javax.swing.JLabel();
         txtNguoiTao = new javax.swing.JTextField();
+        tooltipNgayKhaiGiang = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         btnThem = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
@@ -498,6 +530,11 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
             }
         });
 
+        tooltipNgayKhaiGiang.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipNgayKhaiGiang.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipNgayKhaiGiang.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipNgayKhaiGiang.setText("xxx");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -521,15 +558,18 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
                                     .addComponent(txtHocPhi, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(47, 47, 47)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jdcNgayKhaiGiang, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jdcNgayKhaiGiang, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
                                     .addComponent(jdcNgayTao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(txtNguoiTao)
                                     .addGroup(jPanel5Layout.createSequentialGroup()
                                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel9)
-                                            .addComponent(jLabel7)
                                             .addComponent(jLabel5))
-                                        .addGap(0, 0, Short.MAX_VALUE)))))
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(tooltipNgayKhaiGiang, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(31, 31, 31))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel10)
@@ -545,7 +585,8 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(tooltipNgayKhaiGiang, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(cboChuyenDe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -569,7 +610,7 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnXemDanhSach, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -833,14 +874,20 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
         tblKhoaHoc.clearSelection();
         resetForm();
         setAddingState();
+        TooltipUtil.hideAllTooltips(tooltips);
     }//GEN-LAST:event_btnLamMoiActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        this.insertModel();
+        showTooltipInEmptyInput();
+        if (TooltipUtil.isHideAllTooltips(tooltips)) {
+            this.insertModel();
+        }
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
         this.deleteModel();
+        TooltipUtil.hideAllTooltips(tooltips);
+        tblKhoaHoc.getRowSorter().setSortKeys(null);
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void tblKhoaHocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKhoaHocMouseClicked
@@ -854,7 +901,10 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_tblKhoaHocMouseClicked
 
     private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
-        this.updateModel();
+        showTooltipInEmptyInput();
+        if (TooltipUtil.isHideAllTooltips(tooltips)) {
+            this.updateModel();
+        }
     }//GEN-LAST:event_btnCapNhatActionPerformed
 
     private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
@@ -907,7 +957,14 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
                 setModelToForm();
                 txtTimKiem.setFocusable(false);
                 btnXemDanhSach.setEnabled(true);
+                TooltipUtil.hideAllTooltips(tooltips);
                 requestFocusInWindow();
+                
+                if (ShareHelper.USER.getVaiTro()) {
+                    btnXoa.setEnabled(true);
+                }else{
+                    btnXoa.setEnabled(false);
+                }
             }
         }
     }//GEN-LAST:event_panelTabStateChanged
@@ -1070,10 +1127,12 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser jdcNgayTao;
     private javax.swing.JTabbedPane panelTab;
     private javax.swing.JTable tblKhoaHoc;
+    private javax.swing.JLabel tooltipNgayKhaiGiang;
     private javax.swing.JTextArea txtGhiChu;
     private javax.swing.JTextField txtHocPhi;
     private javax.swing.JTextField txtNguoiTao;
     private javax.swing.JTextField txtThoiLuong;
     private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables
+    JLabel[] tooltips;
 }
