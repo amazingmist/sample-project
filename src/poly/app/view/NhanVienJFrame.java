@@ -5,8 +5,9 @@
  */
 package poly.app.view;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.hibernate.exception.ConstraintViolationException;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
@@ -45,7 +47,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         reRenderUI();
         addRadioToGroup();
-        loadDataToTable();
     }
 
     private void reRenderUI() {
@@ -71,8 +72,25 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 //        Add default image to user avatar
         lblAvatar.setIcon(ImageUtil.resizeImage(new File("src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
 
-        tooltips = new JLabel[]{tooltipMa, tooltipHoTen, tooltipSoDienThoai, tooltipEmail, tooltipDiaChi};
+        tooltips = new JLabel[]{tooltipMa, tooltipHoTen, tooltipNgaySinh, tooltipSoDienThoai, tooltipEmail, tooltipDiaChi};
         TooltipUtil.hideAllTooltips(tooltips);
+        
+        addMouseListenerRecrusively(jdcNgaySinh);
+    }
+    
+    private void addMouseListenerRecrusively(Container container) {
+        for (Component component : container.getComponents()) {
+            if (component instanceof Container) {
+                addMouseListenerRecrusively((Container) component);
+            }
+        }
+
+        container.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TooltipUtil.hideTooltip(tooltipNgaySinh);
+            }
+        });
+
     }
 
     private void addRadioToGroup() {
@@ -251,7 +269,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
             DialogHelper.message(this, "Thêm dữ liệu thành công.\nKiểm tra email để nhận thông tin đăng nhập.", DialogHelper.INFORMATION_MESSAGE);
             loadDataToTable();
             setEditingState();
-
+            
             for (int i = 0; i < tableData.size(); i++) {
                 if (tableData.get(i).get(0).equals(txtMaNhanVien.getText())) {
                     selectedIndex = i;
@@ -286,6 +304,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                 DialogHelper.message(this, "Xoá dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
                 tblNhanVien.updateUI();
+                selectedIndex--;
                 changeSelectedIndex();
             } else {
                 DialogHelper.message(this, "Xoá dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
@@ -380,6 +399,33 @@ public class NhanVienJFrame extends javax.swing.JFrame {
 
     }
 
+    private void showTooltipInEmptyInput() {
+        if (ValidationUtil.isEmpty(txtMaNhanVien.getText())) {
+            TooltipUtil.showTooltip(tooltipMa, "Không được để trống");
+        }
+
+        if (ValidationUtil.isEmpty(txtHoTen.getText())) {
+            TooltipUtil.showTooltip(tooltipHoTen, "Không được để trống");
+        }
+
+        String dateStr = ((JTextField) jdcNgaySinh.getDateEditor().getUiComponent()).getText();
+        if (ValidationUtil.isEmpty(dateStr)) {
+            TooltipUtil.showTooltip(tooltipNgaySinh, "Không được để trống");
+        }
+
+        if (ValidationUtil.isEmpty(txtSoDienThoai.getText())) {
+            TooltipUtil.showTooltip(tooltipSoDienThoai, "Không được để trống");
+        }
+
+        if (ValidationUtil.isEmpty(txtEmail.getText())) {
+            TooltipUtil.showTooltip(tooltipEmail, "Không được để trống");
+        }
+
+        if (ValidationUtil.isEmpty(txtDiaChi.getText())) {
+            TooltipUtil.showTooltip(tooltipDiaChi, "Không được để trống");
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -422,6 +468,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         tooltipHoTen = new javax.swing.JLabel();
         tooltipDiaChi = new javax.swing.JLabel();
         tooltipMa = new javax.swing.JLabel();
+        tooltipNgaySinh = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         btnThem = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
@@ -649,6 +696,11 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         tooltipMa.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         tooltipMa.setText("xxx");
 
+        tooltipNgaySinh.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipNgaySinh.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipNgaySinh.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipNgaySinh.setText("xxx");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -698,7 +750,10 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(tooltipEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel7)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tooltipNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jdcNgaySinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(31, 31, 31))
         );
@@ -708,7 +763,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tooltipNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jdcNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -744,9 +801,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                .addGap(2, 2, 2)
-                                .addComponent(tooltipMa, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(tooltipMa, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtMaNhanVien, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1021,17 +1076,19 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLamMoiActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        showTooltipInEmptyInput();
         if (TooltipUtil.isHideAllTooltips(tooltips)) {
             this.insertModel();
         }
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
-        if(ShareHelper.USER.getMaNv().equals(txtMaNhanVien.getText())){
-           DialogHelper.message(this, "Không thể tự xoá chính mình", DialogHelper.ERROR_MESSAGE);
-        }else{
+        if (ShareHelper.USER.getMaNv().equals(txtMaNhanVien.getText())) {
+            DialogHelper.message(this, "Không thể tự xoá chính mình", DialogHelper.ERROR_MESSAGE);
+        } else {
             this.deleteModel();
             TooltipUtil.hideAllTooltips(tooltips);
+            tblNhanVien.getRowSorter().setSortKeys(null);
         }
     }//GEN-LAST:event_btnXoaActionPerformed
 
@@ -1046,6 +1103,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_tblNhanVienMouseClicked
 
     private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
+        showTooltipInEmptyInput();
         if (TooltipUtil.isHideAllTooltips(tooltips)) {
             this.updateModel();
         }
@@ -1100,7 +1158,14 @@ public class NhanVienJFrame extends javax.swing.JFrame {
                 setEditingState();
                 setModelToForm();
                 txtTimKiem.setFocusable(false);
+                TooltipUtil.hideAllTooltips(tooltips);
                 requestFocusInWindow();
+                
+                if (ShareHelper.USER.getVaiTro()) {
+                    btnXoa.setEnabled(true);
+                }else{
+                    btnXoa.setEnabled(false);
+                }
             }
         }
     }//GEN-LAST:event_panelTabStateChanged
@@ -1138,6 +1203,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         txtTimKiem.setFocusable(true);
         txtTimKiem.requestFocus();
         panelTab.setSelectedIndex(0);
+        TooltipUtil.hideAllTooltips(tooltips);
     }//GEN-LAST:event_txtTimKiemMouseClicked
 
     private void txtTimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTimKiemKeyReleased
@@ -1214,13 +1280,14 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         } else if (!ValidationUtil.isValidEmail(txtEmail.getText())) {
             TooltipUtil.showTooltip(tooltipEmail, "Không đúng định dạng");
         } else {
-            if (!nhanVienHashMap.get(txtMaNhanVien.getText()).getEmail().equals(txtEmail.getText())) {
-            for (NhanVien nhanVien : nhanVienHashMap.values()) {
-                if (nhanVien.getEmail().equals(txtEmail.getText())) {
-                    TooltipUtil.showTooltip(tooltipEmail, "Email đã tồn tại");
+            if (nhanVienHashMap.get(txtMaNhanVien.getText()) != null
+                    && !nhanVienHashMap.get(txtMaNhanVien.getText()).getEmail().equals(txtEmail.getText())) {
+                for (NhanVien nhanVien : nhanVienHashMap.values()) {
+                    if (nhanVien.getEmail().equals(txtEmail.getText())) {
+                        TooltipUtil.showTooltip(tooltipEmail, "Email đã tồn tại");
+                    }
                 }
             }
-        }
         }
     }//GEN-LAST:event_txtEmailFocusLost
 
@@ -1251,7 +1318,9 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private void txtSoDienThoaiFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSoDienThoaiFocusLost
         if (ValidationUtil.isEmpty(txtSoDienThoai.getText())) {
             TooltipUtil.showTooltip(tooltipSoDienThoai, "Không được để trống");
-        } else if (ValidationUtil.isValidNumber(Integer.class, txtSoDienThoai.getText())) {
+        } else if (!ValidationUtil.isValidNumber(Integer.class, txtSoDienThoai.getText())) {
+            TooltipUtil.showTooltip(tooltipSoDienThoai, "Không đúng định dạng");
+        } else {
             TooltipUtil.hideTooltip(tooltipSoDienThoai);
         }
     }//GEN-LAST:event_txtSoDienThoaiFocusLost
@@ -1332,6 +1401,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel tooltipEmail;
     private javax.swing.JLabel tooltipHoTen;
     private javax.swing.JLabel tooltipMa;
+    private javax.swing.JLabel tooltipNgaySinh;
     private javax.swing.JLabel tooltipSoDienThoai;
     private javax.swing.JTextField txtDiaChi;
     private javax.swing.JTextField txtEmail;

@@ -1,15 +1,14 @@
-import javax.swing.ToolTipManager;
+
+import java.util.Date;
+import poly.app.core.helper.DateHelper;
 
 public class Test {
-  public static void main(String[] argv) throws Exception {
-    // Get current delay
-    int initialDelay = ToolTipManager.sharedInstance().getInitialDelay();
 
-    // Show tool tips immediately
-    ToolTipManager.sharedInstance().setInitialDelay(0);
-
-    // Show tool tips after a second
-    initialDelay = 10000;
-    ToolTipManager.sharedInstance().setInitialDelay(initialDelay);
-  }
+    public static void main(String[] argv) throws Exception {
+        Date d1 = DateHelper.toDate("17-07-1997");
+        Date d2 = new Date();
+        
+        System.out.println(DateHelper.getDiffYears(d1, d2));
+        
+    }
 }

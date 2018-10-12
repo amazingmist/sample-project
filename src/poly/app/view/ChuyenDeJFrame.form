@@ -12,7 +12,6 @@
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <Events>
-    <EventHandler event="windowOpened" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowOpened"/>
     <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>
   </Events>
   <AuxValues>
@@ -350,10 +349,10 @@
                   <SubComponents>
                     <Component class="javax.swing.JTextField" name="txtMaChuyenDe">
                       <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Open Sans" size="14" style="0"/>
                         </Property>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
@@ -371,7 +370,6 @@
                       <Events>
                         <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtTenChuyenDeFocusGained"/>
                         <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtTenChuyenDeFocusLost"/>
-                        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTenChuyenDeKeyTyped"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JTextField" name="txtThoiLuong">
@@ -382,6 +380,7 @@
                         <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
+                        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtThoiLuongFocusGained"/>
                         <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtThoiLuongFocusLost"/>
                         <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtThoiLuongKeyTyped"/>
                       </Events>
@@ -446,6 +445,11 @@
                         </Property>
                         <Property name="focusTraversalKeysEnabled" type="boolean" value="false"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtHocPhiFocusGained"/>
+                        <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtHocPhiFocusLost"/>
+                        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtHocPhiKeyTyped"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel7">
                       <Properties>
@@ -467,6 +471,10 @@
                             <Property name="columns" type="int" value="20"/>
                             <Property name="rows" type="int" value="5"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtMoTaFocusGained"/>
+                            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtMoTaFocusLost"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>

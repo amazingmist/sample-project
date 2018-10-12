@@ -14,17 +14,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.hibernate.exception.ConstraintViolationException;
 import poly.app.core.daoimpl.ChuyenDeDaoImpl;
 import poly.app.core.entities.ChuyenDe;
 import poly.app.core.helper.ObjectStructureHelper;
 import poly.app.core.helper.DialogHelper;
+import poly.app.core.helper.ShareHelper;
 import poly.app.core.helper.URLHelper;
 import poly.app.core.utils.DataFactoryUtil;
 import poly.app.core.utils.ImageUtil;
 import poly.app.view.utils.TableRenderer;
+import poly.app.view.utils.TooltipUtil;
+import poly.app.view.utils.ValidationUtil;
 
 public class ChuyenDeJFrame extends javax.swing.JFrame {
 
@@ -60,12 +62,8 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         cboBoLoc.setSelectedIndex(1);
 
 //        hide tooltip
-        JLabel[] tooltips = new JLabel[]{tooltipMa, tooltipTen, tooltipHocPhi, tooltipThoiLuong, tooltipMoTa};
-        for (JLabel tooltip : tooltips) {
-            tooltip.setVisible(false);
-            tooltip.validate();
-            tooltip.repaint();
-        }
+        tooltips = new JLabel[]{tooltipMa, tooltipTen, tooltipHocPhi, tooltipThoiLuong, tooltipMoTa};
+        TooltipUtil.hideAllTooltips(tooltips);
     }
 
     public void loadDataToTable() {
@@ -154,30 +152,13 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         return chuyenDe;
     }
 
-    
+    private boolean validateInput() {
 
-    private boolean validateInputAddingState() {
-        JLabel[] tooltips = new JLabel[]{tooltipMa, tooltipTen, tooltipHocPhi, tooltipThoiLuong, tooltipMoTa};
-        for (JLabel tooltip : tooltips) {
-            if (tooltip.isVisible()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean validateInputEditingState() {
-        JLabel[] tooltips = new JLabel[]{tooltipMa, tooltipTen, tooltipHocPhi, tooltipThoiLuong, tooltipMoTa};
-        for (JLabel tooltip : tooltips) {
-            if (tooltip.isVisible()) {
-                return false;
-            }
-        }
         return true;
     }
 
     private void setAddingState() {
-        txtMaChuyenDe.setEditable(true);
+        txtMaChuyenDe.setEnabled(true);
         txtMaChuyenDe.requestFocus();
         btnThem.setEnabled(true);
         btnLamMoi.setEnabled(true);
@@ -191,7 +172,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     }
 
     private void setEditingState() {
-        txtMaChuyenDe.setEditable(false);
+        txtMaChuyenDe.setEnabled(false);
         btnThem.setEnabled(false);
         btnLamMoi.setEnabled(true);
         btnCapNhat.setEnabled(true);
@@ -199,43 +180,40 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     }
 
     private void insertModel() {
-        if (validateInputAddingState()) {
-            ChuyenDe chuyenDe = getModelFromForm();
+        ChuyenDe chuyenDe = getModelFromForm();
 
 //            Save image to folder
-            try {
-                if (jFileChooser.getSelectedFile() != null) {
-                    chuyenDe.setHinh(chuyenDe.getMaCd().concat(".jpg"));
+        try {
+            if (jFileChooser.getSelectedFile() != null) {
+                chuyenDe.setHinh(chuyenDe.getMaCd().concat(".jpg"));
 
-                    if (chuyenDe.getHinh() != null) {
-                        ImageUtil.deleteImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDe.getHinh());
-                    }
-                    ImageUtil.saveImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDe.getHinh(), jFileChooser.getSelectedFile());
-                    jFileChooser = null;
+                if (chuyenDe.getHinh() != null) {
+                    ImageUtil.deleteImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDe.getHinh());
                 }
-            } catch (Exception ex) {
+                ImageUtil.saveImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDe.getHinh(), jFileChooser.getSelectedFile());
+                jFileChooser = null;
+            }
+        } catch (Exception ex) {
 //                ex.printStackTrace();
-            }
+        }
 
-            boolean isInserted = new ChuyenDeDaoImpl().insert(chuyenDe);
+        boolean isInserted = new ChuyenDeDaoImpl().insert(chuyenDe);
 
-            if (isInserted) {
-                DialogHelper.message(this, "Thêm dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
-                loadDataToTable();
-                setEditingState();
-                hideAllTooltips();
-
-                for (int i = 0; i < tableData.size(); i++) {
-                    if (tableData.get(i).get(0).equals(txtMaChuyenDe.getText())) {
-                        selectedIndex = i;
-                        changeSelectedIndex();
-                        setDirectionButton();
-                        break;
-                    }
+        if (isInserted) {
+            DialogHelper.message(this, "Thêm dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
+            loadDataToTable();
+            setEditingState();
+           
+            for (int i = 0; i < tableData.size(); i++) {
+                if (tableData.get(i).get(0).equals(txtMaChuyenDe.getText())) {
+                    selectedIndex = i;
+                    changeSelectedIndex();
+                    setDirectionButton();
+                    break;
                 }
-            } else {
-                DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
             }
+        } else {
+            DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
         }
     }
 
@@ -260,6 +238,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
                 DialogHelper.message(this, "Xoá dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
                 tblChuyenDe.updateUI();
+                selectedIndex--;
                 changeSelectedIndex();
             } else {
                 DialogHelper.message(this, "Xoá dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
@@ -268,59 +247,56 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     }
 
     private void updateModel() {
-        if (validateInputEditingState()) {
-            String maKh = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
-            ChuyenDe chuyenDeOldData = chuyenDeHashMap.get(maKh);
+        String maKh = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
+        ChuyenDe chuyenDeOldData = chuyenDeHashMap.get(maKh);
 
-            ChuyenDe chuyenDeNewData = getModelFromForm();
+        ChuyenDe chuyenDeNewData = getModelFromForm();
 
 //            Save image to folder
-            try {
-                if (jFileChooser.getSelectedFile() != null) {
-                    chuyenDeNewData.setHinh(chuyenDeNewData.getMaCd().concat(".jpg"));
+        try {
+            if (jFileChooser.getSelectedFile() != null) {
+                chuyenDeNewData.setHinh(chuyenDeNewData.getMaCd().concat(".jpg"));
 
-                    if (chuyenDeOldData.getHinh() != null) {
-                        ImageUtil.deleteImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDeOldData.getHinh());
-                    }
-                    ImageUtil.saveImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDeNewData.getHinh(), jFileChooser.getSelectedFile());
-                    jFileChooser = null;
+                if (chuyenDeOldData.getHinh() != null) {
+                    ImageUtil.deleteImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDeOldData.getHinh());
                 }
-            } catch (Exception ex) {
-//                ex.printStackTrace();
+                ImageUtil.saveImage(URLHelper.URL_CHUYENDE_IMAGE, chuyenDeNewData.getHinh(), jFileChooser.getSelectedFile());
+                jFileChooser = null;
             }
+        } catch (Exception ex) {
+//                ex.printStackTrace();
+        }
 
-            boolean isUpdated = false;
+        boolean isUpdated = false;
+        try {
+            chuyenDeNewData = DataFactoryUtil.mergeTwoObject(chuyenDeOldData, chuyenDeNewData);
+            chuyenDeHashMap.put(maKh, chuyenDeNewData);
+
+            isUpdated = new ChuyenDeDaoImpl().update(chuyenDeNewData);
+        } catch (Exception ex) {
+            Logger.getLogger(ChuyenDeJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (isUpdated) {
+            Vector vData;
             try {
-                chuyenDeNewData = DataFactoryUtil.mergeTwoObject(chuyenDeOldData, chuyenDeNewData);
-                chuyenDeHashMap.put(maKh, chuyenDeNewData);
+                vData = DataFactoryUtil.objectToVectorByFields(chuyenDeNewData, ObjectStructureHelper.CHUYENDE_PROPERTIES);
 
-                isUpdated = new ChuyenDeDaoImpl().update(chuyenDeNewData);
+//                    Find index of updated ChuyenDe in tabledata
+                for (int i = 0; i < tableData.size(); i++) {
+                    if (tableData.get(i).get(0).equals(vData.get(0))) {
+                        tableData.set(i, vData);
+                        break;
+                    }
+                }
+
+                tblChuyenDe.updateUI();
+                DialogHelper.message(this, "Cập nhật dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
             } catch (Exception ex) {
                 Logger.getLogger(ChuyenDeJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            if (isUpdated) {
-                Vector vData;
-                try {
-                    vData = DataFactoryUtil.objectToVectorByFields(chuyenDeNewData, ObjectStructureHelper.CHUYENDE_PROPERTIES);
-
-//                    Find index of updated ChuyenDe in tabledata
-                    for (int i = 0; i < tableData.size(); i++) {
-                        if (tableData.get(i).get(0).equals(vData.get(0))) {
-                            tableData.set(i, vData);
-                            break;
-                        }
-                    }
-
-                    tblChuyenDe.updateUI();
-                    DialogHelper.message(this, "Cập nhật dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
-                    hideAllTooltips();
-                } catch (Exception ex) {
-                    Logger.getLogger(ChuyenDeJFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                DialogHelper.message(this, "Cập nhật dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
-            }
+        } else {
+            DialogHelper.message(this, "Cập nhật dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
         }
     }
 
@@ -352,6 +328,28 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             btnLast.setEnabled(false);
         }
 
+    }
+    
+    private void showTooltipInEmptyInput() {
+        if (ValidationUtil.isEmpty(txtMaChuyenDe.getText())) {
+            TooltipUtil.showTooltip(tooltipMa, "Không được để trống");
+        }
+        
+        if (ValidationUtil.isEmpty(txtTenChuyenDe.getText())) {
+            TooltipUtil.showTooltip(tooltipTen, "Không được để trống");
+        }
+        
+        if (ValidationUtil.isEmpty(txtThoiLuong.getText())) {
+            TooltipUtil.showTooltip(tooltipThoiLuong, "Không được để trống");
+        }
+        
+        if (ValidationUtil.isEmpty(txtHocPhi.getText())) {
+            TooltipUtil.showTooltip(tooltipHocPhi, "Không được để trống");
+        }
+        
+        if (ValidationUtil.isEmpty(txtMoTa.getText())) {
+            TooltipUtil.showTooltip(tooltipMoTa, "Không được để trống");
+        }
     }
 
     /**
@@ -408,9 +406,6 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowOpened(java.awt.event.WindowEvent evt) {
-                formWindowOpened(evt);
-            }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
@@ -474,8 +469,8 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         jPanel5.setFocusable(false);
         jPanel5.setPreferredSize(new java.awt.Dimension(408, 390));
 
-        txtMaChuyenDe.setEditable(false);
         txtMaChuyenDe.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
+        txtMaChuyenDe.setEnabled(false);
         txtMaChuyenDe.setFocusTraversalKeysEnabled(false);
         txtMaChuyenDe.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -496,15 +491,13 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
                 txtTenChuyenDeFocusLost(evt);
             }
         });
-        txtTenChuyenDe.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtTenChuyenDeKeyTyped(evt);
-            }
-        });
 
         txtThoiLuong.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtThoiLuong.setFocusTraversalKeysEnabled(false);
         txtThoiLuong.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtThoiLuongFocusGained(evt);
+            }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtThoiLuongFocusLost(evt);
             }
@@ -539,12 +532,33 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
         txtHocPhi.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtHocPhi.setFocusTraversalKeysEnabled(false);
+        txtHocPhi.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtHocPhiFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtHocPhiFocusLost(evt);
+            }
+        });
+        txtHocPhi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtHocPhiKeyTyped(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         jLabel7.setText("Mô tả chuyên đề");
 
         txtMoTa.setColumns(20);
         txtMoTa.setRows(5);
+        txtMoTa.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtMoTaFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtMoTaFocusLost(evt);
+            }
+        });
         jScrollPane2.setViewportView(txtMoTa);
 
         tooltipTen.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
@@ -908,15 +922,24 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         tblChuyenDe.clearSelection();
         resetForm();
         setAddingState();
-        hideAllTooltips();
+        TooltipUtil.hideAllTooltips(tooltips);
     }//GEN-LAST:event_btnLamMoiActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        this.insertModel();
+        showTooltipInEmptyInput();
+        if (TooltipUtil.isHideAllTooltips(tooltips)) {
+            if (jFileChooser == null) {
+                DialogHelper.message(this, "Chọn hình ảnh cho chuyên đề", DialogHelper.ERROR_MESSAGE);
+            }else{
+                this.insertModel();
+            }
+        }
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
         this.deleteModel();
+        TooltipUtil.hideAllTooltips(tooltips);
+        tblChuyenDe.getRowSorter().setSortKeys(null);
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void tblChuyenDeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblChuyenDeMouseClicked
@@ -930,7 +953,10 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_tblChuyenDeMouseClicked
 
     private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
-        this.updateModel();
+        showTooltipInEmptyInput();
+        if (TooltipUtil.isHideAllTooltips(tooltips)) {
+            this.updateModel();
+        }
     }//GEN-LAST:event_btnCapNhatActionPerformed
 
     private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
@@ -982,7 +1008,14 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
                 setEditingState();
                 setModelToForm();
                 txtTimKiem.setFocusable(false);
+                TooltipUtil.hideAllTooltips(tooltips);
                 requestFocusInWindow();
+                
+                if (ShareHelper.USER.getVaiTro()) {
+                    btnXoa.setEnabled(true);
+                }else{
+                    btnXoa.setEnabled(false);
+                }
             }
         }
     }//GEN-LAST:event_panelTabStateChanged
@@ -997,14 +1030,10 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         txtTimKiem.setRequestFocusEnabled(false);
     }//GEN-LAST:event_formWindowClosing
 
-    private void txtTenChuyenDeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTenChuyenDeKeyTyped
-        if (String.valueOf(evt.getKeyChar()).matches("\\d")) {
-            evt.consume();
-        }
-    }//GEN-LAST:event_txtTenChuyenDeKeyTyped
-
     private void txtThoiLuongKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtThoiLuongKeyTyped
-        if (!String.valueOf(evt.getKeyChar()).matches("[\\d]")) {
+        TooltipUtil.hideTooltip(tooltipThoiLuong);
+        if (String.valueOf(evt.getKeyChar()).matches("\\D") && !String.valueOf(evt.getKeyChar()).equals("\b")) {
+            TooltipUtil.showTooltip(tooltipThoiLuong, "Chỉ được nhập số");
             evt.consume();
         }
     }//GEN-LAST:event_txtThoiLuongKeyTyped
@@ -1057,40 +1086,81 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_lblAvatarMouseClicked
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-//        TODO: Clear event when release
-        loadDataToTable();
-    }//GEN-LAST:event_formWindowOpened
-
     private void txtMaChuyenDeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMaChuyenDeFocusLost
-        if (txtMaChuyenDe.getText().length() == 0) {
-            showTooltip(tooltipMa, "Không được để trống");
-        }
-
-        for (ChuyenDe chuyenDe : chuyenDeHashMap.values()) {
-            if (chuyenDe.getMaCd().equals(txtMaChuyenDe.getText())) {
-                showTooltip(tooltipMa, "Mã chuyên đề đã tồn tại");
+        if (ValidationUtil.isEmpty(txtMaChuyenDe.getText())) {
+            TooltipUtil.showTooltip(tooltipMa, "Không được để trống");
+        }else if(!ValidationUtil.isLenghtEqual(txtMaChuyenDe.getText(), 5)){
+            TooltipUtil.showTooltip(tooltipMa, "Mã phải dài 5 ký tự");
+        } else {
+            for (ChuyenDe chuyenDe : chuyenDeHashMap.values()) {
+                if (chuyenDe.getMaCd().equals(txtMaChuyenDe.getText())) {
+                    TooltipUtil.showTooltip(tooltipMa, "Mã chuyên đề đã tồn tại");
+                }
             }
         }
     }//GEN-LAST:event_txtMaChuyenDeFocusLost
 
     private void txtTenChuyenDeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTenChuyenDeFocusLost
-        if (txtTenChuyenDe.getText().length() == 0) {
-            showTooltip(tooltipTen, "Không được để trống");
+        if (ValidationUtil.isEmpty(txtTenChuyenDe.getText())) {
+            TooltipUtil.showTooltip(tooltipTen, "Không được để trống");
+        } else {
+            TooltipUtil.hideTooltip(tooltipTen);
         }
     }//GEN-LAST:event_txtTenChuyenDeFocusLost
 
     private void txtThoiLuongFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtThoiLuongFocusLost
-        
+        if (ValidationUtil.isEmpty(txtThoiLuong.getText())) {
+            TooltipUtil.showTooltip(tooltipThoiLuong, "Không được để trống");
+        } else if (!ValidationUtil.isValidNumber(Integer.class, txtThoiLuong.getText())) {
+            TooltipUtil.showTooltip(tooltipThoiLuong, "Không đúng định dạng");
+        } else {
+            TooltipUtil.hideTooltip(tooltipThoiLuong);
+        }
     }//GEN-LAST:event_txtThoiLuongFocusLost
 
     private void txtMaChuyenDeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMaChuyenDeFocusGained
-        hideTooltip(tooltipMa);
+        TooltipUtil.hideTooltip(tooltipMa);
     }//GEN-LAST:event_txtMaChuyenDeFocusGained
 
     private void txtTenChuyenDeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTenChuyenDeFocusGained
-        hideTooltip(tooltipTen);
+        TooltipUtil.hideTooltip(tooltipTen);
     }//GEN-LAST:event_txtTenChuyenDeFocusGained
+
+    private void txtThoiLuongFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtThoiLuongFocusGained
+        TooltipUtil.hideTooltip(tooltipThoiLuong);
+    }//GEN-LAST:event_txtThoiLuongFocusGained
+
+    private void txtHocPhiFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHocPhiFocusGained
+        TooltipUtil.hideTooltip(tooltipHocPhi);
+    }//GEN-LAST:event_txtHocPhiFocusGained
+
+    private void txtHocPhiFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHocPhiFocusLost
+        if (ValidationUtil.isEmpty(txtHocPhi.getText())) {
+            TooltipUtil.showTooltip(tooltipHocPhi, "Không được để trống");
+        } else if (!ValidationUtil.isValidNumber(Integer.class, txtHocPhi.getText())) {
+            TooltipUtil.showTooltip(tooltipHocPhi, "Không đúng định dạng");
+        } else {
+            TooltipUtil.hideTooltip(tooltipHocPhi);
+        }
+    }//GEN-LAST:event_txtHocPhiFocusLost
+
+    private void txtHocPhiKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHocPhiKeyTyped
+        TooltipUtil.hideTooltip(tooltipHocPhi);
+        if (String.valueOf(evt.getKeyChar()).matches("\\D") && !String.valueOf(evt.getKeyChar()).equals("\b")) {
+            TooltipUtil.showTooltip(tooltipHocPhi, "Chỉ được nhập số");
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtHocPhiKeyTyped
+
+    private void txtMoTaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMoTaFocusGained
+        TooltipUtil.hideTooltip(tooltipMoTa);
+    }//GEN-LAST:event_txtMoTaFocusGained
+
+    private void txtMoTaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMoTaFocusLost
+        if (ValidationUtil.isEmpty(txtMoTa.getText())) {
+            TooltipUtil.showTooltip(tooltipMoTa, "Không được để trống");
+        }
+    }//GEN-LAST:event_txtMoTaFocusLost
 
     /**
      * @param args the command line arguments
@@ -1169,4 +1239,5 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txtThoiLuong;
     private javax.swing.JTextField txtTimKiem;
     // End of variables declaration//GEN-END:variables
+    JLabel[] tooltips;
 }

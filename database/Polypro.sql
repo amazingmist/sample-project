@@ -11,7 +11,7 @@
  Target Server Version : 80012
  File Encoding         : 65001
 
- Date: 09/10/2018 00:40:54
+ Date: 13/10/2018 00:54:03
 */
 
 SET NAMES utf8mb4;
@@ -91,17 +91,15 @@ CREATE TABLE `HocVien` (
   KEY `FK_HocVien_NguoiHoc` (`MaNH`),
   CONSTRAINT `FK_HocVien_KhoaHoc` FOREIGN KEY (`MaKH`) REFERENCES `khoahoc` (`makh`),
   CONSTRAINT `FK_HocVien_NguoiHoc` FOREIGN KEY (`MaNH`) REFERENCES `nguoihoc` (`manh`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of HocVien
 -- ----------------------------
 BEGIN;
 INSERT INTO `HocVien` VALUES (1, 2, 'PS01638', -1);
-INSERT INTO `HocVien` VALUES (2, 2, 'PS02037', -1);
 INSERT INTO `HocVien` VALUES (3, 2, 'PS02771', -1);
 INSERT INTO `HocVien` VALUES (5, 2, 'PS02930', -1);
-INSERT INTO `HocVien` VALUES (7, 2, 'PS02983', -1);
 INSERT INTO `HocVien` VALUES (8, 2, 'PS02988', -1);
 INSERT INTO `HocVien` VALUES (11, 3, 'PS01638', -1);
 INSERT INTO `HocVien` VALUES (12, 3, 'PS02037', -1);
@@ -131,7 +129,24 @@ INSERT INTO `HocVien` VALUES (53, 1, 'PS03222', 5);
 INSERT INTO `HocVien` VALUES (54, 1, 'PS03230', 3);
 INSERT INTO `HocVien` VALUES (55, 1, 'PS03233', 4);
 INSERT INTO `HocVien` VALUES (56, 1, 'PS06631', 10);
-INSERT INTO `HocVien` VALUES (57, 2, 'PS06631', 8);
+INSERT INTO `HocVien` VALUES (59, 2, 'PS03614', -1);
+INSERT INTO `HocVien` VALUES (62, 2, 'PS03031', -1);
+INSERT INTO `HocVien` VALUES (63, 2, 'PS03251', -1);
+INSERT INTO `HocVien` VALUES (64, 2, 'PS03230', 9);
+INSERT INTO `HocVien` VALUES (65, 2, 'PS03472', 9);
+INSERT INTO `HocVien` VALUES (67, 2, 'PS03454', 8);
+INSERT INTO `HocVien` VALUES (68, 2, 'PS03096', 7);
+INSERT INTO `HocVien` VALUES (79, 2, 'PS03674', 9);
+INSERT INTO `HocVien` VALUES (90, 2, 'PS03553', 4);
+INSERT INTO `HocVien` VALUES (91, 7, 'PS03134', 10);
+INSERT INTO `HocVien` VALUES (93, 2, 'PS03172', -1);
+INSERT INTO `HocVien` VALUES (94, 2, 'PS03410', 8);
+INSERT INTO `HocVien` VALUES (95, 2, 'PS03134', 8);
+INSERT INTO `HocVien` VALUES (96, 2, 'PS03233', 1);
+INSERT INTO `HocVien` VALUES (97, 2, 'PS03530', 8);
+INSERT INTO `HocVien` VALUES (98, 2, 'PS03304', 8);
+INSERT INTO `HocVien` VALUES (99, 2, 'PS03610', 8);
+INSERT INTO `HocVien` VALUES (100, 2, 'PS03411', 8);
 COMMIT;
 
 -- ----------------------------
@@ -150,9 +165,9 @@ CREATE TABLE `KhoaHoc` (
   PRIMARY KEY (`MaKH`),
   KEY `FK_KhoaHoc_ChuyenDe` (`MaCD`),
   KEY `FK_KhoaHoc_NhanVien` (`MaNV`),
-  CONSTRAINT `FK_KhoaHoc_ChuyenDe` FOREIGN KEY (`MaCD`) REFERENCES `chuyende` (`macd`),
+  CONSTRAINT `FK_KhoaHoc_ChuyenDe` FOREIGN KEY (`MaCD`) REFERENCES `chuyende` (`MaCD`),
   CONSTRAINT `FK_KhoaHoc_NhanVien` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`manv`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of KhoaHoc
@@ -163,7 +178,7 @@ INSERT INTO `KhoaHoc` VALUES (2, 300, 90, '2018-01-10', '', '2017-12-31', 'TeoNV
 INSERT INTO `KhoaHoc` VALUES (3, 100, 50, '2018-01-10', '', '2017-12-31', 'TeoNV', 'RDB01');
 INSERT INTO `KhoaHoc` VALUES (4, 250, 80, '2018-01-10', '', '2017-12-31', 'TeoNV', 'JAV01');
 INSERT INTO `KhoaHoc` VALUES (6, 200, 70, '2017-07-17', '', '2018-10-08', 'TaiVT', 'JAV04');
-INSERT INTO `KhoaHoc` VALUES (7, 300, 90, '2018-11-13', '', '2018-10-09', 'TaiVT', 'JAV01');
+INSERT INTO `KhoaHoc` VALUES (7, 300, 90, '2018-10-17', '', '2018-10-09', 'TaiVT', 'JAV01');
 COMMIT;
 
 -- ----------------------------
@@ -201,13 +216,13 @@ CREATE TABLE `NguoiHoc` (
 -- Records of NguoiHoc
 -- ----------------------------
 BEGIN;
-INSERT INTO `NguoiHoc` VALUES ('PS01638', 'LỮ HUY CƯỜNG', '1991-05-08', b'1', '928768265', 'PS01638@fpt.edu.vn', '0928768265 - LỮ HUY CƯỜNG', '1991-05-08', NULL, 'PheoNC');
+INSERT INTO `NguoiHoc` VALUES ('PS01638', 'LỮ HUY CƯỜNG', '2018-10-03', b'1', '928768265', 'PS01638@fpt.edu.vn', '0928768265 - LỮ HUY CƯỜNG', '1991-05-08', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS02037', 'ĐỖ VĂN MINH', '1992-10-24', b'1', '968095685', 'PS02037@fpt.edu.vn', '0968095685 - ĐỖ VĂN MINH', '1992-10-24', NULL, 'PheoNC');
-INSERT INTO `NguoiHoc` VALUES ('PS02771', 'NGUYỄN TẤN HIẾU', '1998-09-15', b'1', '927594734', 'PS02771@fpt.edu.vn', '0927594734 - NGUYỄN TẤN HIẾU', '1998-09-15', NULL, 'PheoNC');
-INSERT INTO `NguoiHoc` VALUES ('PS02867', 'NGUYỄN HỮU TRÍ', '1997-10-27', b'1', '946984711', 'PS02867@fpt.edu.vn', '0946984711 - NGUYỄN HỮU TRÍ', '1997-10-27', NULL, 'TeoNV');
+INSERT INTO `NguoiHoc` VALUES ('PS02771', 'NGUYỄN TẤN BÌNH', '1998-09-15', b'1', '9275947341', 'PS02771@fpt.edu.vn', '0927594734 - NGUYỄN TẤN BÌNH', '1998-09-15', NULL, 'PheoNC');
+INSERT INTO `NguoiHoc` VALUES ('PS02867', 'NGUYỄN HỮU TRÍ', '2002-10-02', b'1', '946984711', 'PS02867@fpt.edu.vn', '0946984711 - NGUYỄN HỮU TRÍ', '1997-10-27', NULL, 'TeoNV');
 INSERT INTO `NguoiHoc` VALUES ('PS02930', 'TRẦN VĂN NAM', '2000-06-03', b'1', '924774498', 'PS02930@fpt.edu.vn', '0924774498 - TRẦN VĂN NAM', '2000-06-03', NULL, 'TeoNV');
 INSERT INTO `NguoiHoc` VALUES ('PS02979', 'ĐOÀN TRẦN NHẬT VŨ', '1994-08-28', b'1', '912374818', 'PS02979@fpt.edu.vn', '0912374818 - ĐOÀN TRẦN NHẬT VŨ', '1994-08-28', NULL, 'TeoNV');
-INSERT INTO `NguoiHoc` VALUES ('PS02983', 'NGUYỄN HOÀNG THIÊN PHƯỚC', '1993-04-04', b'1', '912499836', 'PS02983@fpt.edu.vn', '0912499836 - NGUYỄN HOÀNG THIÊN PHƯỚC', '1993-04-04', NULL, 'PheoNC');
+INSERT INTO `NguoiHoc` VALUES ('PS02983', 'NGUYỄN HOÀNG THIÊN', '1993-04-04', b'1', '912499836', 'PS02983@fpt.edu.vn', '0912499836 - NGUYỄN HOÀNG THIÊN PHƯỚC', '1993-04-04', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS02988', 'HỒ HỮU HẬU', '1993-02-08', b'1', '924984876', 'PS02988@fpt.edu.vn', '0924984876 - HỒ HỮU HẬU', '1993-02-08', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS03031', 'PHAN TẤN VIỆT', '1990-04-05', b'1', '924832716', 'PS03031@fpt.edu.vn', '0924832716 - PHAN TẤN VIỆT', '1990-04-05', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS03046', 'NGUYỄN CAO PHƯỚC', '1990-01-28', b'1', '977117727', 'PS03046@fpt.edu.vn', '0977117727 - NGUYỄN CAO PHƯỚC', '1990-01-28', NULL, 'PheoNC');
@@ -240,18 +255,14 @@ INSERT INTO `NguoiHoc` VALUES ('PS03454', 'NGUYỄN NHẬT VĨNH', '1999-07-09',
 INSERT INTO `NguoiHoc` VALUES ('PS03472', 'NGUYỄN VĂN HUY', '1990-01-22', b'1', '960620997', 'PS03472@fpt.edu.vn', '0960620997 - NGUYỄN VĂN HUY', '1990-01-22', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS03488', 'NGUYỄN NHƯ NGỌC', '1995-05-09', b'0', '912880267', 'PS03488@fpt.edu.vn', '0912880267 - NGUYỄN NHƯ NGỌC', '1995-05-09', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS03530', 'PHẠM THÀNH TÂM', '2000-03-11', b'1', '918161783', 'PS03530@fpt.edu.vn', '0918161783 - PHẠM THÀNH TÂM', '2000-03-11', NULL, 'PheoNC');
-INSERT INTO `NguoiHoc` VALUES ('PS03553', 'ĐINH TẤN CÔNG', '2000-08-15', b'1', '918182551', 'PS03553@fpt.edu.vn', '0918182551 - ĐINH TẤN CÔNG', '2000-08-15', NULL, 'PheoNC');
-INSERT INTO `NguoiHoc` VALUES ('PS03561', 'LÊ MINH ĐIỀN', '1995-01-05', b'1', '948199564', 'PS03561@fpt.edu.vn', '0948199564 - LÊ MINH ĐIỀN', '1995-01-05', NULL, 'PheoNC');
-INSERT INTO `NguoiHoc` VALUES ('PS03596', 'NGUYỄN THANH HIỀN', '1991-07-09', b'1', '910545901', 'PS03596@fpt.edu.vn', '0910545901 - NGUYỄN THANH HIỀN', '1991-07-09', NULL, 'PheoNC');
+INSERT INTO `NguoiHoc` VALUES ('PS03553', 'ĐINH TẤN CÔNG', '2000-08-09', b'1', '918182551', 'PS03553@fpt.edu.vn', '0918182551 - ĐINH TẤN CÔNG', '2000-08-15', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS03603', 'LÊ PHẠM KIM THANH', '1994-08-05', b'0', '924696779', 'PS03603@fpt.edu.vn', '0924696779 - LÊ PHẠM KIM THANH', '1994-08-05', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS03610', 'TRẦN ĐÌNH TRƯỜNG', '1995-01-16', b'1', '941528106', 'PS03610@fpt.edu.vn', '0941528106 - TRẦN ĐÌNH TRƯỜNG', '1995-01-16', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS03614', 'NGUYỄN VĂN SÁU', '1990-04-27', b'1', '940711328', 'PS03614@fpt.edu.vn', '0940711328 - NGUYỄN VĂN SÁU', '1990-04-27', NULL, 'PheoNC');
-INSERT INTO `NguoiHoc` VALUES ('PS03618', 'PHÍ ĐÌNH VIỆT HÙNG', '1996-12-09', b'1', '939020097', 'PS03618@fpt.edu.vn', '0939020097 - PHÍ ĐÌNH VIỆT HÙNG', '1996-12-09', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS03638', 'PHẠM NHẬT MINH', '1997-07-18', b'1', '927771672', 'PS03638@fpt.edu.vn', '0927771672 - PHẠM NHẬT MINH', '1997-07-18', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS03640', 'LƯU THANH NGỌC', '1993-12-01', b'0', '918358164', 'PS03640@fpt.edu.vn', '0918358164 - LƯU THANH NGỌC', '1993-12-01', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS03662', 'NGUYỄN CAO NGỌC LỢI', '1990-04-24', b'1', '930260679', 'PS03662@fpt.edu.vn', '0930260679 - NGUYỄN CAO NGỌC LỢI', '1990-04-24', NULL, 'PheoNC');
 INSERT INTO `NguoiHoc` VALUES ('PS03674', 'TRẦN TUẤN ANH', '1996-06-11', b'1', '914082094', 'PS03674@fpt.edu.vn', '0914082094 - TRẦN TUẤN ANH', '1996-06-11', NULL, 'PheoNC');
-INSERT INTO `NguoiHoc` VALUES ('PS06630', 'TRẦN DUY QUANG', '1997-09-08', b'1', '091237412', 'PS06630@gmail.com', '091237412 - TRẦN DUY QUANG', '2018-10-08', NULL, 'TaiVT');
 INSERT INTO `NguoiHoc` VALUES ('PS06631', 'VÕ THÀNH TÀI', '1997-07-17', b'1', '0932938178', 'PS06631@gmail.com', '0932938178 - VÕ THÀNH TÀI', '2018-10-08', 'PS06631.jpg', 'TaiVT');
 COMMIT;
 
@@ -296,11 +307,10 @@ CREATE TABLE `nhanvien` (
 -- Records of nhanvien
 -- ----------------------------
 BEGIN;
-INSERT INTO `nhanvien` VALUES ('MyTH', 'myth', 'Trần Hải My', '1997-07-17', b'0', '0912341124', 'taivtse@gmail.com', 'Tiền Giang', NULL, b'0');
-INSERT INTO `nhanvien` VALUES ('PheoNC', '123456', 'Nguyễn Chí Phèo', '1999-07-15', b'0', '0932938178', 'chipheo@gmail.com', 'Tân Phú', 'PheoNC.jpg', b'0');
-INSERT INTO `nhanvien` VALUES ('TaiVT', '12345', 'Võ Thành Tài', '1993-04-26', b'1', '0123871276', 'thanhtai17071997@gmail.com', 'Quận 1', 'avatar.jpg', b'1');
-INSERT INTO `nhanvien` VALUES ('TeoNV', '123456', 'Nguyễn Văn Tèo', '1987-05-19', b'1', '0127263653', 'vanteo@gmail.com', 'Quận 3', 'TeoNV.jpg', b'1');
-INSERT INTO `nhanvien` VALUES ('TuanNT', '12345', 'Nguyen Thanh Tuan', '1997-08-13', b'1', '0943948176', 'sol4.amazingmist@gmail.com', '417 cmt8', 'opencv.jpg', b'0');
+INSERT INTO `nhanvien` VALUES ('MyTH', 'myth', 'Trần Hải My', '1997-02-01', b'0', '091276424123', 'taivtse@gmail.com', 'Tiền Giang', NULL, b'1');
+INSERT INTO `nhanvien` VALUES ('PheoNC', '123456', 'Nguyễn Chí Phèo', '2018-10-10', b'0', '0932938178', 'chipheo@gmail.com', 'Tân Phú', 'PheoNC.jpg', b'0');
+INSERT INTO `nhanvien` VALUES ('TaiVT', '12345', 'Võ Thành Tài', '1993-04-26', b'1', '0123871276', 'thanhtai17071997@gmail.com', 'Quận 1', 'TaiVT.jpg', b'1');
+INSERT INTO `nhanvien` VALUES ('TeoNV', '123456', 'Nguyễn Văn Tèo', '1987-05-13', b'0', '0127263653', 'vanteo@gmail.com', 'Quận 3', 'TeoNV.jpg', b'1');
 COMMIT;
 
 -- ----------------------------
