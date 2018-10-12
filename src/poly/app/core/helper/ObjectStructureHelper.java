@@ -20,4 +20,6 @@ public class ObjectStructureHelper {
     
     public static final String[] HOCVIEN_PROPERTIES = {"maHv", "nguoiHoc", "nguoiHoc", "diem"};
     public static final String[] HOCVIEN_TABLE_IDENTIFIERS = {"Mã học viên", "Mã người học", "Họ và tên", "Điểm số", "Xếp loại", "Xoá"};
+    
+    public static final String[] HOCVIENKHAC_TABLE_IDENTIFIERS = {"Mã người học", "Họ và tên", "Điểm số"};
 }

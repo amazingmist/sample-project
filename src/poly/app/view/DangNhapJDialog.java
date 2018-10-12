@@ -25,6 +25,21 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
         this.getRootPane().setDefaultButton(btnLogin);
     }
+
+    private boolean validateInput() {
+        if (txtMaNv.getText().length() == 0) {
+            DialogHelper.message(this, "Tên đăng nhập không được để trống", DialogHelper.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (txtMatKhau.getText().length() == 0) {
+            DialogHelper.message(this, "Mật khẩu không được để trống", DialogHelper.ERROR_MESSAGE);
+            return false;
+        }
+        
+        return true;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -191,20 +206,21 @@ public class DangNhapJDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        String maNv = txtMaNv.getText();
-        String matKhau = String.valueOf(txtMatKhau.getPassword());
-        NhanVienDao nhanVienDao = new NhanVienDaoImpl();
-        ShareHelper.USER = nhanVienDao.checkLogin(maNv, matKhau);
-        if (ShareHelper.USER != null) {
-            this.dispose();
-            if (ShareHelper.USER.getMatKhau().startsWith("$$")) {
-                new DatLaiMatKhau(null, true).setVisible(true);
+        if (validateInput()) {
+            String maNv = txtMaNv.getText();
+            String matKhau = String.valueOf(txtMatKhau.getPassword());
+            NhanVienDao nhanVienDao = new NhanVienDaoImpl();
+            ShareHelper.USER = nhanVienDao.checkLogin(maNv, matKhau);
+            if (ShareHelper.USER != null) {
+                this.dispose();
+                if (ShareHelper.USER.getMatKhau().startsWith("$$")) {
+                    new DatLaiMatKhau(null, true).setVisible(true);
+                }
+            } else {
+                DialogHelper.message(this, "Tài khoản hoặc mật khẩu không hợp lệ", DialogHelper.ERROR_MESSAGE);
+                txtMaNv.requestFocus();
             }
-        }else{
-            DialogHelper.message(this, "Tài khoản hoặc mật khẩu không hợp lệ", DialogHelper.ERROR_MESSAGE);
-            txtMaNv.requestFocus();
         }
-        
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
@@ -216,8 +232,8 @@ public class DangNhapJDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowClosing
 
     private void lblQuenMatKhauMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblQuenMatKhauMouseClicked
-        this.dispose(); 
-        new QuenMatKhauJDialog(null, true).setVisible(true); 
+        this.dispose();
+        new QuenMatKhauJDialog(null, true).setVisible(true);
     }//GEN-LAST:event_lblQuenMatKhauMouseClicked
 
     /**

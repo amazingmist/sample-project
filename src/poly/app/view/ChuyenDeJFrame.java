@@ -13,7 +13,10 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.hibernate.exception.ConstraintViolationException;
 import poly.app.core.daoimpl.ChuyenDeDaoImpl;
 import poly.app.core.entities.ChuyenDe;
 import poly.app.core.helper.ObjectStructureHelper;
@@ -55,6 +58,14 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             cboBoLoc.addItem(identifier);
         }
         cboBoLoc.setSelectedIndex(1);
+
+//        hide tooltip
+        JLabel[] tooltips = new JLabel[]{tooltipMa, tooltipTen, tooltipHocPhi, tooltipThoiLuong, tooltipMoTa};
+        for (JLabel tooltip : tooltips) {
+            tooltip.setVisible(false);
+            tooltip.validate();
+            tooltip.repaint();
+        }
     }
 
     public void loadDataToTable() {
@@ -67,7 +78,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 //                Convert chuyende to vector
                 Vector vData = DataFactoryUtil.objectToVectorByFields(chuyenDe, ObjectStructureHelper.CHUYENDE_PROPERTIES);
                 tableData.add(vData);
-                
+
 //                Add chuyende to hashmap
                 chuyenDeHashMap.put(chuyenDe.getMaCd(), chuyenDe);
             }
@@ -105,7 +116,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         File avatarFile = new File(URLHelper.URL_CHUYENDE_IMAGE + selectedChuyenDe.getHinh());
         if (!avatarFile.exists() || avatarFile.isDirectory()) {
             lblAvatar.setIcon(null);
-        }else{
+        } else {
             lblAvatar.setIcon(ImageUtil.resizeImage(avatarFile, lblAvatar.getWidth(), lblAvatar.getHeight()));
         }
     }
@@ -116,7 +127,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         txtThoiLuong.setText("");
         txtHocPhi.setText("");
         txtMoTa.setText("");
-        
+
         lblAvatar.setIcon(null);
         txtMaChuyenDe.requestFocus();
     }
@@ -143,21 +154,25 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         return chuyenDe;
     }
 
+    
+
     private boolean validateInputAddingState() {
-        for (ChuyenDe chuyenDe : chuyenDeHashMap.values()) {
-            if (chuyenDe.getMaCd().equals(txtMaChuyenDe.getText())) {
-                DialogHelper.message(this, "Mã chuyên đề đã tồn tại", DialogHelper.ERROR_MESSAGE);
+        JLabel[] tooltips = new JLabel[]{tooltipMa, tooltipTen, tooltipHocPhi, tooltipThoiLuong, tooltipMoTa};
+        for (JLabel tooltip : tooltips) {
+            if (tooltip.isVisible()) {
                 return false;
             }
         }
-
-//        TODO: validate here
         return true;
     }
 
     private boolean validateInputEditingState() {
-
-//        TODO: validate here
+        JLabel[] tooltips = new JLabel[]{tooltipMa, tooltipTen, tooltipHocPhi, tooltipThoiLuong, tooltipMoTa};
+        for (JLabel tooltip : tooltips) {
+            if (tooltip.isVisible()) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -208,6 +223,16 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
                 DialogHelper.message(this, "Thêm dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
                 setEditingState();
+                hideAllTooltips();
+
+                for (int i = 0; i < tableData.size(); i++) {
+                    if (tableData.get(i).get(0).equals(txtMaChuyenDe.getText())) {
+                        selectedIndex = i;
+                        changeSelectedIndex();
+                        setDirectionButton();
+                        break;
+                    }
+                }
             } else {
                 DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
             }
@@ -219,7 +244,17 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         if (isConfirm) {
             String maKh = tblChuyenDe.getValueAt(selectedIndex, 0).toString();
             ChuyenDe chuyenDe = chuyenDeHashMap.get(maKh);
-            boolean isDeleted = new ChuyenDeDaoImpl().delete(chuyenDe);
+
+            boolean isDeleted = false;
+            try {
+                isDeleted = new ChuyenDeDaoImpl().delete(chuyenDe);
+            } catch (ConstraintViolationException ex) {
+                DialogHelper.message(this, "Không thể xoá chuyên đề có chứa khoá học", DialogHelper.ERROR_MESSAGE);
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
 
             if (isDeleted) {
                 DialogHelper.message(this, "Xoá dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
@@ -279,6 +314,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
                     tblChuyenDe.updateUI();
                     DialogHelper.message(this, "Cập nhật dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
+                    hideAllTooltips();
                 } catch (Exception ex) {
                     Logger.getLogger(ChuyenDeJFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -348,6 +384,11 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtMoTa = new javax.swing.JTextArea();
+        tooltipTen = new javax.swing.JLabel();
+        tooltipThoiLuong = new javax.swing.JLabel();
+        tooltipHocPhi = new javax.swing.JLabel();
+        tooltipMa = new javax.swing.JLabel();
+        tooltipMoTa = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         btnThem = new javax.swing.JButton();
         btnCapNhat = new javax.swing.JButton();
@@ -367,6 +408,9 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
@@ -433,9 +477,25 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         txtMaChuyenDe.setEditable(false);
         txtMaChuyenDe.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtMaChuyenDe.setFocusTraversalKeysEnabled(false);
+        txtMaChuyenDe.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtMaChuyenDeFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtMaChuyenDeFocusLost(evt);
+            }
+        });
 
         txtTenChuyenDe.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtTenChuyenDe.setFocusTraversalKeysEnabled(false);
+        txtTenChuyenDe.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtTenChuyenDeFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtTenChuyenDeFocusLost(evt);
+            }
+        });
         txtTenChuyenDe.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtTenChuyenDeKeyTyped(evt);
@@ -444,6 +504,11 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
         txtThoiLuong.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
         txtThoiLuong.setFocusTraversalKeysEnabled(false);
+        txtThoiLuong.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtThoiLuongFocusLost(evt);
+            }
+        });
         txtThoiLuong.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtThoiLuongKeyTyped(evt);
@@ -482,6 +547,31 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         txtMoTa.setRows(5);
         jScrollPane2.setViewportView(txtMoTa);
 
+        tooltipTen.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipTen.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipTen.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipTen.setText("xxx");
+
+        tooltipThoiLuong.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipThoiLuong.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipThoiLuong.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipThoiLuong.setText("xxx");
+
+        tooltipHocPhi.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipHocPhi.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipHocPhi.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipHocPhi.setText("xxx");
+
+        tooltipMa.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipMa.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipMa.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipMa.setText("xxx");
+
+        tooltipMoTa.setFont(new java.awt.Font("Open Sans", 0, 13)); // NOI18N
+        tooltipMoTa.setForeground(new java.awt.Color(255, 0, 51));
+        tooltipMoTa.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        tooltipMoTa.setText("xxx");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -496,20 +586,35 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGap(31, 31, 31)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtMaChuyenDe, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel7)))
+                                    .addComponent(jLabel7)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                            .addComponent(jLabel2)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(tooltipMa, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtMaChuyenDe, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGap(102, 102, 102)
                                 .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel5)
-                            .addComponent(txtTenChuyenDe)
-                            .addComponent(txtHocPhi)
-                            .addComponent(jLabel4)
-                            .addComponent(txtThoiLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jLabel5)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(tooltipTen, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtTenChuyenDe)
+                                .addComponent(txtHocPhi)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jLabel4)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(tooltipThoiLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtThoiLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jLabel6)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(tooltipHocPhi, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(tooltipMoTa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(31, 31, 31))
         );
         jPanel5Layout.setVerticalGroup(
@@ -517,24 +622,32 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tooltipTen, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtTenChuyenDe, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tooltipThoiLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtThoiLuong, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tooltipHocPhi, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tooltipMa, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtHocPhi, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtMaChuyenDe, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tooltipMoTa, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(8, Short.MAX_VALUE))
@@ -795,18 +908,11 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
         tblChuyenDe.clearSelection();
         resetForm();
         setAddingState();
+        hideAllTooltips();
     }//GEN-LAST:event_btnLamMoiActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         this.insertModel();
-        for (int i = 0; i < tableData.size(); i++) {
-            if (tableData.get(i).get(0).equals(txtMaChuyenDe.getText())) {
-                selectedIndex = i;
-                changeSelectedIndex();
-                setDirectionButton();
-                break;
-            }
-        }
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
@@ -924,7 +1030,7 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
 
                 String strDataFromField = dataFromField.toString().toLowerCase();
                 String timKiemString = txtTimKiem.getText().toLowerCase();
-                
+
                 if (strDataFromField.contains(timKiemString)) {
                     try {
                         addModelToTable(chuyenDe);
@@ -950,6 +1056,41 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_lblAvatarMouseClicked
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+//        TODO: Clear event when release
+        loadDataToTable();
+    }//GEN-LAST:event_formWindowOpened
+
+    private void txtMaChuyenDeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMaChuyenDeFocusLost
+        if (txtMaChuyenDe.getText().length() == 0) {
+            showTooltip(tooltipMa, "Không được để trống");
+        }
+
+        for (ChuyenDe chuyenDe : chuyenDeHashMap.values()) {
+            if (chuyenDe.getMaCd().equals(txtMaChuyenDe.getText())) {
+                showTooltip(tooltipMa, "Mã chuyên đề đã tồn tại");
+            }
+        }
+    }//GEN-LAST:event_txtMaChuyenDeFocusLost
+
+    private void txtTenChuyenDeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTenChuyenDeFocusLost
+        if (txtTenChuyenDe.getText().length() == 0) {
+            showTooltip(tooltipTen, "Không được để trống");
+        }
+    }//GEN-LAST:event_txtTenChuyenDeFocusLost
+
+    private void txtThoiLuongFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtThoiLuongFocusLost
+        
+    }//GEN-LAST:event_txtThoiLuongFocusLost
+
+    private void txtMaChuyenDeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMaChuyenDeFocusGained
+        hideTooltip(tooltipMa);
+    }//GEN-LAST:event_txtMaChuyenDeFocusGained
+
+    private void txtTenChuyenDeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTenChuyenDeFocusGained
+        hideTooltip(tooltipTen);
+    }//GEN-LAST:event_txtTenChuyenDeFocusGained
 
     /**
      * @param args the command line arguments
@@ -1016,6 +1157,11 @@ public class ChuyenDeJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblAvatar;
     private javax.swing.JTabbedPane panelTab;
     private javax.swing.JTable tblChuyenDe;
+    private javax.swing.JLabel tooltipHocPhi;
+    private javax.swing.JLabel tooltipMa;
+    private javax.swing.JLabel tooltipMoTa;
+    private javax.swing.JLabel tooltipTen;
+    private javax.swing.JLabel tooltipThoiLuong;
     private javax.swing.JTextField txtHocPhi;
     private javax.swing.JTextField txtMaChuyenDe;
     private javax.swing.JTextArea txtMoTa;

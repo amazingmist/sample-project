@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 import poly.app.core.daoimpl.ChuyenDeDaoImpl;
 import poly.app.core.daoimpl.KhoaHocDaoImpl;
 import poly.app.core.entities.ChuyenDe;
@@ -26,7 +27,7 @@ import poly.app.core.utils.DataFactoryUtil;
 import poly.app.view.utils.TableRenderer;
 
 public class KhoaHocJFrame extends javax.swing.JFrame {
-    
+
     HocVienJFrame hocVienJFrame = new HocVienJFrame();
     Vector<Vector> tableData = new Vector<>();
     HashMap<Integer, KhoaHoc> khoaHocHashMap = new HashMap<>();
@@ -46,7 +47,7 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
         tblRenderer1.setCellEditable(false);
         tblRenderer1.setDataVector(tableData, ObjectStructureHelper.KHOAHOC_TABLE_IDENTIFIERS);
         tblRenderer1.changeHeaderStyle();
-        
+
 //        Add data to search field combobox
         for (String identifier : ObjectStructureHelper.KHOAHOC_TABLE_IDENTIFIERS) {
             cboBoLoc.addItem(identifier);
@@ -64,10 +65,10 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
             for (KhoaHoc khoaHoc : dataLoadedList) {
 //                Convert khoaHoc to vector
                 Vector vData = DataFactoryUtil.objectToVectorByFields(khoaHoc, ObjectStructureHelper.KHOAHOC_PROPERTIES);
-                String maCd = ((ChuyenDe)vData.get(1)).getMaCd(); 
+                String maCd = ((ChuyenDe) vData.get(1)).getMaCd();
                 vData.set(1, maCd);
-                
-                String maNv = ((NhanVien)vData.get(5)).getMaNv(); 
+
+                String maNv = ((NhanVien) vData.get(5)).getMaNv();
                 vData.set(5, maNv);
                 tableData.add(vData);
 
@@ -175,7 +176,7 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
         btnXoa.setEnabled(true);
     }
 
-    private int insertModel() {
+    private void insertModel() {
         if (validateInputForm()) {
             KhoaHoc khoaHoc = getModelFromForm();
 
@@ -186,12 +187,18 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
                 loadDataToTable();
                 setEditingState();
 
-                return khoaHoc.getMaKh();
+                for (int i = 0; i < tableData.size(); i++) {
+                    if (tableData.get(i).get(0).equals(khoaHoc.getMaKh())) {
+                        selectedIndex = i;
+                        changeSelectedIndex();
+                        setDirectionButton();
+                        break;
+                    }
+                }
             } else {
                 DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
             }
         }
-        return -1;
     }
 
     private void deleteModel() {
@@ -199,8 +206,18 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
         if (isConfirm) {
             String maKh = tblKhoaHoc.getValueAt(selectedIndex, 0).toString();
             KhoaHoc khoaHoc = khoaHocHashMap.get(maKh);
-            boolean isDeleted = new KhoaHocDaoImpl().delete(khoaHoc);
 
+            boolean isDeleted = false;
+            try {
+                isDeleted = new KhoaHocDaoImpl().delete(khoaHoc);
+            } catch (ConstraintViolationException ex) {
+                DialogHelper.message(this, "Không thể xoá khoá học có chứa học viên", DialogHelper.ERROR_MESSAGE);
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+            
             if (isDeleted) {
                 DialogHelper.message(this, "Xoá dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
@@ -819,15 +836,7 @@ public class KhoaHocJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLamMoiActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        int maKh = this.insertModel();
-        for (int i = 0; i < tableData.size(); i++) {
-            if (tableData.get(i).get(0).equals(maKh)) {
-                selectedIndex = i;
-                changeSelectedIndex();
-                setDirectionButton();
-                break;
-            }
-        }
+        this.insertModel();
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed

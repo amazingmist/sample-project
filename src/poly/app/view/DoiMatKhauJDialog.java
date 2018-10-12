@@ -8,6 +8,7 @@ package poly.app.view;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.helper.DialogHelper;
 import poly.app.core.helper.ShareHelper;
+import poly.app.view.utils.ValidationUtil;
 
 /**
  *
@@ -25,19 +26,38 @@ public class DoiMatKhauJDialog extends javax.swing.JDialog {
         this.getRootPane().setDefaultButton(btnThucHien);
     }
     
-    private boolean checkMatKhauCu(){
-        if (ShareHelper.USER != null) {
-            return txtMatKhauCu.getText().equals(ShareHelper.USER.getMatKhau());
+    private boolean validateInput() {
+        if (ValidationUtil.isEmpty(txtMatKhauCu.getText())) {
+            DialogHelper.message(this, "Mật khẩu cũ không được để trống", DialogHelper.ERROR_MESSAGE);
+            return false;
         }
-        return false;
-    }
-    
-    private boolean checkMatKhauMoi(){
-        if (txtMatKhauMoi.getText().equals("")) {
+        
+        if (txtMatKhauMoi.getText().startsWith("$$")) {
+            DialogHelper.message(this, "Mật khẩu mới không được bắt đầu bằng ký tự \"$$\"", DialogHelper.ERROR_MESSAGE);
+            return false;
+        }
+        
+        if (ValidationUtil.isLenghtEnought(txtMatKhauMoi.getText(), 3)) {
+            DialogHelper.message(this, "Mật khẩu phải từ 3 ký tự trở lên", DialogHelper.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (ValidationUtil.isEmpty(txtMatKhauMoi.getText())) {
             DialogHelper.message(this, "Mật khẩu mới không được để trống", DialogHelper.ERROR_MESSAGE);
             return false;
         }
-        return txtMatKhauMoi.getText().equals(txtReMatKhauMoi.getText());
+
+        if (ValidationUtil.isEmpty(txtReMatKhauMoi.getText())) {
+            DialogHelper.message(this, "Xác nhận mật khẩu mới không được để trống", DialogHelper.ERROR_MESSAGE);
+            return false;
+        }
+        
+        if (!txtMatKhauMoi.getText().equals(txtReMatKhauMoi.getText())) {
+            DialogHelper.message(this, "Mật khẩu mới không trùng khớp", DialogHelper.ERROR_MESSAGE);
+            return false;
+        }
+        
+        return true;
     }
     
     private boolean updateMatKhau(){
@@ -207,11 +227,7 @@ public class DoiMatKhauJDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnThucHienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThucHienActionPerformed
-        if (!checkMatKhauCu()) {
-            DialogHelper.message(this, "Mật khẩu cũ không đúng", DialogHelper.ERROR_MESSAGE);
-        }else if(!checkMatKhauMoi()){
-            DialogHelper.message(this, "Mật khẩu mới không trùng khớp", DialogHelper.ERROR_MESSAGE);
-        }else{
+        if(validateInput()){
             if(updateMatKhau()){
                 DialogHelper.message(this, "Cập nhật mật khẩu thành công!\nSử dụng mật khẩu mới cho lần đăng nhập sau", DialogHelper.INFORMATION_MESSAGE);
             }else{

@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.hibernate.exception.ConstraintViolationException;
 import poly.app.core.daoimpl.NguoiHocDaoImpl;
 import poly.app.core.entities.NguoiHoc;
 import poly.app.core.helper.DateHelper;
@@ -63,7 +64,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         cboBoLoc.setSelectedIndex(1);
 
 //        Add default image to user avatar
-        lblAvatar.setIcon(ImageUtil.resizeImage(new File("./src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
+        lblAvatar.setIcon(ImageUtil.resizeImage(new File("src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
     }
 
     private void addRadioToGroup() {
@@ -120,7 +121,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
 
         File avatarFile = new File(URLHelper.URL_NGUOIHOC_IMAGE + selectedNguoiHoc.getHinh());
         if (!avatarFile.exists() || avatarFile.isDirectory()) {
-            avatarFile = new File("./src/poly/app/view/icon/default-avatar.jpeg");
+            avatarFile = new File("src/poly/app/view/icon/default-avatar.jpeg");
         }
         lblAvatar.setIcon(ImageUtil.resizeImage(avatarFile, lblAvatar.getWidth(), lblAvatar.getHeight()));
 
@@ -138,7 +139,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         txtSoDienThoai.setText("");
         txtEmail.setText("");
         txtGhiChu.setText("");
-        lblAvatar.setIcon(ImageUtil.resizeImage(new File("./src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
+        lblAvatar.setIcon(ImageUtil.resizeImage(new File("src/poly/app/view/icon/default-avatar.jpeg"), lblAvatar.getWidth(), lblAvatar.getHeight()));
         txtMaNguoiHoc.requestFocus();
 
         rdoNam.setSelected(true);
@@ -239,7 +240,7 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
             } catch (Exception ex) {
 //                ex.printStackTrace();
             }
-            
+
 //            Set ngayDangKy
             nguoiHoc.setNgayDk(new Date());
 //            Set Nhanvien dang ky
@@ -251,6 +252,15 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
                 DialogHelper.message(this, "Thêm dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
                 setEditingState();
+
+                for (int i = 0; i < tableData.size(); i++) {
+                    if (tableData.get(i).get(0).equals(txtMaNguoiHoc.getText())) {
+                        selectedIndex = i;
+                        changeSelectedIndex();
+                        setDirectionButton();
+                        break;
+                    }
+                }
             } else {
                 DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
             }
@@ -262,12 +272,23 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
         if (isConfirm) {
             String maNh = tblNguoiHoc.getValueAt(selectedIndex, 0).toString();
             NguoiHoc nguoiHoc = nguoiHocHashMap.get(maNh);
-            boolean isDeleted = new NguoiHocDaoImpl().delete(nguoiHoc);
+            boolean isDeleted = false;
+
+            try {
+                isDeleted = new NguoiHocDaoImpl().delete(nguoiHoc);
+            } catch (ConstraintViolationException ex) {
+                DialogHelper.message(this, "Không thể xoá người học đã tồn tại trong khoá học", DialogHelper.ERROR_MESSAGE);
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
 
             if (isDeleted) {
                 DialogHelper.message(this, "Xoá dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
                 loadDataToTable();
                 tblNguoiHoc.updateUI();
+                selectedIndex--;
                 changeSelectedIndex();
             } else {
                 DialogHelper.message(this, "Xoá dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
@@ -883,14 +904,6 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         this.insertModel();
-        for (int i = 0; i < tableData.size(); i++) {
-            if (tableData.get(i).get(0).equals(txtMaNguoiHoc.getText())) {
-                selectedIndex = i;
-                changeSelectedIndex();
-                setDirectionButton();
-                break;
-            }
-        }
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
@@ -1005,10 +1018,10 @@ public class NguoiHocJFrame extends javax.swing.JFrame {
             String fieldName = ObjectStructureHelper.NGUOIHOC_PROPERTIES[cboIndex];
             for (NguoiHoc nguoiHoc : nguoiHocHashMap.values()) {
                 Object dataFromField = DataFactoryUtil.getValueByField(nguoiHoc, fieldName);
-                
+
                 String strDataFromField = dataFromField.toString().toLowerCase();
                 String timKiemString = txtTimKiem.getText().toLowerCase();
-                
+
                 if (strDataFromField.contains(timKiemString)) {
                     try {
                         addModelToTable(nguoiHoc);
