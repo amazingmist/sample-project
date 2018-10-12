@@ -202,36 +202,6 @@ public class NhanVienJFrame extends javax.swing.JFrame {
         }).start();
     }
 
-    private boolean validateInputAddingState() {
-        for (NhanVien nhanVien : nhanVienHashMap.values()) {
-            if (nhanVien.getMaNv().equals(txtMaNhanVien.getText())) {
-                DialogHelper.message(this, "Mã nhân viên đã tồn tại", DialogHelper.ERROR_MESSAGE);
-                return false;
-            } else if (nhanVien.getEmail().equals(txtEmail.getText())) {
-                DialogHelper.message(this, "Email đã tồn tại", DialogHelper.ERROR_MESSAGE);
-                return false;
-            }
-        }
-
-//        TODO: validate here
-        return true;
-    }
-
-    private boolean validateInputEditingState() {
-        String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
-        if (!nhanVienHashMap.get(maNv).getEmail().equals(txtEmail.getText())) {
-            for (NhanVien nhanVien : nhanVienHashMap.values()) {
-                if (nhanVien.getEmail().equals(txtEmail.getText())) {
-                    DialogHelper.message(this, "Email đã tồn tại", DialogHelper.ERROR_MESSAGE);
-                    return false;
-                }
-            }
-        }
-
-//        TODO: validate here
-        return true;
-    }
-
     private void setAddingState() {
         txtMaNhanVien.setEnabled(true);
         txtMaNhanVien.requestFocus();
@@ -255,45 +225,43 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }
 
     private void insertModel() {
-        if (validateInputAddingState()) {
-            String randomPassword = "$$" + StringUtil.randomString();
-            NhanVien nhanVien = getModelFromForm();
-            nhanVien.setMatKhau(randomPassword);
+        String randomPassword = "$$" + StringUtil.randomString();
+        NhanVien nhanVien = getModelFromForm();
+        nhanVien.setMatKhau(randomPassword);
 
 //            Save image to folder
-            try {
-                if (jFileChooser.getSelectedFile() != null) {
-                    nhanVien.setHinh(nhanVien.getMaNv().concat(".jpg"));
+        try {
+            if (jFileChooser.getSelectedFile() != null) {
+                nhanVien.setHinh(nhanVien.getMaNv().concat(".jpg"));
 
-                    if (nhanVien.getHinh() != null) {
-                        ImageUtil.deleteImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVien.getHinh());
-                    }
-                    ImageUtil.saveImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVien.getHinh(), jFileChooser.getSelectedFile());
-                    jFileChooser = null;
+                if (nhanVien.getHinh() != null) {
+                    ImageUtil.deleteImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVien.getHinh());
                 }
-            } catch (Exception ex) {
+                ImageUtil.saveImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVien.getHinh(), jFileChooser.getSelectedFile());
+                jFileChooser = null;
+            }
+        } catch (Exception ex) {
 //                ex.printStackTrace();
-            }
+        }
 
-            boolean isInserted = new NhanVienDaoImpl().insert(nhanVien);
+        boolean isInserted = new NhanVienDaoImpl().insert(nhanVien);
 
-            if (isInserted) {
-                sendUserInfoToEmail(nhanVien);
-                DialogHelper.message(this, "Thêm dữ liệu thành công.\nKiểm tra email để nhận thông tin đăng nhập.", DialogHelper.INFORMATION_MESSAGE);
-                loadDataToTable();
-                setEditingState();
+        if (isInserted) {
+            sendUserInfoToEmail(nhanVien);
+            DialogHelper.message(this, "Thêm dữ liệu thành công.\nKiểm tra email để nhận thông tin đăng nhập.", DialogHelper.INFORMATION_MESSAGE);
+            loadDataToTable();
+            setEditingState();
 
-                for (int i = 0; i < tableData.size(); i++) {
-                    if (tableData.get(i).get(0).equals(txtMaNhanVien.getText())) {
-                        selectedIndex = i;
-                        changeSelectedIndex();
-                        setDirectionButton();
-                        break;
-                    }
+            for (int i = 0; i < tableData.size(); i++) {
+                if (tableData.get(i).get(0).equals(txtMaNhanVien.getText())) {
+                    selectedIndex = i;
+                    changeSelectedIndex();
+                    setDirectionButton();
+                    break;
                 }
-            } else {
-                DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
             }
+        } else {
+            DialogHelper.message(this, "Thêm dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
         }
     }
 
@@ -326,61 +294,59 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }
 
     private void updateModel() {
-        if (validateInputEditingState()) {
-            String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
-            NhanVien nhanVienOldData = nhanVienHashMap.get(maNv);
+        String maNv = tblNhanVien.getValueAt(selectedIndex, 0).toString();
+        NhanVien nhanVienOldData = nhanVienHashMap.get(maNv);
 
-            NhanVien nhanVienNewData = getModelFromForm();
+        NhanVien nhanVienNewData = getModelFromForm();
 
 //            Save image to folder
-            try {
-                if (jFileChooser.getSelectedFile() != null) {
-                    nhanVienNewData.setHinh(nhanVienNewData.getMaNv().concat(".jpg"));
+        try {
+            if (jFileChooser.getSelectedFile() != null) {
+                nhanVienNewData.setHinh(nhanVienNewData.getMaNv().concat(".jpg"));
 
-                    if (nhanVienOldData.getHinh() != null) {
-                        ImageUtil.deleteImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVienOldData.getHinh());
-                    }
-                    ImageUtil.saveImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVienNewData.getHinh(), jFileChooser.getSelectedFile());
-                    jFileChooser = null;
+                if (nhanVienOldData.getHinh() != null) {
+                    ImageUtil.deleteImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVienOldData.getHinh());
                 }
-            } catch (Exception ex) {
-//                ex.printStackTrace();
+                ImageUtil.saveImage(URLHelper.URL_NHANVIEN_IMAGE, nhanVienNewData.getHinh(), jFileChooser.getSelectedFile());
+                jFileChooser = null;
             }
+        } catch (Exception ex) {
+//                ex.printStackTrace();
+        }
 
-            boolean isUpdated = false;
+        boolean isUpdated = false;
+        try {
+            nhanVienNewData = DataFactoryUtil.mergeTwoObject(nhanVienOldData, nhanVienNewData);
+            nhanVienHashMap.put(maNv, nhanVienNewData);
+
+            isUpdated = new NhanVienDaoImpl().update(nhanVienNewData);
+        } catch (Exception ex) {
+            Logger.getLogger(NhanVienJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (isUpdated) {
+            Vector vData;
             try {
-                nhanVienNewData = DataFactoryUtil.mergeTwoObject(nhanVienOldData, nhanVienNewData);
-                nhanVienHashMap.put(maNv, nhanVienNewData);
+                vData = DataFactoryUtil.objectToVectorByFields(nhanVienNewData, ObjectStructureHelper.NHANVIEN_PROPERTIES);
+                int fieldVaiTro = vData.size() - 1;
+                boolean isTruongPhong = (boolean) vData.get(fieldVaiTro);
+                vData.set(fieldVaiTro, isTruongPhong ? "Trưởng phòng" : "Nhân viên");
 
-                isUpdated = new NhanVienDaoImpl().update(nhanVienNewData);
+//                    Find index of updated NhanVien in tabledata
+                for (int i = 0; i < tableData.size(); i++) {
+                    if (tableData.get(i).get(0).equals(vData.get(0))) {
+                        tableData.set(i, vData);
+                        break;
+                    }
+                }
+
+                tblNhanVien.updateUI();
+                DialogHelper.message(this, "Cập nhật dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
             } catch (Exception ex) {
                 Logger.getLogger(NhanVienJFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            if (isUpdated) {
-                Vector vData;
-                try {
-                    vData = DataFactoryUtil.objectToVectorByFields(nhanVienNewData, ObjectStructureHelper.NHANVIEN_PROPERTIES);
-                    int fieldVaiTro = vData.size() - 1;
-                    boolean isTruongPhong = (boolean) vData.get(fieldVaiTro);
-                    vData.set(fieldVaiTro, isTruongPhong ? "Trưởng phòng" : "Nhân viên");
-
-//                    Find index of updated NhanVien in tabledata
-                    for (int i = 0; i < tableData.size(); i++) {
-                        if (tableData.get(i).get(0).equals(vData.get(0))) {
-                            tableData.set(i, vData);
-                            break;
-                        }
-                    }
-
-                    tblNhanVien.updateUI();
-                    DialogHelper.message(this, "Cập nhật dữ liệu thành công.", DialogHelper.INFORMATION_MESSAGE);
-                } catch (Exception ex) {
-                    Logger.getLogger(NhanVienJFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                DialogHelper.message(this, "Cập nhật dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
-            }
+        } else {
+            DialogHelper.message(this, "Cập nhật dữ liệu thất bại.", DialogHelper.ERROR_MESSAGE);
         }
     }
 
@@ -1061,8 +1027,12 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
-        this.deleteModel();
-        TooltipUtil.hideAllTooltips(tooltips);
+        if(ShareHelper.USER.getMaNv().equals(txtMaNhanVien.getText())){
+           DialogHelper.message(this, "Không thể tự xoá chính mình", DialogHelper.ERROR_MESSAGE);
+        }else{
+            this.deleteModel();
+            TooltipUtil.hideAllTooltips(tooltips);
+        }
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void tblNhanVienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNhanVienMouseClicked
@@ -1149,7 +1119,7 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private void txtHoTenKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHoTenKeyTyped
         TooltipUtil.hideTooltip(tooltipHoTen);
         if (String.valueOf(evt.getKeyChar()).matches("\\d")) {
-            TooltipUtil.showTooltip(tooltipHoTen, "không được nhập số");
+            TooltipUtil.showTooltip(tooltipHoTen, "Không được nhập số");
             evt.consume();
         }
     }//GEN-LAST:event_txtHoTenKeyTyped
@@ -1241,10 +1211,16 @@ public class NhanVienJFrame extends javax.swing.JFrame {
     private void txtEmailFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtEmailFocusLost
         if (ValidationUtil.isEmpty(txtEmail.getText())) {
             TooltipUtil.showTooltip(tooltipEmail, "Không được để trống");
-        } else if (ValidationUtil.isValidEmail(txtEmail.getText())) {
-            TooltipUtil.hideTooltip(tooltipEmail);
-        } else {
+        } else if (!ValidationUtil.isValidEmail(txtEmail.getText())) {
             TooltipUtil.showTooltip(tooltipEmail, "Không đúng định dạng");
+        } else {
+            if (!nhanVienHashMap.get(txtMaNhanVien.getText()).getEmail().equals(txtEmail.getText())) {
+            for (NhanVien nhanVien : nhanVienHashMap.values()) {
+                if (nhanVien.getEmail().equals(txtEmail.getText())) {
+                    TooltipUtil.showTooltip(tooltipEmail, "Email đã tồn tại");
+                }
+            }
+        }
         }
     }//GEN-LAST:event_txtEmailFocusLost
 
