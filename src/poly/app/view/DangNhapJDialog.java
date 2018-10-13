@@ -5,10 +5,14 @@
  */
 package poly.app.view;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import poly.app.core.dao.NhanVienDao;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.helper.DialogHelper;
 import poly.app.core.helper.ShareHelper;
+import poly.app.core.utils.FileFactoryUtil;
 
 /**
  *
@@ -39,6 +43,26 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         
         return true;
     }
+    
+    private void saveAccountToFile(){
+        Map<String, String> account = new HashMap<String, String>();
+        account.put("username", txtMaNv.getText());
+        account.put("password", String.valueOf(txtMatKhau.getPassword()));
+        
+        FileFactoryUtil.write(account, new File("accounnt.bin").getAbsolutePath());
+    }
+    
+    private boolean isSavedAccountInFile(){
+        File account = new File("accounnt.bin");
+        return account.exists() && !account.isDirectory();
+    }
+
+    private void readAccountFromFile(){
+        Map<String, String> account = new HashMap<String, String>();
+        account = FileFactoryUtil.read(account, new File("accounnt.bin").getAbsolutePath());
+        txtMaNv.setText(account.get("username"));
+        txtMatKhau.setText(account.get("password"));
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -61,10 +85,14 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         btnLogin = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         lblQuenMatKhau = new javax.swing.JLabel();
+        chkLuuTaiKhoan = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
@@ -131,6 +159,14 @@ public class DangNhapJDialog extends javax.swing.JDialog {
             }
         });
 
+        chkLuuTaiKhoan.setFont(new java.awt.Font("Open Sans", 0, 16)); // NOI18N
+        chkLuuTaiKhoan.setText("Lưu  tài khoản?");
+        chkLuuTaiKhoan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkLuuTaiKhoanActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -153,13 +189,16 @@ public class DangNhapJDialog extends javax.swing.JDialog {
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(15, 15, 15))
             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(chkLuuTaiKhoan)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addGap(20, 20, 20)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addGap(0, 0, 0)
                 .addComponent(txtMaNv, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -167,7 +206,9 @@ public class DangNhapJDialog extends javax.swing.JDialog {
                 .addComponent(jLabel4)
                 .addGap(0, 0, 0)
                 .addComponent(txtMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
+                .addGap(10, 10, 10)
+                .addComponent(chkLuuTaiKhoan)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -212,6 +253,9 @@ public class DangNhapJDialog extends javax.swing.JDialog {
             NhanVienDao nhanVienDao = new NhanVienDaoImpl();
             ShareHelper.USER = nhanVienDao.checkLogin(maNv, matKhau);
             if (ShareHelper.USER != null) {
+                if (chkLuuTaiKhoan.isSelected()) {
+                    saveAccountToFile();
+                }
                 this.dispose();
                 if (ShareHelper.USER.getMatKhau().startsWith("$$")) {
                     new DatLaiMatKhau(null, true).setVisible(true);
@@ -235,6 +279,16 @@ public class DangNhapJDialog extends javax.swing.JDialog {
         this.dispose();
         new QuenMatKhauJDialog(null, true).setVisible(true);
     }//GEN-LAST:event_lblQuenMatKhauMouseClicked
+
+    private void chkLuuTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkLuuTaiKhoanActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_chkLuuTaiKhoanActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if (isSavedAccountInFile()) {
+            readAccountFromFile();
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -282,6 +336,7 @@ public class DangNhapJDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnLogin;
+    private javax.swing.JCheckBox chkLuuTaiKhoan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
