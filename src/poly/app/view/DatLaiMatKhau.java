@@ -5,10 +5,14 @@
  */
 package poly.app.view;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.helper.DialogHelper;
 import poly.app.core.helper.ShareHelper;
+import poly.app.core.utils.FileFactoryUtil;
 import poly.app.view.utils.ValidationUtil;
 
 /**
@@ -61,6 +65,14 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
         return true;
     }
     
+    private void saveAccountToFile(){
+        Map<String, String> account = new HashMap<String, String>();
+        account.put("username", ShareHelper.USER.getMaNv());
+        account.put("password", String.valueOf(txtMatKhauMoi.getPassword()));
+        
+        FileFactoryUtil.write(account, new File("accounnt.bin").getAbsolutePath());
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -81,7 +93,7 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
         btnCancel = new javax.swing.JButton();
         txtMatKhauMoi = new javax.swing.JPasswordField();
         txtReMatKhauMoi = new javax.swing.JPasswordField();
-        chkGhiNho = new javax.swing.JCheckBox();
+        chkLuuTaiKhoan = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -136,11 +148,11 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
 
         txtReMatKhauMoi.setFont(new java.awt.Font("Open Sans", 0, 15)); // NOI18N
 
-        chkGhiNho.setFont(new java.awt.Font("Open Sans", 0, 16)); // NOI18N
-        chkGhiNho.setText("Lưu tài khoản?");
-        chkGhiNho.addActionListener(new java.awt.event.ActionListener() {
+        chkLuuTaiKhoan.setFont(new java.awt.Font("Open Sans", 0, 16)); // NOI18N
+        chkLuuTaiKhoan.setText("Lưu tài khoản?");
+        chkLuuTaiKhoan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkGhiNhoActionPerformed(evt);
+                chkLuuTaiKhoanActionPerformed(evt);
             }
         });
 
@@ -162,7 +174,7 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
                             .addComponent(btnThucHien, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(chkGhiNho))
+                    .addComponent(chkLuuTaiKhoan))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -179,7 +191,7 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
                 .addGap(0, 0, 0)
                 .addComponent(txtReMatKhauMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
-                .addComponent(chkGhiNho)
+                .addComponent(chkLuuTaiKhoan)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnThucHien, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -220,6 +232,9 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
         if (validateInput()) {
             boolean isUpdated = updateMatKhau();
             if (isUpdated) {
+                if (chkLuuTaiKhoan.isSelected()) {
+                    saveAccountToFile();
+                }
                 DialogHelper.message(this, "Cập nhật mật khẩu thành công!\nSử dụng mật khẩu mới cho lần đăng nhập sau", DialogHelper.INFORMATION_MESSAGE);
             }else{
                 DialogHelper.message(this, "Cập nhật mật khẩu thất bại!\nVui lòng thử lại", DialogHelper.ERROR_MESSAGE);
@@ -232,9 +247,9 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
         System.exit(0);
     }//GEN-LAST:event_btnCancelActionPerformed
 
-    private void chkGhiNhoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkGhiNhoActionPerformed
+    private void chkLuuTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkLuuTaiKhoanActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_chkGhiNhoActionPerformed
+    }//GEN-LAST:event_chkLuuTaiKhoanActionPerformed
 
     /**
      * @param args the command line arguments
@@ -281,7 +296,7 @@ public class DatLaiMatKhau extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnThucHien;
-    private javax.swing.JCheckBox chkGhiNho;
+    private javax.swing.JCheckBox chkLuuTaiKhoan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -110,7 +110,7 @@
                                   <Component id="btnCancel" min="-2" pref="120" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="chkGhiNho" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="chkLuuTaiKhoan" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="15" max="32767" attributes="0"/>
                   </Group>
@@ -130,7 +130,7 @@
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Component id="txtReMatKhauMoi" min="-2" pref="33" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Component id="chkGhiNho" min="-2" max="-2" attributes="0"/>
+                      <Component id="chkLuuTaiKhoan" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btnThucHien" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
@@ -211,7 +211,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JCheckBox" name="chkGhiNho">
+            <Component class="javax.swing.JCheckBox" name="chkLuuTaiKhoan">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Open Sans" size="16" style="0"/>
@@ -219,7 +219,7 @@
                 <Property name="text" type="java.lang.String" value="L&#x1b0;u t&#xe0;i kho&#x1ea3;n?"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkGhiNhoActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkLuuTaiKhoanActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

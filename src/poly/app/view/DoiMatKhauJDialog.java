@@ -5,9 +5,13 @@
  */
 package poly.app.view;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import poly.app.core.daoimpl.NhanVienDaoImpl;
 import poly.app.core.helper.DialogHelper;
 import poly.app.core.helper.ShareHelper;
+import poly.app.core.utils.FileFactoryUtil;
 import poly.app.view.utils.ValidationUtil;
 
 /**
@@ -27,32 +31,32 @@ public class DoiMatKhauJDialog extends javax.swing.JDialog {
     }
     
     private boolean validateInput() {
-        if (ValidationUtil.isEmpty(txtMatKhauCu.getText())) {
+        if (ValidationUtil.isEmpty(String.valueOf(txtMatKhauCu.getPassword()))) {
             DialogHelper.message(this, "Mật khẩu cũ không được để trống", DialogHelper.ERROR_MESSAGE);
             return false;
         }
         
-        if (txtMatKhauMoi.getText().startsWith("$$")) {
+        if (String.valueOf(txtMatKhauMoi.getPassword()).startsWith("$$")) {
             DialogHelper.message(this, "Mật khẩu mới không được bắt đầu bằng ký tự \"$$\"", DialogHelper.ERROR_MESSAGE);
             return false;
         }
         
-        if (ValidationUtil.isLenghtEnought(txtMatKhauMoi.getText(), 3)) {
+        if (ValidationUtil.isLenghtEnought(String.valueOf(txtMatKhauMoi.getPassword()), 3)) {
             DialogHelper.message(this, "Mật khẩu phải từ 3 ký tự trở lên", DialogHelper.ERROR_MESSAGE);
             return false;
         }
 
-        if (ValidationUtil.isEmpty(txtMatKhauMoi.getText())) {
+        if (ValidationUtil.isEmpty(String.valueOf(txtMatKhauMoi.getPassword()))) {
             DialogHelper.message(this, "Mật khẩu mới không được để trống", DialogHelper.ERROR_MESSAGE);
             return false;
         }
 
-        if (ValidationUtil.isEmpty(txtReMatKhauMoi.getText())) {
+        if (ValidationUtil.isEmpty(String.valueOf(txtReMatKhauMoi.getPassword()))) {
             DialogHelper.message(this, "Xác nhận mật khẩu mới không được để trống", DialogHelper.ERROR_MESSAGE);
             return false;
         }
         
-        if (!txtMatKhauMoi.getText().equals(txtReMatKhauMoi.getText())) {
+        if (!String.valueOf(txtMatKhauMoi.getPassword()).equals(String.valueOf(txtReMatKhauMoi.getPassword()))) {
             DialogHelper.message(this, "Mật khẩu mới không trùng khớp", DialogHelper.ERROR_MESSAGE);
             return false;
         }
@@ -61,8 +65,16 @@ public class DoiMatKhauJDialog extends javax.swing.JDialog {
     }
     
     private boolean updateMatKhau(){
-        ShareHelper.USER.setMatKhau(txtMatKhauMoi.getText());
+        ShareHelper.USER.setMatKhau(String.valueOf(txtMatKhauMoi.getPassword()));
         return new NhanVienDaoImpl().update(ShareHelper.USER);
+    }
+    
+    private void saveAccountToFile(){
+        Map<String, String> account = new HashMap<String, String>();
+        account.put("username", ShareHelper.USER.getMaNv());
+        account.put("password", String.valueOf(txtMatKhauMoi.getPassword()));
+        
+        FileFactoryUtil.write(account, new File("accounnt.bin").getAbsolutePath());
     }
 
     /**
@@ -229,6 +241,7 @@ public class DoiMatKhauJDialog extends javax.swing.JDialog {
     private void btnThucHienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThucHienActionPerformed
         if(validateInput()){
             if(updateMatKhau()){
+                saveAccountToFile();
                 DialogHelper.message(this, "Cập nhật mật khẩu thành công!\nSử dụng mật khẩu mới cho lần đăng nhập sau", DialogHelper.INFORMATION_MESSAGE);
             }else{
                 DialogHelper.message(this, "Cập nhật mật khẩu thất bại!\nVui lòng thử lại", DialogHelper.ERROR_MESSAGE);
