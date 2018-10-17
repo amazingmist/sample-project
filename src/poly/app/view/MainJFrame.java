@@ -5,7 +5,7 @@
  */
 package poly.app.view;
 
-import com.apple.eawt.Application;
+//import com.apple.eawt.Application;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,7 +43,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
     private void changeAppIcon() {
         setIconImage(ShareHelper.APP_ICON);
-        Application.getApplication().setDockIconImage(ShareHelper.APP_ICON);
+//        Application.getApplication().setDockIconImage(ShareHelper.APP_ICON);
     }
 
     private void loadSessionFactory() {

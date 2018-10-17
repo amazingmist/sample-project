@@ -48,8 +48,7 @@ public class EMailUtil {
         try {
             Message msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(from, "Sample Project"));
-            msg.addRecipient(Message.RecipientType.TO,
-                    new InternetAddress(to));
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             msg.setSubject(msgSubject);
             msg.setContent(msgBody, "text/html; charset=UTF-8");
             Transport.send(msg);
